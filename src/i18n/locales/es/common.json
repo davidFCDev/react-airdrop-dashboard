@@ -1,0 +1,43 @@
+{
+  "home": {
+    "titlePart1": "Gestiona",
+    "titlePart2": "Airdrops",
+    "titlePart3": "de forma rápida y sencilla.",
+    "subtitle": "Tu herramienta de gestión favorita",
+    "buttonDocs": "Documentación",
+    "buttonGitHub": "GitHub",
+    "snippetText": "Empieza editando"
+  },
+  "navbar": {
+    "Home": "Inicio",
+    "Login": "Iniciar sesión",
+    "Register": "Registrarse",
+    "Airdrops": "Airdrops",
+    "Info": "Información",
+    "Help & Feedback": "Ayuda",
+    "Create": "Crear",
+    "Profile": "Perfil",
+    "Dashboard": "Panel",
+    "Logout": "Cerrar sesión",
+    "language": "Idioma"
+  },
+  "register": {
+    "title": "Registrarse",
+    "subtitle": "Por favor, introduce tu correo y contraseña para registrarte",
+    "linkText": "¿Ya tienes una cuenta?"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "subtitle": "Por favor, introduce tu correo y contraseña para iniciar sesión",
+    "linkText": "¿No tienes una cuenta?"
+  },
+  "form": {
+    "submit": "Enviar",
+    "reset": "Restablecer",
+    "clickHere": "Haz clic aquí",
+    "mailError": "Por favor, introduce un correo válido",
+    "emailPlaceholder": "Introduce tu correo",
+    "passwordError": "Por favor, introduce una contraseña válida",
+    "passwordPlaceholder": "Introduce tu contraseña"
+  }
+}

@@ -9,26 +9,73 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/navbar";
+import { Select, SelectItem } from "@heroui/select";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
-import { useTranslation } from "react-i18next"; // Importamos el hook de traducción
+import { useTranslation } from "react-i18next";
 
-import {
-  DiscordIcon,
-  GithubIcon,
-  HeartFilledIcon,
-  Logo,
-  TwitterIcon,
-} from "@/components/icons";
+import { DiscordIcon, GithubIcon, Logo, TwitterIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
+import { useUser } from "@/context/AuthContext";
 
 export const Navbar = () => {
-  const { i18n } = useTranslation(); // Accedemos al objeto i18n para cambiar el idioma
+  const { t, i18n } = useTranslation();
+  const { user, role, signOut } = useUser();
 
-  const handleLanguageChange = (event) => {
-    i18n.changeLanguage(event.target.value); // Cambiar el idioma
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    i18n.changeLanguage(event.target.value);
   };
+
+  // Filtrado de ítems de navegación
+  const desktopNavItems = siteConfig.navItems.filter((item) => {
+    if (!user) {
+      return ["Home", "Login", "Register", "Help & Feedback"].includes(
+        item.label,
+      );
+    } else if (role === "user") {
+      return ["Home", "Airdrops", "Info", "Help & Feedback"].includes(
+        item.label,
+      );
+    } else if (role === "admin") {
+      return ["Home", "Airdrops", "Info", "Help & Feedback", "Create"].includes(
+        item.label,
+      );
+    }
+
+    return false;
+  });
+
+  const mobileNavItems = siteConfig.navMenuItems.filter((item) => {
+    if (!user) {
+      return ["Dashboard", "Login", "Register", "Help & Feedback"].includes(
+        item.label,
+      );
+    } else if (role === "user") {
+      return [
+        "Profile",
+        "Dashboard",
+        "Airdrops",
+        "Info",
+        "Help & Feedback",
+        "Logout",
+      ].includes(item.label);
+    } else if (role === "admin") {
+      return [
+        "Profile",
+        "Dashboard",
+        "Airdrops",
+        "Info",
+        "Help & Feedback",
+        "Create",
+        "Logout",
+      ].includes(item.label);
+    }
+
+    return false;
+  });
 
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
@@ -44,7 +91,7 @@ export const Navbar = () => {
           </Link>
         </NavbarBrand>
         <div className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
+          {desktopNavItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
@@ -54,7 +101,7 @@ export const Navbar = () => {
                 color="foreground"
                 href={item.href}
               >
-                {item.label}
+                {t(`navbar.${item.label}`)} {/* Usar el label original */}
               </Link>
             </NavbarItem>
           ))}
@@ -78,30 +125,30 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
 
-        {/* Aquí agregamos el selector de idioma */}
         <NavbarItem className="hidden sm:flex items-center gap-4">
-          <select
-            className="bg-default-100 text-default-600 p-2 rounded-md"
+          <Select
+            className="w-32"
+            placeholder={t("navbar.language")}
             value={i18n.language}
+            variant="faded"
             onChange={handleLanguageChange}
           >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
+            <SelectItem key="en">English</SelectItem>
+            <SelectItem key="es">Español</SelectItem>
+          </Select>
         </NavbarItem>
 
-        <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
-        </NavbarItem>
+        {user && (
+          <NavbarItem className="hidden md:flex">
+            <Button
+              className="text-sm font-normal text-default-600 bg-default-100"
+              variant="flat"
+              onClick={signOut}
+            >
+              {t("navbar.Logout")}
+            </Button>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -114,20 +161,20 @@ export const Navbar = () => {
 
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
+          {mobileNavItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
                 color={
                   index === 2
                     ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
+                    : index === mobileNavItems.length - 1
                       ? "danger"
                       : "foreground"
                 }
-                href="#"
+                href={item.href}
                 size="lg"
               >
-                {item.label}
+                {t(`navbar.${item.label}`)} {/* Usar el label original */}
               </Link>
             </NavbarMenuItem>
           ))}

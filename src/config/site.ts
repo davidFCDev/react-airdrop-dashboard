@@ -1,28 +1,36 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Airdrop Dashboard",
+  description: "Manage your airdrops with ease",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Login",
+      href: "/login",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Register",
+      href: "/register",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Airdrops",
+      href: "/airdrops",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "Info",
+      href: "/info",
+    },
+    {
+      label: "Help & Feedback",
+      href: "/help-feedback",
+    },
+    {
+      label: "Create",
+      href: "/create",
     },
   ],
   navMenuItems: [
@@ -32,27 +40,31 @@ export const siteConfig = {
     },
     {
       label: "Dashboard",
-      href: "/dashboard",
+      href: "/",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Login",
+      href: "/login",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "Register",
+      href: "/register",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
+      label: "Airdrops",
+      href: "/airdrops",
     },
     {
-      label: "Settings",
-      href: "/settings",
+      label: "Info",
+      href: "/info",
     },
     {
       label: "Help & Feedback",
       href: "/help-feedback",
+    },
+    {
+      label: "Create",
+      href: "/create",
     },
     {
       label: "Logout",
