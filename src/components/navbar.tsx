@@ -1,4 +1,10 @@
-import { Button } from "@heroui/button";
+import { Avatar } from "@heroui/avatar";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
 import { Link } from "@heroui/link";
 import {
   Navbar as HeroUINavbar,
@@ -9,25 +15,20 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/navbar";
-import { Select, SelectItem } from "@heroui/select";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { DiscordIcon, GithubIcon, Logo, TwitterIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
-import { useUser } from "@/context/AuthContext";
+import { useUserAuth } from "@/context/AuthContext";
 
 export const Navbar = () => {
-  const { t, i18n } = useTranslation();
-  const { user, role, signOut } = useUser();
-
-  const handleLanguageChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    i18n.changeLanguage(event.target.value);
-  };
+  const { t } = useTranslation();
+  const { user, role, signOut } = useUserAuth();
+  const navigate = useNavigate();
 
   // Filtrado de ítems de navegación
   const desktopNavItems = siteConfig.navItems.filter((item) => {
@@ -47,6 +48,11 @@ export const Navbar = () => {
 
     return false;
   });
+
+  const items = [
+    { key: "profile", label: t("navbar.Profile") },
+    { key: "logout", label: t("navbar.Logout") },
+  ];
 
   const mobileNavItems = siteConfig.navMenuItems.filter((item) => {
     if (!user) {
@@ -77,8 +83,17 @@ export const Navbar = () => {
     return false;
   });
 
+  const handleDropdownAction = (key: string) => {
+    if (key === "profile") {
+      navigate("/profile");
+    } else if (key === "logout") {
+      signOut();
+      navigate("/");
+    }
+  };
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar maxWidth="2xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <Link
@@ -87,7 +102,7 @@ export const Navbar = () => {
             href="/"
           >
             <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+            <p className="font-bold text-inherit">HUNTERS</p>
           </Link>
         </NavbarBrand>
         <div className="hidden lg:flex gap-4 justify-start ml-2">
@@ -101,7 +116,7 @@ export const Navbar = () => {
                 color="foreground"
                 href={item.href}
               >
-                {t(`navbar.${item.label}`)} {/* Usar el label original */}
+                {t(`navbar.${item.label}`)}
               </Link>
             </NavbarItem>
           ))}
@@ -125,28 +140,34 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
 
-        <NavbarItem className="hidden sm:flex items-center gap-4">
-          <Select
-            className="w-32"
-            placeholder={t("navbar.language")}
-            value={i18n.language}
-            variant="faded"
-            onChange={handleLanguageChange}
-          >
-            <SelectItem key="en">English</SelectItem>
-            <SelectItem key="es">Español</SelectItem>
-          </Select>
-        </NavbarItem>
-
         {user && (
           <NavbarItem className="hidden md:flex">
-            <Button
-              className="text-sm font-normal text-default-600 bg-default-100"
-              variant="flat"
-              onClick={signOut}
-            >
-              {t("navbar.Logout")}
-            </Button>
+            <Dropdown>
+              <DropdownTrigger>
+                <Avatar
+                  isBordered
+                  className="cursor-pointer"
+                  color="primary"
+                  size="sm"
+                  src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
+                />
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="User Actions"
+                items={items}
+                onAction={(key) => handleDropdownAction(key as string)}
+              >
+                {(item) => (
+                  <DropdownItem
+                    key={item.key}
+                    className={item.key === "logout" ? "text-danger" : ""}
+                    color={item.key === "logout" ? "danger" : "default"}
+                  >
+                    {item.label}
+                  </DropdownItem>
+                )}
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
         )}
       </NavbarContent>
@@ -174,7 +195,7 @@ export const Navbar = () => {
                 href={item.href}
                 size="lg"
               >
-                {t(`navbar.${item.label}`)} {/* Usar el label original */}
+                {t(`navbar.${item.label}`)}
               </Link>
             </NavbarMenuItem>
           ))}

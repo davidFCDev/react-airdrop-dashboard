@@ -34,7 +34,7 @@ export default function AuthForm({
       <Divider className="w-full" />
 
       <Form
-        className="w-full max-w-xs flex flex-col gap-4 my-6"
+        className="w-full max-w-xs flex flex-col items-start text-left gap-4 my-6"
         validationBehavior="native"
         onSubmit={onSubmit}
       >
@@ -45,9 +45,7 @@ export default function AuthForm({
           labelPlacement="outside"
           name="email"
           placeholder={t("form.emailPlaceholder")}
-          type="email"
         />
-
         <Input
           isRequired
           errorMessage={t("form.passwordError")}
@@ -73,7 +71,7 @@ export default function AuthForm({
       <Divider className="w-full" />
 
       <div className="mt-6 text-sm flex items-center justify-between w-full font-light">
-        {linkText}
+        {linkText} {/* Texto del enlace */}
         <Link
           className="text-primary hover:underline font-normal"
           href={linkHref}

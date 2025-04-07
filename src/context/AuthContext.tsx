@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
@@ -29,14 +30,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<Role>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserRole = async (uid: string) => {
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
+  const fetchUserRole = async (uid: string): Promise<Role> => {
+    try {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      setRole(docSnap.data().role as Role);
-    } else {
-      setRole("user"); // fallback
+      if (docSnap.exists()) {
+        const userRole = docSnap.data().role as Role;
+
+        return userRole === "admin" || userRole === "user" ? userRole : "user";
+      }
+
+      return "user";
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+
+      return "user";
     }
   };
 
@@ -44,7 +53,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        await fetchUserRole(firebaseUser.uid);
+        const fetchedRole = await fetchUserRole(firebaseUser.uid);
+
+        setRole(fetchedRole);
       } else {
         setUser(null);
         setRole(null);
@@ -64,4 +75,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useUser = () => useContext(AuthContext);
+export const useUserAuth = () => useContext(AuthContext);

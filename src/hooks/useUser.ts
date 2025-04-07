@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { authService } from "@/service/auth.service";
 
-export function useAuth(action: "login" | "register") {
-  const router = useNavigate();
+export function useUser(action: "login" | "register") {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleAuth = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,18 +18,23 @@ export function useAuth(action: "login" | "register") {
 
     setErrorMessage(null);
 
-    const result =
-      action === "login"
-        ? await authService.login(email, password)
-        : await authService.register(email, password);
+    try {
+      if (action === "login") {
+        await authService.login(email, password);
+        toast.success(t("auth.loginSuccess"));
+      } else {
+        await authService.register(email, password);
+        toast.success(t("auth.registerSuccess"));
+      }
+      navigate("/");
+    } catch (error: any) {
+      const errorCode = error.code || "unknown";
+      const message = t(`auth.errors.${errorCode}`, {
+        defaultValue: t("auth.errors.generic"),
+      });
 
-    if (typeof result === "string") {
-      setErrorMessage(result);
-    } else {
-      toast.success(
-        action === "login" ? "Login successful" : "Registration successful",
-      );
-      setTimeout(() => router("/"), 100);
+      setErrorMessage(message);
+      toast.error(message);
     }
   };
 

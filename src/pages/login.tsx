@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-import AuthForm from "@/components/AuthForm";
-import { useAuth } from "@/hooks/useUser";
+import AuthForm from "@/components/authForm";
+import { useUser } from "@/hooks/useUser";
 import DefaultLayout from "@/layouts/default";
 
 export default function RegisterPage() {
-  const { handleAuth, errorMessage } = useAuth("register");
+  const { handleAuth, errorMessage } = useUser("login");
   const { t } = useTranslation();
 
   return (

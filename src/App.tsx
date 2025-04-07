@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import CreatePage from "./pages/create";
 import LoginPage from "./pages/login";
@@ -12,55 +13,58 @@ import InfoPage from "@/pages/info";
 
 function App() {
   return (
-    <Routes>
-      {/* Rutas públicas (sin autenticación) */}
-      <Route element={<IndexPage />} path="/" /> {/* Home siempre visible */}
-      <Route element={<LoginPage />} path="/login" />
-      <Route element={<RegisterPage />} path="/register" />
-      <Route element={<HelpFeedbackPage />} path="/help-feedback" />
-      {/* Rutas protegidas para usuarios autenticados */}
-      <Route
-        element={
-          <RouteGuard>
-            <AirdropsPage />
-          </RouteGuard>
-        }
-        path="/airdrops"
-      />
-      <Route
-        element={
-          <RouteGuard>
-            <AirdropsPage />
-          </RouteGuard>
-        }
-        path="/airdrops/:id"
-      />
-      <Route
-        element={
-          <RouteGuard>
-            <InfoPage />
-          </RouteGuard>
-        }
-        path="/info"
-      />
-      <Route
-        element={
-          <RouteGuard>
-            <LoginPage />
-          </RouteGuard>
-        }
-        path="/profile"
-      />
-      {/* Ruta protegida solo para admin */}
-      <Route
-        element={
-          <RouteGuard requiredRole="admin">
-            <CreatePage />
-          </RouteGuard>
-        }
-        path="/create"
-      />
-    </Routes>
+    <>
+      <Toaster richColors position="bottom-right" />
+      <Routes>
+        {/* Rutas públicas (sin autenticación) */}
+        <Route element={<IndexPage />} path="/" />
+        <Route element={<LoginPage />} path="/login" />
+        <Route element={<RegisterPage />} path="/register" />
+        <Route element={<HelpFeedbackPage />} path="/help-feedback" />
+        {/* Rutas protegidas para usuarios autenticados */}
+        <Route
+          element={
+            <RouteGuard>
+              <AirdropsPage />
+            </RouteGuard>
+          }
+          path="/airdrops"
+        />
+        <Route
+          element={
+            <RouteGuard>
+              <AirdropsPage />
+            </RouteGuard>
+          }
+          path="/airdrops/:id"
+        />
+        <Route
+          element={
+            <RouteGuard>
+              <InfoPage />
+            </RouteGuard>
+          }
+          path="/info"
+        />
+        <Route
+          element={
+            <RouteGuard>
+              <LoginPage />
+            </RouteGuard>
+          }
+          path="/profile"
+        />
+        {/* Ruta protegida solo para admin */}
+        <Route
+          element={
+            <RouteGuard requiredRole="admin">
+              <CreatePage />
+            </RouteGuard>
+          }
+          path="/create"
+        />
+      </Routes>
+    </>
   );
 }
 

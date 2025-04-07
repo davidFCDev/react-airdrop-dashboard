@@ -39,5 +39,17 @@
     "emailPlaceholder": "Introduce tu correo",
     "passwordError": "Por favor, introduce una contraseña válida",
     "passwordPlaceholder": "Introduce tu contraseña"
+  },
+  "auth": {
+    "loginSuccess": "Inicio de sesión exitoso",
+    "registerSuccess": "Registro exitoso",
+    "errors": {
+      "generic": "Ocurrió un error inesperado",
+      "auth/wrong-password": "Contraseña incorrecta",
+      "auth/user-not-found": "Usuario no encontrado",
+      "auth/email-already-in-use": "El correo ya está en uso",
+      "auth/invalid-email": "Correo inválido",
+      "auth/weak-password": "La contraseña es demasiado débil"
+    }
   }
 }

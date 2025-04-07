@@ -15,13 +15,29 @@ export default function IndexPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <div className="inline-block max-w-lg text-center justify-center">
-          <span className={title()}>{t("home.titlePart1")}&nbsp;</span>
-          <span className={title({ color: "violet" })}>
+        <div className="inline-block max-w-2xl text-center justify-center">
+          <span
+            className={title({
+              size: "xl",
+            })}
+          >
+            {t("home.titlePart1")}&nbsp;
+          </span>
+          <span
+            className={`${title({
+              size: "xl",
+            })} text-primary`}
+          >
             {t("home.titlePart2")}&nbsp;
           </span>
           <br />
-          <span className={title()}>{t("home.titlePart3")}</span>
+          <span
+            className={title({
+              size: "xl",
+            })}
+          >
+            {t("home.titlePart3")}
+          </span>
           <div className={subtitle({ class: "mt-4" })}>
             {t("home.subtitle")}
           </div>

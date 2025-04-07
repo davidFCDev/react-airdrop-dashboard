@@ -1,6 +1,7 @@
 import { Link } from "@heroui/link";
 
-import { Navbar } from "@/components/navbar";
+import LanguageSelector from "@/components/LanguageSelector";
+import { Navbar } from "@/components/Navbar";
 
 export default function DefaultLayout({
   children,
@@ -10,9 +11,7 @@ export default function DefaultLayout({
   return (
     <div className="relative flex flex-col h-screen">
       <Navbar />
-      <main className="container mx-auto max-w-7xl px-6 flex-grow pt-10">
-        {children}
-      </main>
+      <main className="container mx-auto px-6 flex-grow pt-10">{children}</main>
       <footer className="w-full flex items-center justify-center py-3">
         <Link
           isExternal
@@ -24,6 +23,9 @@ export default function DefaultLayout({
           <p className="text-primary">Chucky</p>
         </Link>
       </footer>
+      <div className="absolute bottom-2 right-2">
+        <LanguageSelector />
+      </div>
     </div>
   );
 }

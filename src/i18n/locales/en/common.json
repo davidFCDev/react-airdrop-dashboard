@@ -39,5 +39,17 @@
     "emailPlaceholder": "Enter your email",
     "passwordError": "Please enter a valid password",
     "passwordPlaceholder": "Enter your password"
+  },
+  "auth": {
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "errors": {
+      "generic": "An unexpected error occurred",
+      "auth/wrong-password": "Incorrect password",
+      "auth/user-not-found": "User not found",
+      "auth/email-already-in-use": "Email already in use",
+      "auth/invalid-email": "Invalid email",
+      "auth/weak-password": "Password is too weak"
+    }
   }
 }
