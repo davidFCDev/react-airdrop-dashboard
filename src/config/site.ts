@@ -17,8 +17,16 @@ export const siteConfig = {
       href: "/register",
     },
     {
+      label: "Dashboard",
+      href: "/dashboard",
+    },
+    {
       label: "Airdrops",
       href: "/airdrops",
+    },
+    {
+      label: "Create",
+      href: "/create",
     },
     {
       label: "Info",
@@ -28,19 +36,15 @@ export const siteConfig = {
       label: "Help & Feedback",
       href: "/help-feedback",
     },
-    {
-      label: "Create",
-      href: "/create",
-    },
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Home",
+      href: "/home",
     },
     {
-      label: "Dashboard",
-      href: "/",
+      label: "Profile",
+      href: "/profile",
     },
     {
       label: "Login",
@@ -51,8 +55,16 @@ export const siteConfig = {
       href: "/register",
     },
     {
+      label: "Dashboard",
+      href: "/dashboard",
+    },
+    {
       label: "Airdrops",
       href: "/airdrops",
+    },
+    {
+      label: "Create",
+      href: "/create",
     },
     {
       label: "Info",
@@ -61,10 +73,6 @@ export const siteConfig = {
     {
       label: "Help & Feedback",
       href: "/help-feedback",
-    },
-    {
-      label: "Create",
-      href: "/create",
     },
     {
       label: "Logout",

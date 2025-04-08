@@ -51,5 +51,22 @@
       "auth/invalid-email": "Correo inválido",
       "auth/weak-password": "La contraseña es demasiado débil"
     }
+  },
+  "airdrop": {
+    "searchPlaceholder": "Buscar por nombre...",
+    "columns": "Columnas",
+    "noAirdrops": "No se encontraron airdrops",
+    "name": "Nombre del Proyecto",
+    "status": "Estado",
+    "tier": "Nivel",
+    "funding": "Financiación",
+    "type": "Tipo",
+    "cost": "Costo",
+    "stage": "Etapa",
+    "chain": "Cadena",
+    "tags": "Etiquetas",
+    "links": "Enlaces",
+    "created_at": "Creado",
+    "last_edited": "Última Edición"
   }
 }

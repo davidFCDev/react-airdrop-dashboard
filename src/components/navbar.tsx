@@ -20,9 +20,10 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { DiscordIcon, GithubIcon, Logo, TwitterIcon } from "@/components/icons";
+import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
+import { image_avatar } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 
 export const Navbar = () => {
@@ -37,13 +38,22 @@ export const Navbar = () => {
         item.label,
       );
     } else if (role === "user") {
-      return ["Home", "Airdrops", "Info", "Help & Feedback"].includes(
-        item.label,
-      );
+      return [
+        "Home",
+        "Dashboard",
+        "Airdrops",
+        "Info",
+        "Help & Feedback",
+      ].includes(item.label);
     } else if (role === "admin") {
-      return ["Home", "Airdrops", "Info", "Help & Feedback", "Create"].includes(
-        item.label,
-      );
+      return [
+        "Home",
+        "Dashboard",
+        "Airdrops",
+        "Create",
+        "Info",
+        "Help & Feedback",
+      ].includes(item.label);
     }
 
     return false;
@@ -93,32 +103,49 @@ export const Navbar = () => {
   };
 
   return (
-    <HeroUINavbar maxWidth="2xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand className="gap-3 max-w-fit">
+    <HeroUINavbar
+      className="border-b border-default-300"
+      maxWidth="full"
+      position="sticky"
+    >
+      <NavbarContent
+        className="basis-1/5 sm:basis-full flex gap-0"
+        justify="start"
+      >
+        <NavbarBrand className="max-w-fit border-r border-default-300 h-full pr-6">
           <Link
             className="flex justify-start items-center gap-1"
             color="foreground"
             href="/"
           >
-            <Logo />
-            <p className="font-bold text-inherit">HUNTERS</p>
+            <Logo className="text-secondary-600" />
+            <p className="font-bold text-inherit">
+              AIRDROP <span className="text-secondary-600">HUB</span>
+            </p>
           </Link>
         </NavbarBrand>
-        <div className="hidden lg:flex gap-4 justify-start ml-2">
+        <div className="hidden lg:flex justify-start h-full">
           {desktopNavItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <Link
+            <Link
+              key={item.href}
+              className={clsx(
+                linkStyles({ color: "foreground" }),
+                "h-full flex items-center",
+              )}
+              color="foreground"
+              href={item.href}
+            >
+              <NavbarItem
                 className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "border-r border-default-300 h-full px-4 flex items-center",
+                  "hover:border-b-2 hover:border-b-primary cursor-pointer",
+                  window.location.pathname === item.href &&
+                    "border-b-2 border-b-primary",
                 )}
-                color="foreground"
-                href={item.href}
               >
                 {t(`navbar.${item.label}`)}
-              </Link>
-            </NavbarItem>
+              </NavbarItem>
+            </Link>
           ))}
         </div>
       </NavbarContent>
@@ -127,29 +154,27 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
+        <NavbarItem className="hidden sm:flex gap-6">
           <Link isExternal href={siteConfig.links.twitter} title="Twitter">
-            <TwitterIcon className="text-default-500" />
+            <TwitterIcon className="text-default-700" />
           </Link>
           <Link isExternal href={siteConfig.links.discord} title="Discord">
-            <DiscordIcon className="text-default-500" />
+            <TelegramIcon className="text-default-700" />
           </Link>
-          <Link isExternal href={siteConfig.links.github} title="GitHub">
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
+          <ThemeSwitch className="text-default-700" />
         </NavbarItem>
 
         {user && (
-          <NavbarItem className="hidden md:flex">
+          <NavbarItem className="hidden md:flex pl-6 border-l border-default-300 h-full justify-center items-center">
             <Dropdown>
               <DropdownTrigger>
                 <Avatar
                   isBordered
                   className="cursor-pointer"
                   color="primary"
+                  radius="md"
                   size="sm"
-                  src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
+                  src={image_avatar}
                 />
               </DropdownTrigger>
               <DropdownMenu
@@ -172,9 +197,12 @@ export const Navbar = () => {
         )}
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
+      <NavbarContent className="sm:hidden basis-1 sm:pl-4" justify="end">
+        <Link isExternal href={siteConfig.links.twitter} title="Twitter">
+          <TwitterIcon className="text-default-700" />
+        </Link>
+        <Link isExternal href={siteConfig.links.discord} title="Discord">
+          <TelegramIcon className="text-default-700" />
         </Link>
         <ThemeSwitch />
         <NavbarMenuToggle />

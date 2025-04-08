@@ -5,25 +5,9 @@ import { Link } from "react-router-dom";
 
 import { DiscordIcon, TelegramIcon, TwitterIcon } from "./icons";
 
-type AirdropCardProps = {
-  airdrop: {
-    title: string;
-    description: string;
-    type: string;
-    createdAt: string;
-    startedAt: string;
-    status?: string;
-    image: string;
-    url: string;
-    discord?: string;
-    twitter?: string;
-    telegram?: string;
-    important_links?: string[];
-    tasks?: string[];
-  };
-};
+import { Airdrop } from "@/constants";
 
-const AirdropCard = ({ airdrop }: AirdropCardProps) => {
+const AirdropCard = (airdrop: Airdrop) => {
   return (
     <Card className="w-[400px] bg-default-100" shadow="sm">
       <CardHeader className="flex justify-between items-start">
@@ -36,7 +20,7 @@ const AirdropCard = ({ airdrop }: AirdropCardProps) => {
             width={60}
           />
           <div className="flex flex-col text-left">
-            <p className="text-xl font-bold">{airdrop.title}</p>
+            <p className="text-xl font-bold">{airdrop.name}</p>
             <p className="text-small text-default-500">{airdrop.type}</p>
           </div>
         </div>

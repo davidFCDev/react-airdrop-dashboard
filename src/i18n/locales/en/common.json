@@ -51,5 +51,22 @@
       "auth/invalid-email": "Invalid email",
       "auth/weak-password": "Password is too weak"
     }
+  },
+  "airdrop": {
+    "searchPlaceholder": "Search by name...",
+    "columns": "Columns",
+    "noAirdrops": "No airdrops found",
+    "name": "Project Name",
+    "status": "Status",
+    "tier": "Tier",
+    "funding": "Funding",
+    "type": "Type",
+    "cost": "Cost",
+    "stage": "Stage",
+    "chain": "Chain",
+    "tags": "Tags",
+    "links": "Links",
+    "created_at": "Created",
+    "last_edited": "Last Edited"
   }
 }

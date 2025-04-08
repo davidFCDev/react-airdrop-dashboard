@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import CreatePage from "./pages/create";
+import DashboardPage from "./pages/dashboard";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 
@@ -22,6 +23,14 @@ function App() {
         <Route element={<RegisterPage />} path="/register" />
         <Route element={<HelpFeedbackPage />} path="/help-feedback" />
         {/* Rutas protegidas para usuarios autenticados */}
+        <Route
+          element={
+            <RouteGuard>
+              <DashboardPage />
+            </RouteGuard>
+          }
+          path="/dashboard"
+        />
         <Route
           element={
             <RouteGuard>
