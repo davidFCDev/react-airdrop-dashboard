@@ -49,25 +49,9 @@ const AirdropTable = () => {
     column: "name",
     direction: "ascending",
   });
-  // Forzamos un re-renderizado completo cuando cambie el idioma
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
   const airdrops: Airdrop[] = [AIRDROP_TEST, AIRDROP_TEST2];
   const hasSearchFilter = Boolean(filterValue);
-
-  // Escuchar cambios de idioma y forzar actualización
-  React.useEffect(() => {
-    const handleLanguageChange = () => {
-      console.log("Idioma cambiado a:", i18n.language);
-      forceUpdate();
-    };
-
-    i18n.on("languageChanged", handleLanguageChange);
-
-    return () => {
-      i18n.off("languageChanged", handleLanguageChange);
-    };
-  }, [i18n]);
 
   const headerColumns = React.useMemo(() => {
     return columns.filter((column) => visibleColumns.has(column.uid));
@@ -284,6 +268,7 @@ const AirdropTable = () => {
 
   return (
     <Table
+      key={i18n.language} // Forzar desmontaje y remontaje cuando cambie el idioma
       aria-label="Airdrops Table"
       classNames={{
         wrapper: "max-h-[600px] overflow-auto",
