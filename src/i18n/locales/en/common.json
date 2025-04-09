@@ -56,6 +56,7 @@
     "searchPlaceholder": "Search by name...",
     "columns": "Columns",
     "noAirdrops": "No airdrops found",
+    "notFound": "Airdrop not found",
     "name": "Project Name",
     "status": "Status",
     "tier": "Tier",
@@ -67,6 +68,9 @@
     "tags": "Tags",
     "links": "Links",
     "created_at": "Created",
-    "last_edited": "Last Edited"
+    "last_edited": "Last Edited",
+    "progress": "Progress",
+    "tasks": "Tasks",
+    "important_links": "Important Links"
   }
 }

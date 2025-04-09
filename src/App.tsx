@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 
+import AirdropDetailsPage from "./pages/airdropDetails";
 import CreatePage from "./pages/create";
 import DashboardPage from "./pages/dashboard";
 import LoginPage from "./pages/login";
@@ -42,7 +43,7 @@ function App() {
         <Route
           element={
             <RouteGuard>
-              <AirdropsPage />
+              <AirdropDetailsPage />
             </RouteGuard>
           }
           path="/airdrops/:id"

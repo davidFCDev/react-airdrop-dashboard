@@ -93,6 +93,7 @@ export type Status = (typeof status)[number];
 export type Cost = (typeof cost)[number];
 
 export interface Airdrop {
+  id: string;
   name: string;
   description: string;
   type: AirdropType;
@@ -107,6 +108,7 @@ export interface Airdrop {
   created_at: string;
   last_edited: string;
   image: string;
+  backdrop: string;
   url: string;
   discord: string;
   twitter: string;
@@ -119,6 +121,7 @@ export interface Airdrop {
 
 export const AIRDROP_LIST: Airdrop[] = [
   {
+    id: "1",
     name: "77BIT",
     description: "2 months campaign",
     type: types[0], // "Play-to-Earn"
@@ -134,6 +137,8 @@ export const AIRDROP_LIST: Airdrop[] = [
     last_edited: "2023-10-01",
     image:
       "https://pbs.twimg.com/profile_images/1712518219271942144/bBIxPoV6_400x400.jpg",
+    backdrop:
+      "https://gam3s.gg/_next/image/?url=https%3A%2F%2Fassets.gam3s.gg%2F77_bit_Game_Image_1_fab6256b69.png&w=3840&q=75",
     url: "https://example.com",
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",
@@ -144,6 +149,7 @@ export const AIRDROP_LIST: Airdrop[] = [
     },
   },
   {
+    id: "2",
     name: "TOWNS",
     description: "3 months campaign",
     type: types[1], // "Testnet"
@@ -159,6 +165,8 @@ export const AIRDROP_LIST: Airdrop[] = [
     last_edited: "2023-10-01",
     image:
       "https://pbs.twimg.com/profile_images/1893500934086438912/yImUvwK__400x400.png",
+    backdrop:
+      "https://gam3s.gg/_next/image/?url=https%3A%2F%2Fassets.gam3s.gg%2F77_bit_Game_Image_1_fab6256b69.png&w=3840&q=75",
     url: "https://example.com",
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",
@@ -169,6 +177,7 @@ export const AIRDROP_LIST: Airdrop[] = [
     },
   },
   {
+    id: "3",
     name: "OPTIMISM",
     description: "3 months campaign",
     type: types[0], // "Testnet"
@@ -183,6 +192,8 @@ export const AIRDROP_LIST: Airdrop[] = [
     created_at: "2023-10-01",
     last_edited: "2023-10-01",
     image: "https://s2.coinmarketcap.com/static/img/coins/200x200/11840.png",
+    backdrop:
+      "https://gam3s.gg/_next/image/?url=https%3A%2F%2Fassets.gam3s.gg%2F77_bit_Game_Image_1_fab6256b69.png&w=3840&q=75",
     url: "https://example.com",
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",

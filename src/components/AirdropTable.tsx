@@ -19,6 +19,7 @@ import {
 } from "@heroui/table";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import {
   ChevronDownIcon,
@@ -41,6 +42,7 @@ import {
 
 const AirdropTable = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [filterValue, setFilterValue] = React.useState<string>("");
   const [visibleColumns, setVisibleColumns] = React.useState<Set<string>>(
     new Set(columns.map((c) => c.uid)),
@@ -74,7 +76,7 @@ const AirdropTable = () => {
     }
 
     return filteredAirdrops;
-  }, [filterValue]);
+  }, [airdrops, filterValue]);
 
   const sortedItems = React.useMemo(() => {
     return [...filteredItems].sort((a: Airdrop, b: Airdrop) => {
@@ -91,7 +93,7 @@ const AirdropTable = () => {
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
-  }, [sortDescriptor, filteredItems]);
+  }, [filteredItems, sortDescriptor]);
 
   const renderCell = React.useCallback(
     (airdrop: Airdrop, columnKey: keyof Airdrop | "links" | "tags") => {
@@ -106,7 +108,7 @@ const AirdropTable = () => {
             <div className="flex items-center gap-2">
               <img
                 alt={airdrop.name}
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full my-1"
                 src={airdrop.image}
               />
               <span>{airdrop.name}</span>
@@ -277,7 +279,7 @@ const AirdropTable = () => {
             }
           >
             {columns.map((column) => (
-              <DropdownItem key={String(column.uid)} className="capitalize">
+              <DropdownItem key={column.uid} className="capitalize">
                 {t(`airdrop.${column.uid}`)}
               </DropdownItem>
             ))}
@@ -286,6 +288,10 @@ const AirdropTable = () => {
       </div>
     );
   }, [filterValue, visibleColumns, onSearchChange, t, i18n.language]);
+
+  const handleRowClick = (airdrop: Airdrop) => {
+    navigate(`/airdrops/${airdrop.id}`, { state: { airdrop } });
+  };
 
   return (
     <Table
@@ -301,6 +307,7 @@ const AirdropTable = () => {
       classNames={{
         wrapper: "max-h-[600px] overflow-auto",
         td: "border-b border-default-200",
+        tr: "hover:bg-default-100 cursor-pointer transition-colors",
       }}
       sortDescriptor={sortDescriptor}
       topContent={topContent}
@@ -310,7 +317,7 @@ const AirdropTable = () => {
       <TableHeader columns={headerColumns}>
         {(column) => (
           <TableColumn
-            key={String(column.uid)}
+            key={column.uid}
             align="start"
             allowsSorting={column.sortable}
           >
@@ -320,7 +327,7 @@ const AirdropTable = () => {
       </TableHeader>
       <TableBody emptyContent={t("airdrop.noAirdrops")} items={sortedItems}>
         {(item) => (
-          <TableRow key={item.name}>
+          <TableRow key={item.id} onClick={() => handleRowClick(item)}>
             {(columnKey) => (
               <TableCell>
                 {renderCell(

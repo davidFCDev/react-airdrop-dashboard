@@ -56,6 +56,7 @@
     "searchPlaceholder": "Buscar por nombre...",
     "columns": "Columnas",
     "noAirdrops": "No se encontraron airdrops",
+    "notFound": "Airdrop no encontrado",
     "name": "Nombre del Proyecto",
     "status": "Estado",
     "tier": "Nivel",
@@ -67,6 +68,9 @@
     "tags": "Etiquetas",
     "links": "Enlaces",
     "created_at": "Creado",
-    "last_edited": "Última Edición"
+    "last_edited": "Última Edición",
+    "progress": "Progreso",
+    "tasks": "Tareas",
+    "important_links": "Enlaces Importantes"
   }
 }
