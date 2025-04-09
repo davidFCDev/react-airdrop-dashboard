@@ -104,7 +104,7 @@ export const Navbar = () => {
 
   return (
     <HeroUINavbar
-      className="border-b border-default-300"
+      className="border-b border-default-200"
       maxWidth="full"
       position="sticky"
     >
@@ -112,7 +112,7 @@ export const Navbar = () => {
         className="basis-1/5 sm:basis-full flex gap-0"
         justify="start"
       >
-        <NavbarBrand className="max-w-fit border-r border-default-300 h-full pr-6">
+        <NavbarBrand className="max-w-fit border-r border-default-200 h-full pr-6">
           <Link
             className="flex justify-start items-center gap-1"
             color="foreground"
@@ -137,7 +137,7 @@ export const Navbar = () => {
             >
               <NavbarItem
                 className={clsx(
-                  "border-r border-default-300 h-full px-4 flex items-center",
+                  "border-r border-default-200 h-full px-4 flex items-center",
                   "hover:border-b-2 hover:border-b-primary cursor-pointer",
                   window.location.pathname === item.href &&
                     "border-b-2 border-b-primary",
@@ -165,7 +165,7 @@ export const Navbar = () => {
         </NavbarItem>
 
         {user && (
-          <NavbarItem className="hidden md:flex pl-6 border-l border-default-300 h-full justify-center items-center">
+          <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
             <Dropdown>
               <DropdownTrigger>
                 <Avatar

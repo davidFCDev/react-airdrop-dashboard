@@ -26,11 +26,11 @@ import {
   SearchIcon,
   TelegramIcon,
   TwitterIcon,
+  WebsiteIcon,
 } from "@/components/icons";
 import {
   Airdrop,
-  AIRDROP_TEST,
-  AIRDROP_TEST2,
+  AIRDROP_LIST,
   columns,
   costColorMap,
   stageColorMap,
@@ -50,7 +50,14 @@ const AirdropTable = () => {
     direction: "ascending",
   });
 
-  const airdrops: Airdrop[] = [AIRDROP_TEST, AIRDROP_TEST2];
+  const airdrops: Airdrop[] = React.useMemo(() => {
+    return AIRDROP_LIST.map((airdrop) => ({
+      ...airdrop,
+      created_at: new Date(airdrop.created_at).toISOString(),
+      last_edited: new Date(airdrop.last_edited).toISOString(),
+    }));
+  }, []);
+
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
@@ -128,7 +135,7 @@ const AirdropTable = () => {
             </Chip>
           );
         case "funding":
-          return `$${airdrop.funding}`;
+          return `$ ${airdrop.funding}`;
         case "type":
           return (
             <Chip
@@ -186,22 +193,36 @@ const AirdropTable = () => {
         case "links":
           return (
             <div className="flex gap-2">
-              <Link isExternal href={airdrop.url} title="Website">
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.url}
+                title="Website"
+              >
+                <WebsiteIcon className="w-4 h-4" />
               </Link>
-              <Link isExternal href={airdrop.discord} title="Discord">
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.discord}
+                title="Discord"
+              >
                 <DiscordIcon className="w-4 h-4" />
               </Link>
-              <Link isExternal href={airdrop.twitter} title="Twitter">
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.twitter}
+                title="Twitter"
+              >
                 <TwitterIcon className="w-4 h-4" />
               </Link>
-              <Link isExternal href={airdrop.telegram} title="Telegram">
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.telegram}
+                title="Telegram"
+              >
                 <TelegramIcon className="w-4 h-4" />
               </Link>
             </div>
@@ -268,8 +289,15 @@ const AirdropTable = () => {
 
   return (
     <Table
-      key={i18n.language} // Forzar desmontaje y remontaje cuando cambie el idioma
+      key={i18n.language}
+      isCompact
+      removeWrapper
       aria-label="Airdrops Table"
+      checkboxesProps={{
+        classNames: {
+          wrapper: "after:bg-foreground after:text-background text-background",
+        },
+      }}
       classNames={{
         wrapper: "max-h-[600px] overflow-auto",
         td: "border-b border-default-200",
@@ -283,7 +311,7 @@ const AirdropTable = () => {
         {(column) => (
           <TableColumn
             key={String(column.uid)}
-            align={column.uid === "links" ? "center" : "start"}
+            align="start"
             allowsSorting={column.sortable}
           >
             {t(`airdrop.${column.uid}`)}
