@@ -1,5 +1,6 @@
 import { Chip } from "@heroui/chip";
 import { Link } from "@heroui/link";
+import { Progress } from "@heroui/progress";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
@@ -14,7 +15,6 @@ import {
   Airdrop,
   costColorMap,
   stageColorMap,
-  statusColorMap,
   tierColorMap,
   typeColorMap,
 } from "@/constants/airdrop.table";
@@ -48,16 +48,24 @@ const AirdropDetailsPage = () => {
           />
         </div>
 
-        {/* Avatar, Nombre, Tier, Type y Links */}
+        {/* Avatar superpuesto */}
         <div className="relative px-10 -mt-20">
           <img
             alt={airdrop.name}
             className="w-32 h-32 rounded-full border-8 border-default-50"
             src={airdrop.image}
           />
-          <div className="mt-6">
-            <h1 className="text-3xl font-bold">{airdrop.name}</h1>
-            <div className="flex items-center gap-4 mt-2">
+        </div>
+
+        {/* Contenido en Dos Columnas */}
+        <div className="flex flex-col md:flex-row gap-6 w-full px-10 mt-6">
+          {/* Columna 1: Información Principal */}
+          <div className="w-full md:w-1/3 flex flex-col gap-4">
+            {/* Fila 1: Título */}
+            <h1 className="text-5xl font-bold">{airdrop.name}</h1>
+
+            {/* Fila 2: Tier, Type y Links */}
+            <div className="flex items-center gap-4">
               <Chip
                 className="capitalize"
                 color={tierColorMap[airdrop.tier]}
@@ -109,69 +117,47 @@ const AirdropDetailsPage = () => {
                 </Link>
               </div>
             </div>
-          </div>
-          <p className="text-lg text-default-600 mt-4">{airdrop.description}</p>
-        </div>
 
-        {/* Descripción */}
+            {/* Fila 3: Cost, Chain, Stage, Funding */}
+            <div className="flex items-center gap-4">
+              <Chip
+                className="capitalize"
+                color={costColorMap[airdrop.cost]}
+                size="lg"
+                variant="flat"
+              >
+                {airdrop.cost}
+              </Chip>
+              <Chip
+                className="capitalize"
+                color="default"
+                size="lg"
+                variant="flat"
+              >
+                {airdrop.chain}
+              </Chip>
+              <Chip
+                className="capitalize"
+                color={stageColorMap[airdrop.stage]}
+                size="lg"
+                variant="flat"
+              >
+                {airdrop.stage}
+              </Chip>
+              <span className="text-lg">{`$ ${airdrop.funding}`}</span>
+            </div>
 
-        {/* Contenido en Dos Columnas */}
-        <div className="flex flex-col md:flex-row gap-6 w-full px-4">
-          {/* Tarjeta Informativa (Izquierda) */}
-          <div className="w-full md:w-2/3 bg-default-50 p-6 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <span className="font-semibold">{t("airdrop.status")}: </span>
-                <Chip
-                  className="capitalize"
-                  color={statusColorMap[airdrop.status]}
-                  size="sm"
-                  variant="flat"
-                >
-                  {airdrop.status}
+            {/* Fila 4: Tags */}
+            <div className="flex gap-2 flex-wrap">
+              {airdrop.tags.map((tag, index) => (
+                <Chip key={index} color="default" size="lg" variant="flat">
+                  {tag}
                 </Chip>
-              </div>
-              <div>
-                <span className="font-semibold">{t("airdrop.stage")}: </span>
-                <Chip
-                  className="capitalize"
-                  color={stageColorMap[airdrop.stage]}
-                  size="sm"
-                  variant="flat"
-                >
-                  {airdrop.stage}
-                </Chip>
-              </div>
-              <div>
-                <span className="font-semibold">{t("airdrop.chain")}: </span>
-                <Chip
-                  className="capitalize"
-                  color="default"
-                  size="sm"
-                  variant="flat"
-                >
-                  {airdrop.chain}
-                </Chip>
-              </div>
-              <div>
-                <span className="font-semibold">{t("airdrop.cost")}: </span>
-                <Chip
-                  className="capitalize"
-                  color={costColorMap[airdrop.cost]}
-                  size="sm"
-                  variant="flat"
-                >
-                  {airdrop.cost}
-                </Chip>
-              </div>
-              <div>
-                <span className="font-semibold">{t("airdrop.funding")}: </span>
-                <span>{`$ ${airdrop.funding}`}</span>
-              </div>
-              <div>
-                <span className="font-semibold">{t("airdrop.progress")}: </span>
-                <span>{`${airdrop.progress}%`}</span>
-              </div>
+              ))}
+            </div>
+
+            {/* Fila 5: Created y Last Edited */}
+            <div className="flex flex-col gap-2">
               <div>
                 <span className="font-semibold">
                   {t("airdrop.created_at")}:{" "}
@@ -187,46 +173,51 @@ const AirdropDetailsPage = () => {
                 </span>
               </div>
             </div>
-            {/* Tags */}
-            <div className="mt-4">
-              <span className="font-semibold">{t("airdrop.tags")}: </span>
-              <div className="flex gap-2 flex-wrap mt-2">
-                {airdrop.tags.map((tag, index) => (
-                  <Chip key={index} color="default" size="sm" variant="flat">
-                    {tag}
-                  </Chip>
-                ))}
-              </div>
-            </div>
+
+            {/* Fila 6: Progress con % */}
+            <Progress
+              aria-label="Airdrop progress"
+              className="w-96"
+              color="success"
+              showValueLabel={true} // Muestra el % dentro de la barra
+              value={airdrop.progress}
+            />
           </div>
 
-          {/* Tareas y Enlaces Importantes (Derecha) */}
-          <div className="w-full md:w-1/3 flex flex-col gap-6">
-            {/* Tareas */}
-            <div className="bg-default-50 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-2">
-                {t("airdrop.tasks")}
-              </h2>
-              <ul className="list-disc pl-5">
-                {airdrop.user.tasks.map((task, index) => (
-                  <li key={index}>{task}</li>
-                ))}
-              </ul>
-            </div>
-            {/* Enlaces Importantes */}
-            <div className="bg-default-50 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-2">
-                {t("airdrop.important_links")}
-              </h2>
-              <ul className="list-disc pl-5">
-                {airdrop.user.important_links.map((link, index) => (
-                  <li key={index}>
-                    <Link isExternal color="primary" href={link}>
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Columna 2: Descripción, Tasks y Links */}
+          <div className="w-full md:w-1/2 flex flex-col gap-6 mt-10">
+            {/* Fila 1: Descripción */}
+            <p className="text-lg text-default-700">{airdrop.description}</p>
+
+            {/* Fila 2: Tasks y Links en dos columnas */}
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Columna 1: Tasks */}
+              <div className="w-full sm:w-1/2 bg-default-50 p-6 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2">
+                  {t("airdrop.tasks")}
+                </h2>
+                <ul className="list-disc pl-5">
+                  {airdrop.user.tasks.map((task, index) => (
+                    <li key={index}>{task}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Columna 2: Links */}
+              <div className="w-full sm:w-1/2 bg-default-50 p-6 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2">
+                  {t("airdrop.important_links")}
+                </h2>
+                <ul className="list-disc pl-5">
+                  {airdrop.user.important_links.map((link, index) => (
+                    <li key={index}>
+                      <Link isExternal color="primary" href={link}>
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

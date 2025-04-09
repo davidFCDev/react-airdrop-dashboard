@@ -123,7 +123,8 @@ export const AIRDROP_LIST: Airdrop[] = [
   {
     id: "1",
     name: "77BIT",
-    description: "2 months campaign",
+    description:
+      "77Bit is a decentralized gaming platform that offers a unique play-to-earn experience. Players can earn rewards by participating in various games and activities on the platform. The project aims to create a vibrant gaming ecosystem where players can enjoy high-quality games while earning real-world value.",
     type: types[0], // "Play-to-Earn"
     tier: tiers[0], // "S"
     status: status[0], // "Active"
