@@ -20,8 +20,10 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import LanguageSelector from "./LanguageSelector";
+import { ThemeSwitch } from "./theme-switch";
+
 import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
-import { ThemeSwitch } from "@/components/theme-switch";
 import { siteConfig } from "@/config/site";
 import { image_avatar } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
@@ -161,7 +163,8 @@ export const Navbar = () => {
           <Link isExternal href={siteConfig.links.discord} title="Discord">
             <TelegramIcon className="text-default-700" />
           </Link>
-          <ThemeSwitch className="text-default-700" />
+          <ThemeSwitch />
+          <LanguageSelector />
         </NavbarItem>
 
         {user && (
@@ -204,7 +207,7 @@ export const Navbar = () => {
         <Link isExternal href={siteConfig.links.discord} title="Discord">
           <TelegramIcon className="text-default-700" />
         </Link>
-        <ThemeSwitch />
+        <LanguageSelector />
         <NavbarMenuToggle />
       </NavbarContent>
 

@@ -1,6 +1,5 @@
 import { Link } from "@heroui/link";
 
-import LanguageSelector from "@/components/LanguageSelector";
 import { Navbar } from "@/components/Navbar";
 
 export default function DefaultLayout({
@@ -23,9 +22,6 @@ export default function DefaultLayout({
           <p className="text-primary">Chucky</p>
         </Link>
       </footer>
-      <div className="absolute bottom-2 right-2">
-        <LanguageSelector />
-      </div>
     </div>
   );
 }

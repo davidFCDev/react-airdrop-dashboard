@@ -98,9 +98,7 @@ export interface Airdrop {
   description: string;
   type: AirdropType;
   tier: Tier;
-  status: Status;
   stage: Stage;
-  progress: number;
   funding: string;
   cost: Cost;
   chain: string;
@@ -113,9 +111,12 @@ export interface Airdrop {
   discord: string;
   twitter: string;
   telegram: string;
+  status: Status; // Restaurado
+  important_links: { key: string; value: string }[];
   user: {
-    important_links: string[];
-    tasks: string[];
+    daily_tasks: string[];
+    general_tasks: string[];
+    notes: string[];
   };
 }
 
@@ -124,14 +125,12 @@ export const AIRDROP_LIST: Airdrop[] = [
     id: "1",
     name: "77BIT",
     description:
-      "77Bit is a decentralized gaming platform that offers a unique play-to-earn experience. Players can earn rewards by participating in various games and activities on the platform. The project aims to create a vibrant gaming ecosystem where players can enjoy high-quality games while earning real-world value.",
-    type: types[0], // "Play-to-Earn"
-    tier: tiers[0], // "S"
-    status: status[0], // "Active"
-    stage: stages[0], // "Testnet"
-    progress: 50,
+      "77BIT is a decentralized gaming platform that allows players to earn rewards through gameplay. The platform features a variety of games, including strategy, action, and puzzle games, all of which are designed to be fun and engaging while also providing opportunities for players to earn cryptocurrency.",
+    type: "Play-to-Earn",
+    tier: "S",
+    stage: "Testnet",
     funding: "50m",
-    cost: cost[0], // "FREE"
+    cost: "FREE",
     chain: "Abstract",
     tags: ["L2", "NFT", "GameFi"],
     created_at: "2023-10-01",
@@ -144,23 +143,27 @@ export const AIRDROP_LIST: Airdrop[] = [
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",
     telegram: "https://t.me/example",
+    status: "Active", // Restaurado
+    important_links: [
+      { key: "Faucet", value: "https://faucet.77bit.com" },
+      { key: "Docs", value: "https://docs.77bit.com" },
+    ],
     user: {
-      important_links: ["https://example.com", "https://example.com"],
-      tasks: ["Daily Check-in", "Referral Program"],
+      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
+      general_tasks: ["Join Discord", "Referral Program"],
+      notes: [],
     },
   },
   {
     id: "2",
     name: "TOWNS",
-    description: "3 months campaign",
-    type: types[1], // "Testnet"
-    tier: tiers[1], // "A"
-    status: status[1], // "Waiting"
-    stage: stages[1], // "Mainnet"
-    progress: 60,
-    funding: "60m",
-    cost: cost[1], // "Gas Fees"
-    chain: "Polygon",
+    description: "2 months campaign",
+    type: "Play-to-Earn",
+    tier: "S",
+    stage: "Testnet",
+    funding: "50m",
+    cost: "FREE",
+    chain: "Abstract",
     tags: ["L2", "NFT", "GameFi"],
     created_at: "2023-10-01",
     last_edited: "2023-10-01",
@@ -172,24 +175,28 @@ export const AIRDROP_LIST: Airdrop[] = [
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",
     telegram: "https://t.me/example",
+    status: "Active", // Restaurado
+    important_links: [
+      { key: "Faucet", value: "https://faucet.77bit.com" },
+      { key: "Docs", value: "https://docs.77bit.com" },
+    ],
     user: {
-      important_links: ["https://example.com", "https://example.com"],
-      tasks: ["Daily Check-in", "Referral Program"],
+      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
+      general_tasks: ["Join Discord", "Referral Program"],
+      notes: [],
     },
   },
   {
     id: "3",
     name: "OPTIMISM",
-    description: "3 months campaign",
-    type: types[0], // "Testnet"
-    tier: tiers[2], // "A"
-    status: status[0], // "Waiting"
-    stage: stages[1], // "Mainnet"
-    progress: 60,
-    funding: "60m",
-    cost: cost[1], // "Gas Fees"
-    chain: "Optimism",
-    tags: ["L2", "NFT", "Superchain"],
+    description: "2 months campaign",
+    type: "Play-to-Earn",
+    tier: "S",
+    stage: "Testnet",
+    funding: "50m",
+    cost: "FREE",
+    chain: "Abstract",
+    tags: ["L2", "NFT", "GameFi"],
     created_at: "2023-10-01",
     last_edited: "2023-10-01",
     image: "https://s2.coinmarketcap.com/static/img/coins/200x200/11840.png",
@@ -199,9 +206,15 @@ export const AIRDROP_LIST: Airdrop[] = [
     discord: "https://discord.gg/example",
     twitter: "https://twitter.com/example",
     telegram: "https://t.me/example",
+    status: "Active", // Restaurado
+    important_links: [
+      { key: "Faucet", value: "https://faucet.77bit.com" },
+      { key: "Docs", value: "https://docs.77bit.com" },
+    ],
     user: {
-      important_links: ["https://example.com", "https://example.com"],
-      tasks: ["Daily Check-in", "Referral Program"],
+      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
+      general_tasks: ["Join Discord", "Referral Program"],
+      notes: [],
     },
   },
 ];
