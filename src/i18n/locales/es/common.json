@@ -1,76 +1,82 @@
 {
   "home": {
-    "titlePart1": "Gestiona",
-    "titlePart2": "Airdrops",
-    "titlePart3": "de forma rápida y sencilla.",
+    "title_part_1": "Gestiona",
+    "title_part_2": "Airdrops",
+    "title_part_3": "de forma rápida y sencilla.",
     "subtitle": "Tu herramienta de gestión favorita",
-    "buttonDocs": "Documentación",
-    "buttonGitHub": "GitHub",
-    "snippetText": "Empieza editando"
+    "button_docs": "Documentación",
+    "button_git_hub": "GitHub",
+    "snippet_text": "Empieza editando"
   },
   "navbar": {
-    "Home": "Inicio",
-    "Login": "Iniciar sesión",
-    "Register": "Registrarse",
-    "Airdrops": "Airdrops",
-    "Info": "Información",
-    "Help & Feedback": "Ayuda",
-    "Create": "Crear",
-    "Profile": "Perfil",
-    "Dashboard": "Panel",
-    "Logout": "Cerrar sesión",
+    "home": "Inicio",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "airdrops": "Airdrops",
+    "info": "Información",
+    "help_and_feedback": "Ayuda",
+    "create": "Crear",
+    "profile": "Perfil",
+    "dashboard": "Panel",
+    "logout": "Cerrar sesión",
     "language": "Idioma"
   },
   "register": {
-    "title": "Registrarse",
+    "title": "Regístrate",
     "subtitle": "Por favor, introduce tu correo y contraseña para registrarte",
-    "linkText": "¿Ya tienes una cuenta?"
+    "link_text": "¿Ya tienes una cuenta?"
   },
   "login": {
-    "title": "Iniciar sesión",
+    "title": "Inicia sesión",
     "subtitle": "Por favor, introduce tu correo y contraseña para iniciar sesión",
-    "linkText": "¿No tienes una cuenta?"
+    "link_text": "¿No tienes una cuenta?"
   },
   "form": {
     "submit": "Enviar",
     "reset": "Restablecer",
-    "clickHere": "Haz clic aquí",
-    "mailError": "Por favor, introduce un correo válido",
-    "emailPlaceholder": "Introduce tu correo",
-    "passwordError": "Por favor, introduce una contraseña válida",
-    "passwordPlaceholder": "Introduce tu contraseña"
+    "click_here": "Haz clic aquí",
+    "mail_error": "Por favor, introduce un correo válido",
+    "email_placeholder": "Introduce tu correo",
+    "password_error": "Por favor, introduce una contraseña válida",
+    "password_placeholder": "Introduce tu contraseña"
   },
   "auth": {
-    "loginSuccess": "Inicio de sesión exitoso",
-    "registerSuccess": "Registro exitoso",
+    "login_success": "Inicio de sesión exitoso",
+    "register_success": "Registro exitoso",
     "errors": {
       "generic": "Ocurrió un error inesperado",
-      "auth/wrong-password": "Contraseña incorrecta",
-      "auth/user-not-found": "Usuario no encontrado",
-      "auth/email-already-in-use": "El correo ya está en uso",
-      "auth/invalid-email": "Correo inválido",
-      "auth/weak-password": "La contraseña es demasiado débil"
+      "auth/wrong_password": "Contraseña incorrecta",
+      "auth/user_not_found": "Usuario no encontrado",
+      "auth/email_already_in_use": "El correo ya está en uso",
+      "auth/invalid_email": "Correo inválido",
+      "auth/weak_password": "La contraseña es demasiado débil"
     }
   },
   "airdrop": {
-    "searchPlaceholder": "Buscar por nombre...",
+    "search_placeholder": "Buscar por nombre...",
     "columns": "Columnas",
-    "noAirdrops": "No se encontraron airdrops",
-    "notFound": "Airdrop no encontrado",
+    "no_airdrops": "No se encontraron airdrops",
+    "not_found": "Airdrop no encontrado",
     "name": "Nombre del Proyecto",
     "status": "Estado",
-    "tier": "Nivel",
+    "tier": "Tier",
     "funding": "Financiación",
     "type": "Tipo",
     "cost": "Costo",
     "stage": "Etapa",
-    "chain": "Cadena",
+    "chain": "Blockchain",
     "tags": "Etiquetas",
-    "links": "Enlaces",
+    "links": "Links",
     "created_at": "Creado",
     "last_edited": "Última Edición",
     "progress": "Progreso",
     "tasks": "Tareas",
-    "important_links": "Enlaces Importantes"
+    "important_links": "Links Importantes",
+    "notes": "Notas",
+    "add_note": "Añade una nota...",
+    "add": "Añadir",
+    "daily_tasks": "Tareas Diarias",
+    "general_tasks": "Tareas Generales",
+    "no_notes": "No hay notas disponibles"
   }
 }

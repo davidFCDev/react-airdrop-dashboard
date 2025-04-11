@@ -20,20 +20,33 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import LanguageSelector from "./LanguageSelector";
-import { ThemeSwitch } from "./theme-switch";
+import LanguageSelector from "../LanguageSelector";
+import { ThemeSwitch } from "../theme-switch";
 
 import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { siteConfig } from "@/config/site";
 import { image_avatar } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 
+// Mapeo de etiquetas a claves de traducción en snake_case
+const labelToTranslationKey: Record<string, string> = {
+  Home: "home",
+  Login: "login",
+  Register: "register",
+  Airdrops: "airdrops",
+  Info: "info",
+  "Help & Feedback": "help_and_feedback",
+  Create: "create",
+  Profile: "profile",
+  Dashboard: "dashboard",
+  Logout: "logout",
+};
+
 export const Navbar = () => {
   const { t } = useTranslation();
   const { user, role, signOut } = useUserAuth();
   const navigate = useNavigate();
 
-  // Filtrado de ítems de navegación
   const desktopNavItems = siteConfig.navItems.filter((item) => {
     if (!user) {
       return ["Home", "Login", "Register", "Help & Feedback"].includes(
@@ -62,8 +75,8 @@ export const Navbar = () => {
   });
 
   const items = [
-    { key: "profile", label: t("navbar.Profile") },
-    { key: "logout", label: t("navbar.Logout") },
+    { key: "profile", label: t("navbar.profile") },
+    { key: "logout", label: t("navbar.logout") },
   ];
 
   const mobileNavItems = siteConfig.navMenuItems.filter((item) => {
@@ -145,7 +158,7 @@ export const Navbar = () => {
                     "border-b-2 border-b-primary",
                 )}
               >
-                {t(`navbar.${item.label}`)}
+                {t(`navbar.${labelToTranslationKey[item.label]}`)}
               </NavbarItem>
             </Link>
           ))}
@@ -226,7 +239,7 @@ export const Navbar = () => {
                 href={item.href}
                 size="lg"
               >
-                {t(`navbar.${item.label}`)}
+                {t(`navbar.${labelToTranslationKey[item.label]}`)}
               </Link>
             </NavbarMenuItem>
           ))}

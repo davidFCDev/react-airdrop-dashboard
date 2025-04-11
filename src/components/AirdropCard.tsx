@@ -1,11 +1,12 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Image } from "@heroui/image";
-import { Link } from "react-router-dom";
+import { Link as HeroUILink } from "@heroui/link"; // Para enlaces externos
+// Para navegación interna
 
 import { DiscordIcon, TelegramIcon, TwitterIcon } from "./icons";
 
-import { Airdrop } from "@/constants";
+import { Airdrop } from "@/constants/airdrop.table";
 
 const AirdropCard = (airdrop: Airdrop) => {
   return (
@@ -13,7 +14,7 @@ const AirdropCard = (airdrop: Airdrop) => {
       <CardHeader className="flex justify-between items-start">
         <div className="flex gap-3">
           <Image
-            alt="heroui logo"
+            alt={airdrop.name}
             height={60}
             radius="sm"
             src={airdrop.image}
@@ -36,13 +37,24 @@ const AirdropCard = (airdrop: Airdrop) => {
       </CardBody>
       <Divider />
       <CardFooter className="flex justify-between">
-        <Link rel="noopener noreferrer" target="_blank" to={airdrop.url}>
+        <HeroUILink
+          isExternal
+          color="foreground"
+          href={airdrop.url}
+          rel="noopener noreferrer"
+        >
           {airdrop.url}
-        </Link>
+        </HeroUILink>
         <div className="flex gap-2">
-          <DiscordIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
-          <TelegramIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
-          <TwitterIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
+          <HeroUILink isExternal href={airdrop.discord} title="Discord">
+            <DiscordIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
+          </HeroUILink>
+          <HeroUILink isExternal href={airdrop.telegram} title="Telegram">
+            <TelegramIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
+          </HeroUILink>
+          <HeroUILink isExternal href={airdrop.twitter} title="Twitter">
+            <TwitterIcon className="text-zinc-300 hover:text-primary cursor-pointer" />
+          </HeroUILink>
         </div>
       </CardFooter>
     </Card>

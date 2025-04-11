@@ -21,14 +21,14 @@ export default function IndexPage() {
               size: "xl",
             })}
           >
-            {t("home.titlePart1")}&nbsp;
+            {t("home.title_part_1")}&nbsp;
           </span>
           <span
             className={`${title({
               size: "xl",
             })} text-primary`}
           >
-            {t("home.titlePart2")}&nbsp;
+            {t("home.title_part_2")}&nbsp;
           </span>
           <br />
           <span
@@ -36,7 +36,7 @@ export default function IndexPage() {
               size: "xl",
             })}
           >
-            {t("home.titlePart3")}
+            {t("home.title_part_3")}
           </span>
           <div className={subtitle({ class: "mt-4" })}>
             {t("home.subtitle")}
@@ -53,7 +53,7 @@ export default function IndexPage() {
             })}
             href={siteConfig.links.docs}
           >
-            {t("home.buttonDocs")}
+            {t("home.button_docs")}
           </Link>
           <Link
             isExternal
@@ -61,14 +61,14 @@ export default function IndexPage() {
             href={siteConfig.links.github}
           >
             <GithubIcon size={20} />
-            {t("home.buttonGitHub")}
+            {t("home.button_git_hub")}
           </Link>
         </div>
 
         <div className="mt-8">
           <Snippet hideCopyButton hideSymbol variant="bordered">
             <span>
-              {t("home.snippetText")}{" "}
+              {t("home.snippet_text")}{" "}
               <Code color="primary">pages/index.tsx</Code>
             </span>
           </Snippet>

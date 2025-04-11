@@ -1,62 +1,62 @@
 {
   "home": {
-    "titlePart1": "Manage",
-    "titlePart2": "Airdrops",
-    "titlePart3": "quickly and easily.",
+    "title_part_1": "Manage",
+    "title_part_2": "Airdrops",
+    "title_part_3": "quickly and easily.",
     "subtitle": "Your favorite management tool",
-    "buttonDocs": "Documentation",
-    "buttonGitHub": "GitHub",
-    "snippetText": "Get started by editing"
+    "button_docs": "Documentation",
+    "button_git_hub": "GitHub",
+    "snippet_text": "Get started by editing"
   },
   "navbar": {
-    "Home": "Home",
-    "Login": "Login",
-    "Register": "Register",
-    "Airdrops": "Airdrops",
-    "Info": "Info",
-    "Help & Feedback": "Help & Feedback",
-    "Create": "Create",
-    "Profile": "Profile",
-    "Dashboard": "Dashboard",
-    "Logout": "Logout",
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "airdrops": "Airdrops",
+    "info": "Info",
+    "help_and_feedback": "Help & Feedback",
+    "create": "Create",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
     "language": "Language"
   },
   "register": {
     "title": "Register",
     "subtitle": "Please enter your email and password to register",
-    "linkText": "Already have an account?"
+    "link_text": "Already have an account?"
   },
   "login": {
     "title": "Login",
     "subtitle": "Please enter your email and password to login",
-    "linkText": "Don't have an account?"
+    "link_text": "Don't have an account?"
   },
   "form": {
     "submit": "Submit",
     "reset": "Reset",
-    "clickHere": "Click here",
-    "mailError": "Please enter a valid email",
-    "emailPlaceholder": "Enter your email",
-    "passwordError": "Please enter a valid password",
-    "passwordPlaceholder": "Enter your password"
+    "click_here": "Click here",
+    "mail_error": "Please enter a valid email",
+    "email_placeholder": "Enter your email",
+    "password_error": "Please enter a valid password",
+    "password_placeholder": "Enter your password"
   },
   "auth": {
-    "loginSuccess": "Login successful",
-    "registerSuccess": "Registration successful",
+    "login_success": "Login successful",
+    "register_success": "Registration successful",
     "errors": {
       "generic": "An unexpected error occurred",
-      "auth/wrong-password": "Incorrect password",
-      "auth/user-not-found": "User not found",
-      "auth/email-already-in-use": "Email already in use",
-      "auth/invalid-email": "Invalid email",
-      "auth/weak-password": "Password is too weak"
+      "auth/wrong_password": "Incorrect password",
+      "auth/user_not_found": "User not found",
+      "auth/email_already_in_use": "Email already in use",
+      "auth/invalid_email": "Invalid email",
+      "auth/weak_password": "Password is too weak"
     }
   },
   "airdrop": {
-    "searchPlaceholder": "Search by name...",
+    "search_placeholder": "Search by name...",
     "columns": "Columns",
-    "noAirdrops": "No airdrops found",
-    "notFound": "Airdrop not found",
+    "no_airdrops": "No airdrops found",
+    "not_found": "Airdrop not found",
     "name": "Project Name",
     "status": "Status",
     "tier": "Tier",
@@ -71,6 +71,12 @@
     "last_edited": "Last Edited",
     "progress": "Progress",
     "tasks": "Tasks",
-    "important_links": "Important Links"
+    "important_links": "Important Links",
+    "notes": "Notes",
+    "add_note": "Add a note...",
+    "add": "Add",
+    "daily_tasks": "Daily Tasks",
+    "general_tasks": "General Tasks",
+    "no_notes": "No notes added yet"
   }
 }

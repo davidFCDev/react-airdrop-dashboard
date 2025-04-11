@@ -95,7 +95,7 @@ export type Cost = (typeof cost)[number];
 export interface Airdrop {
   id: string;
   name: string;
-  description: string;
+  description: { en: string; es: string };
   type: AirdropType;
   tier: Tier;
   stage: Stage;
@@ -111,11 +111,11 @@ export interface Airdrop {
   discord: string;
   twitter: string;
   telegram: string;
-  status: Status; // Restaurado
+  status: Status;
   important_links: { key: string; value: string }[];
   user: {
-    daily_tasks: string[];
-    general_tasks: string[];
+    daily_tasks: { en: string; es: string }[];
+    general_tasks: { en: string; es: string }[];
     notes: string[];
   };
 }
@@ -124,8 +124,10 @@ export const AIRDROP_LIST: Airdrop[] = [
   {
     id: "1",
     name: "77BIT",
-    description:
-      "77BIT is a decentralized gaming platform that allows players to earn rewards through gameplay. The platform features a variety of games, including strategy, action, and puzzle games, all of which are designed to be fun and engaging while also providing opportunities for players to earn cryptocurrency.",
+    description: {
+      en: "2 months campaign",
+      es: "Campaña de 2 meses",
+    },
     type: "Play-to-Earn",
     tier: "S",
     stage: "Testnet",
@@ -147,17 +149,29 @@ export const AIRDROP_LIST: Airdrop[] = [
     important_links: [
       { key: "Faucet", value: "https://faucet.77bit.com" },
       { key: "Docs", value: "https://docs.77bit.com" },
+      { key: "Twitter", value: "https://twitter.com/77bit" },
+      { key: "Discord", value: "https://discord.gg/77bit" },
+      { key: "Telegram", value: "https://t.me/77bit" },
     ],
     user: {
-      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
-      general_tasks: ["Join Discord", "Referral Program"],
+      daily_tasks: [
+        { en: "Daily Check-in", es: "Revisión diaria" },
+        { en: "Tweet about 77BIT", es: "Tuitear sobre 77BIT" },
+      ],
+      general_tasks: [
+        { en: "Join Discord", es: "Unirse a Discord" },
+        { en: "Referral Program", es: "Programa de Referidos" },
+      ],
       notes: [],
     },
   },
   {
     id: "2",
     name: "TOWNS",
-    description: "2 months campaign",
+    description: {
+      en: "2 months campaign",
+      es: "Campaña de 2 meses",
+    },
     type: "Play-to-Earn",
     tier: "S",
     stage: "Testnet",
@@ -181,15 +195,24 @@ export const AIRDROP_LIST: Airdrop[] = [
       { key: "Docs", value: "https://docs.77bit.com" },
     ],
     user: {
-      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
-      general_tasks: ["Join Discord", "Referral Program"],
+      daily_tasks: [
+        { en: "Daily Check-in", es: "Revisión diaria" },
+        { en: "Tweet about 77BIT", es: "Tuitear sobre 77BIT" },
+      ],
+      general_tasks: [
+        { en: "Join Discord", es: "Unirse a Discord" },
+        { en: "Referral Program", es: "Programa de Referidos" },
+      ],
       notes: [],
     },
   },
   {
     id: "3",
     name: "OPTIMISM",
-    description: "2 months campaign",
+    description: {
+      en: "2 months campaign",
+      es: "Campaña de 2 meses",
+    },
     type: "Play-to-Earn",
     tier: "S",
     stage: "Testnet",
@@ -212,8 +235,14 @@ export const AIRDROP_LIST: Airdrop[] = [
       { key: "Docs", value: "https://docs.77bit.com" },
     ],
     user: {
-      daily_tasks: ["Daily Check-in", "Tweet about 77BIT"],
-      general_tasks: ["Join Discord", "Referral Program"],
+      daily_tasks: [
+        { en: "Daily Check-in", es: "Revisión diaria" },
+        { en: "Tweet about 77BIT", es: "Tuitear sobre 77BIT" },
+      ],
+      general_tasks: [
+        { en: "Join Discord", es: "Unirse a Discord" },
+        { en: "Referral Program", es: "Programa de Referidos" },
+      ],
       notes: [],
     },
   },

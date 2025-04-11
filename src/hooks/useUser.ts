@@ -21,10 +21,10 @@ export function useUser(action: "login" | "register") {
     try {
       if (action === "login") {
         await authService.login(email, password);
-        toast.success(t("auth.loginSuccess"));
+        toast.success(t("auth.login_success"));
       } else {
         await authService.register(email, password);
-        toast.success(t("auth.registerSuccess"));
+        toast.success(t("auth.register_success"));
       }
       navigate("/");
     } catch (error: any) {

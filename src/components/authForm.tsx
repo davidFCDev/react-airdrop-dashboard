@@ -26,7 +26,7 @@ export default function AuthForm({
 
   return (
     <div className="w-full min-w-80 flex flex-col items-start justify-center">
-      <div className="flex flex-col gap-2 max-w-xs mx-auto text-left mb-4">
+      <div className="flex flex-col gap-2 max-w-sm mx-auto text-left mb-4">
         <h1 className="title">{title}</h1>
         <p className="subtitle">{subtitle}</p>
       </div>
@@ -40,19 +40,19 @@ export default function AuthForm({
       >
         <Input
           isRequired
-          errorMessage={t("form.mailError")}
+          errorMessage={t("form.mail_error")}
           label="Email"
           labelPlacement="outside"
           name="email"
-          placeholder={t("form.emailPlaceholder")}
+          placeholder={t("form.email_placeholder")}
         />
         <Input
           isRequired
-          errorMessage={t("form.passwordError")}
+          errorMessage={t("form.password_error")}
           label="Password"
           labelPlacement="outside"
           name="password"
-          placeholder={t("form.passwordPlaceholder")}
+          placeholder={t("form.password_placeholder")}
           type="password"
         />
 
@@ -76,7 +76,7 @@ export default function AuthForm({
           className="text-primary hover:underline font-normal"
           href={linkHref}
         >
-          {t("form.clickHere")}
+          {t("form.click_here")}
         </Link>
       </div>
     </div>

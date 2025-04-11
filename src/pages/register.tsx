@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import AuthForm from "@/components/authForm";
+import AuthForm from "@/components/AuthForm";
 import { useUser } from "@/hooks/useUser";
 import DefaultLayout from "@/layouts/default";
 
@@ -15,7 +15,7 @@ export default function RegisterPage() {
           <AuthForm
             errorMessage={errorMessage}
             linkHref="/login"
-            linkText={t("register.linkText")}
+            linkText={t("register.link_text")}
             subtitle={t("register.subtitle")}
             title={t("register.title")}
             onSubmit={handleAuth}
