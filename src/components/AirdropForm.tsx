@@ -2,7 +2,9 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
+import axios from "axios";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Airdrop,
@@ -19,6 +21,7 @@ interface Props {
 }
 
 const AirdropForm = ({ onSubmit }: Props) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Airdrop, "id">>({
     name: "",
     type: "Play-to-Earn",
@@ -46,6 +49,9 @@ const AirdropForm = ({ onSubmit }: Props) => {
   const [dailyTaskEs, setDailyTaskEs] = useState("");
   const [generalTaskEn, setGeneralTaskEn] = useState("");
   const [generalTaskEs, setGeneralTaskEs] = useState("");
+  const [backdropFile, setBackdropFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -96,13 +102,62 @@ const AirdropForm = ({ onSubmit }: Props) => {
     }
   };
 
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "backdrop" | "image",
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      if (type === "backdrop") setBackdropFile(file);
+      else setImageFile(file);
+    }
+  };
+
+  const uploadFileToS3 = async (
+    file: File,
+    imageType: "backdrop" | "image",
+  ) => {
+    const response = await axios.post(
+      "http://localhost:5001/your-firebase-project-id/us-central1/generatePresignedUrl", // Local
+      // En producción: "https://us-central1-your-firebase-project-id.cloudfunctions.net/generatePresignedUrl"
+      {
+        fileName: file.name,
+        fileType: file.type,
+        imageType,
+      },
+    );
+    const { url, key } = response.data;
+
+    await axios.put(url, file, {
+      headers: { "Content-Type": file.type },
+    });
+
+    return `https://${import.meta.env.VITE_S3_BUCKET_NAME}.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/${key}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
     try {
-      await airdropService.createAirdrop(formData);
+      let updatedFormData = { ...formData };
+
+      if (backdropFile) {
+        updatedFormData.backdrop = await uploadFileToS3(
+          backdropFile,
+          "backdrop",
+        );
+      }
+      if (imageFile) {
+        updatedFormData.image = await uploadFileToS3(imageFile, "image");
+      }
+
+      await airdropService.createAirdrop(updatedFormData);
       onSubmit();
     } catch (error) {
       console.error("Error creando airdrop:", error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -267,17 +322,27 @@ const AirdropForm = ({ onSubmit }: Props) => {
         <CardBody className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="border-2 border-dashed border-default-200 p-4 rounded-lg flex flex-col items-center gap-2 md:col-span-3">
             <p className="font-semibold">Banner (Backdrop)</p>
-            <p className="text-sm text-default-500 text-center">
-              Arrastra o selecciona una imagen (simulado)
-            </p>
-            <Button disabled>Subir Banner</Button>
+            <Input
+              accept="image/*"
+              className="w-full"
+              type="file"
+              onChange={(e) => handleFileChange(e, "backdrop")}
+            />
+            {backdropFile && (
+              <p className="text-sm text-default-500">{backdropFile.name}</p>
+            )}
           </div>
           <div className="border-2 border-dashed border-default-200 p-4 rounded-lg flex flex-col items-center gap-2 md:col-span-1">
             <p className="font-semibold">Avatar</p>
-            <p className="text-sm text-default-500 text-center">
-              Arrastra o selecciona una imagen (simulado)
-            </p>
-            <Button disabled>Subir Avatar</Button>
+            <Input
+              accept="image/*"
+              className="w-full"
+              type="file"
+              onChange={(e) => handleFileChange(e, "image")}
+            />
+            {imageFile && (
+              <p className="text-sm text-default-500">{imageFile.name}</p>
+            )}
           </div>
         </CardBody>
       </Card>
@@ -345,10 +410,12 @@ const AirdropForm = ({ onSubmit }: Props) => {
       <Button
         className="fixed bottom-6 right-6 z-10"
         color="primary"
+        disabled={uploading}
+        isLoading={uploading}
         type="submit"
         variant="solid"
       >
-        Guardar Airdrop
+        {uploading ? "Guardando..." : "Guardar Airdrop"}
       </Button>
     </form>
   );
