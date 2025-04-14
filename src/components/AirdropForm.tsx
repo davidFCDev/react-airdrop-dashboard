@@ -4,7 +4,6 @@ import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import axios from "axios";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import {
   Airdrop,
@@ -21,7 +20,6 @@ interface Props {
 }
 
 const AirdropForm = ({ onSubmit }: Props) => {
-  const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Airdrop, "id">>({
     name: "",
     type: "Play-to-Earn",

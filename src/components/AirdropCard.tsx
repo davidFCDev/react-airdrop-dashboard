@@ -1,14 +1,18 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Image } from "@heroui/image";
-import { Link as HeroUILink } from "@heroui/link"; // Para enlaces externos
-// Para navegación interna
+import { Link as HeroUILink } from "@heroui/link";
+import { useTranslation } from "react-i18next";
 
 import { DiscordIcon, TelegramIcon, TwitterIcon } from "./icons";
 
 import { Airdrop } from "@/constants/airdrop.table";
 
 const AirdropCard = (airdrop: Airdrop) => {
+  const { i18n } = useTranslation();
+  const description =
+    i18n.language === "es" ? airdrop.description.es : airdrop.description.en;
+
   return (
     <Card className="w-[400px] bg-default-100" shadow="sm">
       <CardHeader className="flex justify-between items-start">
@@ -33,7 +37,7 @@ const AirdropCard = (airdrop: Airdrop) => {
       </CardHeader>
       <Divider />
       <CardBody>
-        <p>{airdrop.description}</p>
+        <p>{description}</p>
       </CardBody>
       <Divider />
       <CardFooter className="flex justify-between">
