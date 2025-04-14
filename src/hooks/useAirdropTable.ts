@@ -1,38 +1,64 @@
 import { SortDescriptor } from "@heroui/table";
-import React from "react";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Airdrop, AIRDROP_LIST, columns } from "@/constants/airdrop.table";
+import { Airdrop, columns } from "@/constants/airdrop.table";
+import { db } from "@/lib/firebase";
 
 export const useAirdropTable = () => {
   const navigate = useNavigate();
-  const [filterValue, setFilterValue] = React.useState("");
-  const [visibleColumns, setVisibleColumns] = React.useState<Set<string>>(
+  const [filterValue, setFilterValue] = useState("");
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
     new Set(columns.map((c) => c.uid)),
   );
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "name",
     direction: "ascending",
   });
+  const [airdrops, setAirdrops] = useState<Airdrop[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const airdrops = React.useMemo(
-    () =>
-      AIRDROP_LIST.map((airdrop) => ({
-        ...airdrop,
-        created_at: new Date(airdrop.created_at).toISOString(),
-        last_edited: new Date(airdrop.last_edited).toISOString(),
-      })),
-    [],
-  );
+  // Cargar airdrops desde Firestore
+  useEffect(() => {
+    const q = query(collection(db, "airdrops"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const airdropData: Airdrop[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          created_at: doc.data().created_at
+            ? new Date(doc.data().created_at).toISOString()
+            : new Date().toISOString(),
+          last_edited: doc.data().last_edited
+            ? new Date(doc.data().last_edited).toISOString()
+            : new Date().toISOString(),
+        })) as Airdrop[];
+
+        setAirdrops(airdropData);
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Error fetching airdrops:", err);
+        setError("Failed to load airdrops");
+        setLoading(false);
+      },
+    );
+
+    // Limpiar el listener al desmontar
+    return () => unsubscribe();
+  }, []);
 
   const hasSearchFilter = Boolean(filterValue);
 
-  const headerColumns = React.useMemo(
+  const headerColumns = useMemo(
     () => columns.filter((column) => visibleColumns.has(column.uid)),
     [visibleColumns],
   );
 
-  const filteredItems = React.useMemo(() => {
+  const filteredItems = useMemo(() => {
     let filteredAirdrops = [...airdrops];
 
     if (hasSearchFilter) {
@@ -44,7 +70,7 @@ export const useAirdropTable = () => {
     return filteredAirdrops;
   }, [airdrops, filterValue]);
 
-  const sortedItems = React.useMemo(() => {
+  const sortedItems = useMemo(() => {
     return [...filteredItems].sort((a: Airdrop, b: Airdrop) => {
       const first = a[sortDescriptor.column as keyof Airdrop];
       const second = b[sortDescriptor.column as keyof Airdrop];
@@ -61,11 +87,11 @@ export const useAirdropTable = () => {
     });
   }, [filteredItems, sortDescriptor]);
 
-  const onSearchChange = React.useCallback((value?: string) => {
+  const onSearchChange = useCallback((value?: string) => {
     setFilterValue(value || "");
   }, []);
 
-  const onClear = React.useCallback(() => {
+  const onClear = useCallback(() => {
     setFilterValue("");
   }, []);
 
@@ -84,5 +110,7 @@ export const useAirdropTable = () => {
     visibleColumns,
     setVisibleColumns,
     handleRowClick,
+    loading,
+    error,
   };
 };

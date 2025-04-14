@@ -116,22 +116,40 @@ const AirdropForm = ({ onSubmit }: Props) => {
     file: File,
     imageType: "backdrop" | "image",
   ) => {
-    const response = await axios.post(
-      "http://localhost:5001/react-airdrop-dashboard/eu-north-1/generatePresignedUrl", // Local
-      // En producción: "https://us-central1-your-firebase-project-id.cloudfunctions.net/generatePresignedUrl"
-      {
-        fileName: file.name,
-        fileType: file.type,
-        imageType,
-      },
-    );
-    const { url, key } = response.data;
+    const functionUrl =
+      "https://us-central1-react-airdrop-dashboard.cloudfunctions.net/uploadImageToS3";
+    const maxSize = 1024;
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-    await axios.put(url, file, {
-      headers: { "Content-Type": file.type },
+    return new Promise<string>((resolve, reject) => {
+      img.onload = () => {
+        let { width, height } = img;
+
+        if (width > maxSize) {
+          height = (maxSize / width) * height;
+          width = maxSize;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        ctx?.drawImage(img, 0, 0, width, height);
+        const base64Data = canvas
+          .toDataURL(file.type)
+          .replace(/^data:image\/\w+;base64,/, "");
+
+        axios
+          .post(functionUrl, {
+            imageData: `data:image/${file.type.split("/")[1]};base64,${base64Data}`,
+            fileName: file.name,
+            imageType,
+          })
+          .then((response) => resolve(response.data.url))
+          .catch(reject);
+      };
+      img.onerror = () => reject(new Error("Failed to process image"));
+      img.src = URL.createObjectURL(file);
     });
-
-    return `https://${import.meta.env.VITE_S3_BUCKET_NAME}.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/${key}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

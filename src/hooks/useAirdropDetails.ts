@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import { AIRDROP_LIST, Airdrop } from "@/constants/airdrop.table";
+import { Airdrop } from "@/constants/airdrop.table";
+import { airdropService } from "@/service/airdrop.service";
 
 export const useAirdropDetails = () => {
   const { id } = useParams();
@@ -14,17 +16,26 @@ export const useAirdropDetails = () => {
   const [newNote, setNewNote] = React.useState<string>("");
 
   React.useEffect(() => {
-    setIsLoading(true);
-    // Simulación de carga (reemplazable por una llamada a la base de datos)
-    const timer = setTimeout(() => {
-      const foundAirdrop = AIRDROP_LIST.find((a) => a.id === id);
+    const fetchAirdrop = async () => {
+      if (!id) return;
 
-      setAirdrop(foundAirdrop);
-      setNotes(foundAirdrop?.user.notes || []);
-      setIsLoading(false);
-    }, 1000); // Simulamos 1 segundo de carga
+      setIsLoading(true);
 
-    return () => clearTimeout(timer);
+      try {
+        const foundAirdrop = await airdropService.getAirdrop(id);
+
+        if (foundAirdrop) {
+          setAirdrop(foundAirdrop);
+          setNotes(foundAirdrop.user?.notes || []);
+        }
+      } catch (error) {
+        console.error("Error fetching airdrop:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAirdrop();
   }, [id]);
 
   const totalTasks = airdrop

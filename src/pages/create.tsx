@@ -8,7 +8,6 @@ export default function CreatePage() {
   const { role } = useUserAuth();
   const navigate = useNavigate();
 
-  // Solo admin puede acceder a esta página
   if (role !== "admin") {
     navigate("/unauthorized");
 
@@ -16,7 +15,7 @@ export default function CreatePage() {
   }
 
   const handleSubmit = () => {
-    navigate("/airdrops"); // Redirige a la lista de airdrops tras guardar
+    navigate("/airdrops");
   };
 
   return (

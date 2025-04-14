@@ -5,7 +5,13 @@ import {
   User,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { auth, db } from "@/lib/firebase";
 
@@ -15,22 +21,25 @@ interface AuthContextProps {
   user: User | null;
   role: Role;
   loading: boolean;
-  signOut: () => void;
+  error: string | null;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
   user: null,
   role: null,
   loading: true,
-  signOut: () => {},
+  error: null,
+  signOut: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<Role>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchUserRole = async (uid: string): Promise<Role> => {
+  const fetchUserRole = useCallback(async (uid: string): Promise<Role> => {
     try {
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
@@ -42,34 +51,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       return "user";
-    } catch (error) {
-      console.error("Error fetching user role:", error);
+    } catch {
+      setError("No se pudo obtener el rol del usuario");
 
       return "user";
     }
-  };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        const fetchedRole = await fetchUserRole(firebaseUser.uid);
-
-        setRole(fetchedRole);
-      } else {
-        setUser(null);
-        setRole(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
   }, []);
 
-  const signOut = () => firebaseSignOut(auth);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (firebaseUser) => {
+        try {
+          if (firebaseUser) {
+            setUser(firebaseUser);
+            const fetchedRole = await fetchUserRole(firebaseUser.uid);
+
+            setRole(fetchedRole);
+          } else {
+            setUser(null);
+            setRole(null);
+          }
+        } catch {
+          setError("No se pudo autenticar");
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        setError("Error de autenticación");
+        setLoading(false);
+      },
+    );
+
+    return () => unsubscribe();
+  }, [fetchUserRole]);
+
+  const signOut = async () => {
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+      setRole(null);
+    } catch {
+      setError("No se pudo cerrar sesión");
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, signOut }}>
+    <AuthContext.Provider value={{ user, role, loading, error, signOut }}>
       {children}
     </AuthContext.Provider>
   );

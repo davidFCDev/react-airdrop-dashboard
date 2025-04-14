@@ -10,48 +10,91 @@ import {
 } from "firebase/firestore";
 
 import { Airdrop } from "@/constants/airdrop.table";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 
 class AirdropService {
   private collectionName = "airdrops";
 
   async createAirdrop(airdrop: Omit<Airdrop, "id">): Promise<string> {
-    const newDocRef = doc(collection(db, this.collectionName));
-    const airdropWithId = { ...airdrop, id: newDocRef.id };
+    try {
+      if (!airdrop.name?.trim()) {
+        throw new Error("El nombre del airdrop es requerido");
+      }
 
-    await setDoc(newDocRef, airdropWithId);
+      const airdropWithId = {
+        ...airdrop,
+        id: "",
+        created_at: airdrop.created_at || new Date().toISOString(),
+        last_edited: airdrop.last_edited || new Date().toISOString(),
+        user: {
+          ...airdrop.user,
+          uid: auth.currentUser?.uid || "",
+          daily_tasks: airdrop.user?.daily_tasks || [],
+          general_tasks: airdrop.user?.general_tasks || [],
+          notes: airdrop.user?.notes || [],
+        },
+      };
 
-    return newDocRef.id;
+      if (!auth.currentUser) {
+        throw new Error("Usuario no autenticado");
+      }
+
+      const newDocRef = doc(collection(db, this.collectionName));
+
+      airdropWithId.id = newDocRef.id;
+
+      await setDoc(newDocRef, airdropWithId);
+
+      return newDocRef.id;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getAirdrop(id: string): Promise<Airdrop | null> {
-    const docRef = doc(db, this.collectionName, id);
-    const docSnap = await getDoc(docRef);
+    try {
+      const docRef = doc(db, this.collectionName, id);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data() as Airdrop;
+      if (docSnap.exists()) {
+        return docSnap.data() as Airdrop;
+      }
+
+      return null;
+    } catch (error) {
+      throw error;
     }
-
-    return null;
   }
 
   async getAllAirdrops(): Promise<Airdrop[]> {
-    const q = query(collection(db, this.collectionName));
-    const querySnapshot = await getDocs(q);
+    try {
+      const q = query(collection(db, this.collectionName));
+      const querySnapshot = await getDocs(q);
 
-    return querySnapshot.docs.map((doc) => doc.data() as Airdrop);
+      return querySnapshot.docs.map((doc) => doc.data() as Airdrop);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateAirdrop(id: string, airdrop: Partial<Airdrop>): Promise<void> {
-    const docRef = doc(db, this.collectionName, id);
+    try {
+      const docRef = doc(db, this.collectionName, id);
 
-    await updateDoc(docRef, airdrop);
+      await updateDoc(docRef, airdrop);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteAirdrop(id: string): Promise<void> {
-    const docRef = doc(db, this.collectionName, id);
+    try {
+      const docRef = doc(db, this.collectionName, id);
 
-    await deleteDoc(docRef);
+      await deleteDoc(docRef);
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
