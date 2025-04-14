@@ -11,7 +11,11 @@ interface Props {
 }
 
 const AirdropTasks = ({ airdrop, completedTasks, handleTaskToggle }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Selecciona el texto de la tarea según el idioma actual
+  const getTaskText = (task: { en: string; es: string }) =>
+    i18n.language === "es" ? task.es : task.en;
 
   return (
     <div className="flex flex-col md:flex-row gap-3">
@@ -40,10 +44,10 @@ const AirdropTasks = ({ airdrop, completedTasks, handleTaskToggle }: Props) => {
               {airdrop.user.daily_tasks.map((task, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <Checkbox
-                    isSelected={completedTasks.has(task)}
-                    onChange={() => handleTaskToggle(task)}
+                    isSelected={completedTasks.has(task.en)} // Usamos task.en como ID
+                    onChange={() => handleTaskToggle(task.en)}
                   />
-                  <span>{task}</span>
+                  <span>{getTaskText(task)}</span>
                 </li>
               ))}
             </ul>
@@ -60,10 +64,10 @@ const AirdropTasks = ({ airdrop, completedTasks, handleTaskToggle }: Props) => {
               {airdrop.user.general_tasks.map((task, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <Checkbox
-                    isSelected={completedTasks.has(task)}
-                    onChange={() => handleTaskToggle(task)}
+                    isSelected={completedTasks.has(task.en)}
+                    onChange={() => handleTaskToggle(task.en)}
                   />
-                  <span>{task}</span>
+                  <span>{getTaskText(task)}</span>
                 </li>
               ))}
             </ul>
