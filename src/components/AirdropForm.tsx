@@ -119,7 +119,7 @@ const AirdropForm = ({ onSubmit }: Props) => {
     imageType: "backdrop" | "image",
   ) => {
     const response = await axios.post(
-      "http://localhost:5001/your-firebase-project-id/us-central1/generatePresignedUrl", // Local
+      "http://localhost:5001/react-airdrop-dashboard/eu-north-1/generatePresignedUrl", // Local
       // En producción: "https://us-central1-your-firebase-project-id.cloudfunctions.net/generatePresignedUrl"
       {
         fileName: file.name,
