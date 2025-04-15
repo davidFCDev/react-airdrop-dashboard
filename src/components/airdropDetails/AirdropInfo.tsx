@@ -70,38 +70,46 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
           {airdrop.type}
         </Chip>
         <div className="flex gap-3">
-          <Link
-            isExternal
-            color="foreground"
-            href={airdrop.url}
-            title="Website"
-          >
-            <WebsiteIcon className="w-7 h-7" />
-          </Link>
-          <Link
-            isExternal
-            color="foreground"
-            href={airdrop.discord}
-            title="Discord"
-          >
-            <DiscordIcon className="w-7 h-7" />
-          </Link>
-          <Link
-            isExternal
-            color="foreground"
-            href={airdrop.twitter}
-            title="Twitter"
-          >
-            <TwitterIcon className="w-7 h-7" />
-          </Link>
-          <Link
-            isExternal
-            color="foreground"
-            href={airdrop.telegram}
-            title="Telegram"
-          >
-            <TelegramIcon className="w-7 h-7" />
-          </Link>
+          {airdrop.url && (
+            <Link
+              isExternal
+              color="foreground"
+              href={airdrop.url}
+              title="Website"
+            >
+              <WebsiteIcon className="w-7 h-7" />
+            </Link>
+          )}
+          {airdrop.discord && (
+            <Link
+              isExternal
+              color="foreground"
+              href={airdrop.discord}
+              title="Discord"
+            >
+              <DiscordIcon className="w-7 h-7" />
+            </Link>
+          )}
+          {airdrop.twitter && (
+            <Link
+              isExternal
+              color="foreground"
+              href={airdrop.twitter}
+              title="Twitter"
+            >
+              <TwitterIcon className="w-7 h-7" />
+            </Link>
+          )}
+          {airdrop.telegram && (
+            <Link
+              isExternal
+              color="foreground"
+              href={airdrop.telegram}
+              title="Telegram"
+            >
+              <TelegramIcon className="w-7 h-7" />
+            </Link>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-4 flex-wrap">
@@ -113,9 +121,6 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
         >
           {airdrop.cost}
         </Chip>
-        <Chip className="capitalize" color="default" size="lg" variant="flat">
-          {airdrop.chain}
-        </Chip>
         <Chip
           className="capitalize"
           color={stageColorMap[airdrop.stage]}
@@ -123,6 +128,9 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
           variant="flat"
         >
           {airdrop.stage}
+        </Chip>
+        <Chip className="capitalize" color="default" size="lg" variant="flat">
+          {airdrop.chain}
         </Chip>
         <span className="text-lg">{`$ ${airdrop.funding}`}</span>
       </div>

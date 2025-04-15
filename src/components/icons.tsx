@@ -80,6 +80,25 @@ export const ChevronDownIcon: React.FC<{
   </svg>
 );
 
+export const HeartIcon = (
+  props: React.SVGProps<SVGSVGElement> & { filled?: boolean },
+) => (
+  <svg
+    fill={props.filled === true ? "#FF69B4" : "none"}
+    stroke="currentColor"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const DiscordIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,
@@ -198,6 +217,40 @@ export const WebsiteIcon: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
+
+export function EditIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      height="1em"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function DeleteIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      height="1em"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 export const MoonFilledIcon = ({
   size = 24,

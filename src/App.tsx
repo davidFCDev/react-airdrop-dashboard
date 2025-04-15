@@ -4,14 +4,15 @@ import { Toaster } from "sonner";
 import AirdropDetailsPage from "./pages/airdropDetails";
 import CreatePage from "./pages/create";
 import DashboardPage from "./pages/dashboard";
+import FavoritesPage from "./pages/favorites";
 import LoginPage from "./pages/login";
+import ProfilePage from "./pages/profile";
 import RegisterPage from "./pages/register";
 
 import { RouteGuard } from "@/hoc/RouteGuard";
 import AirdropsPage from "@/pages/airdrops";
 import HelpFeedbackPage from "@/pages/help";
 import IndexPage from "@/pages/index";
-import InfoPage from "@/pages/info";
 
 function App() {
   return (
@@ -51,15 +52,15 @@ function App() {
         <Route
           element={
             <RouteGuard>
-              <InfoPage />
+              <FavoritesPage />
             </RouteGuard>
           }
-          path="/info"
+          path="/favorites"
         />
         <Route
           element={
             <RouteGuard>
-              <LoginPage />
+              <ProfilePage />
             </RouteGuard>
           }
           path="/profile"

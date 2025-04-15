@@ -1,32 +1,55 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 import AirdropDescription from "@/components/airdropDetails/AirdropDescription";
 import AirdropHeader from "@/components/airdropDetails/AirdropHeader";
 import AirdropInfo from "@/components/airdropDetails/AirdropInfo";
 import AirdropNotes from "@/components/airdropDetails/AirdropNotes";
 import AirdropTasks from "@/components/airdropDetails/AirdropTasks";
-import { useAirdropDetails } from "@/hooks/useAirdropDetails";
+import { useUserAirdrop } from "@/hooks/useUserAirdrop";
 import DefaultLayout from "@/layouts/default";
 
 const AirdropDetailsPage = () => {
   const { t } = useTranslation();
+  const { id } = useParams<{ id: string }>();
   const {
     airdrop,
-    isLoading,
     completedTasks,
-    handleTaskToggle,
     notes,
-    newNote,
-    setNewNote,
-    handleAddNote,
     progress,
-  } = useAirdropDetails();
+    loading,
+    error,
+    toggleTask,
+    addNote,
+    removeNote,
+  } = useUserAirdrop(id || "");
+  const [newNote, setNewNote] = useState("");
 
-  if (isLoading) {
+  const handleAddNote = () => {
+    if (newNote.trim()) {
+      addNote(newNote);
+      setNewNote("");
+    }
+  };
+
+  if (loading) {
     return (
       <DefaultLayout>
         <section className="flex flex-col items-center justify-center p-10 min-h-screen">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </section>
+      </DefaultLayout>
+    );
+  }
+
+  if (error || !id) {
+    return (
+      <DefaultLayout>
+        <section className="flex flex-col items-start justify-start p-10">
+          <h1 className="text-2xl font-bold">
+            {error || t("airdrop.invalid_id")}
+          </h1>
         </section>
       </DefaultLayout>
     );
@@ -54,12 +77,17 @@ const AirdropDetailsPage = () => {
               <AirdropTasks
                 airdrop={airdrop}
                 completedTasks={completedTasks}
-                handleTaskToggle={handleTaskToggle}
+                handleTaskToggle={(task: string) => {
+                  const [type, index] = task.split("_");
+
+                  toggleTask(type as "daily" | "general", parseInt(index));
+                }}
               />
               <AirdropNotes
                 handleAddNote={handleAddNote}
                 newNote={newNote}
                 notes={notes}
+                removeNote={removeNote}
                 setNewNote={setNewNote}
               />
             </div>

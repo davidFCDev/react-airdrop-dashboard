@@ -5,10 +5,6 @@ export const siteConfig = {
   description: "Manage your airdrops with ease",
   navItems: [
     {
-      label: "Home",
-      href: "/",
-    },
-    {
       label: "Login",
       href: "/login",
     },
@@ -29,8 +25,8 @@ export const siteConfig = {
       href: "/create",
     },
     {
-      label: "Info",
-      href: "/info",
+      label: "Favorites",
+      href: "/favorites",
     },
     {
       label: "Help & Feedback",
@@ -38,10 +34,6 @@ export const siteConfig = {
     },
   ],
   navMenuItems: [
-    {
-      label: "Home",
-      href: "/home",
-    },
     {
       label: "Profile",
       href: "/profile",
@@ -67,8 +59,8 @@ export const siteConfig = {
       href: "/create",
     },
     {
-      label: "Info",
-      href: "/info",
+      label: "Favorites",
+      href: "/favorites",
     },
     {
       label: "Help & Feedback",
@@ -80,10 +72,10 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/frontio-ai/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "",
+    twitter: "",
+    docs: "",
+    discord: "",
+    sponsor: "",
   },
 };

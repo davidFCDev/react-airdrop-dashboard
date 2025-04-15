@@ -21,6 +21,8 @@ import { useTranslation } from "react-i18next";
 import {
   ChevronDownIcon,
   DiscordIcon,
+  HeartFilledIcon,
+  HeartIcon,
   SearchIcon,
   TelegramIcon,
   TwitterIcon,
@@ -28,6 +30,7 @@ import {
 } from "@/components/icons";
 import {
   Airdrop,
+  columns,
   costColorMap,
   stageColorMap,
   statusColorMap,
@@ -35,6 +38,7 @@ import {
   typeColorMap,
 } from "@/constants/airdrop.table";
 import { useAirdropTable } from "@/hooks/useAirdropTable";
+import { useFavoriteAirdrops } from "@/hooks/useFavoriteAirdrops";
 
 const AirdropTable = () => {
   const { t, i18n } = useTranslation();
@@ -50,13 +54,14 @@ const AirdropTable = () => {
     setVisibleColumns,
     handleRowClick,
   } = useAirdropTable();
+  const { favorites, updating, toggleFavorite } = useFavoriteAirdrops();
 
   const renderCell = (
     airdrop: Airdrop,
-    columnKey: keyof Airdrop | "links" | "tags",
+    columnKey: keyof Airdrop | "links" | "tags" | "favorite",
   ) => {
     const cellValue =
-      columnKey === "links" || columnKey === "tags"
+      columnKey === "links" || columnKey === "tags" || columnKey === "favorite"
         ? undefined
         : airdrop[columnKey];
 
@@ -148,39 +153,71 @@ const AirdropTable = () => {
       case "links":
         return (
           <div className="flex gap-2">
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.url}
-              title="Website"
-            >
-              <WebsiteIcon className="w-4 h-4" />
-            </Link>
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.discord}
-              title="Discord"
-            >
-              <DiscordIcon className="w-4 h-4" />
-            </Link>
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.twitter}
-              title="Twitter"
-            >
-              <TwitterIcon className="w-4 h-4" />
-            </Link>
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.telegram}
-              title="Telegram"
-            >
-              <TelegramIcon className="w-4 h-4" />
-            </Link>
+            {airdrop.url && (
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.url}
+                title="Website"
+              >
+                <WebsiteIcon className="w-4 h-4" />
+              </Link>
+            )}
+            {airdrop.discord && (
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.discord}
+                title="Discord"
+              >
+                <DiscordIcon className="w-4 h-4" />
+              </Link>
+            )}
+            {airdrop.twitter && (
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.twitter}
+                title="Twitter"
+              >
+                <TwitterIcon className="w-4 h-4" />
+              </Link>
+            )}
+            {airdrop.telegram && (
+              <Link
+                isExternal
+                color="foreground"
+                href={airdrop.telegram}
+                title="Telegram"
+              >
+                <TelegramIcon className="w-4 h-4" />
+              </Link>
+            )}
           </div>
+        );
+      case "favorite":
+        const isFavorite = favorites.has(airdrop.id);
+
+        return (
+          <Button
+            isIconOnly
+            aria-label={
+              isFavorite
+                ? t("airdrop.remove_favorite")
+                : t("airdrop.add_favorite")
+            }
+            isDisabled={updating.has(airdrop.id)}
+            variant="light"
+            onPress={() => {
+              toggleFavorite(airdrop.id, !isFavorite);
+            }}
+          >
+            {isFavorite ? (
+              <HeartFilledIcon className="w-5 h-5" />
+            ) : (
+              <HeartIcon className="w-5 h-5" />
+            )}
+          </Button>
         );
       case "created_at":
       case "last_edited":
@@ -251,7 +288,7 @@ const AirdropTable = () => {
       topContentPlacement="outside"
       onSortChange={setSortDescriptor}
     >
-      <TableHeader columns={headerColumns}>
+      <TableHeader columns={columns}>
         {(column) => (
           <TableColumn
             key={column.uid}
@@ -269,7 +306,7 @@ const AirdropTable = () => {
               <TableCell>
                 {renderCell(
                   item,
-                  columnKey as keyof Airdrop | "links" | "tags",
+                  columnKey as keyof Airdrop | "links" | "tags" | "favorite",
                 )}
               </TableCell>
             )}

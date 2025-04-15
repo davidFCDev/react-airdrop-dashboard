@@ -2,185 +2,57 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import axios from "axios";
-import { useState } from "react";
 
-import {
-  Airdrop,
-  cost,
-  stages,
-  status,
-  tiers,
-  types,
-} from "@/constants/airdrop.table";
-import { airdropService } from "@/service/airdrop.service";
+import { cost, stages, status, tiers, types } from "@/constants/airdrop.table";
+import { useUserAuth } from "@/context/AuthContext";
+import { useAirdropForm } from "@/hooks/useAirdropForm";
 
 interface Props {
   onSubmit: () => void;
 }
 
-const AirdropForm = ({ onSubmit }: Props) => {
-  const [formData, setFormData] = useState<Omit<Airdrop, "id">>({
-    name: "",
-    type: "Play-to-Earn",
-    description: { en: "", es: "" },
-    status: "Active",
-    tier: "S",
-    funding: "",
-    cost: "FREE",
-    stage: "Testnet",
-    chain: "",
-    tags: [],
-    url: "",
-    discord: "",
-    twitter: "",
-    telegram: "",
-    backdrop: "",
-    image: "",
-    created_at: new Date().toISOString(),
-    last_edited: new Date().toISOString(),
-    important_links: [],
-    user: { daily_tasks: [], general_tasks: [], notes: [] },
-  });
+const AirdropForm = (props: Props) => {
+  const { user, role } = useUserAuth();
+  const {
+    formData,
+    dailyTask,
+    generalTask,
+    backdrop,
+    image,
+    tagInput,
+    error,
+    uploading,
+    handleChange,
+    handleTaskChange,
+    handleAddTask,
+    handleFileChange,
+    handleTagChange,
+    handleAddTag,
+    handleTagKeyPress,
+    handleRemoveTag,
+    handleSubmit,
+    importantLinkInput,
+    handleImportantLinkChange,
+    handleAddImportantLink,
+    handleRemoveImportantLink,
+  } = useAirdropForm(props);
 
-  const [dailyTaskEn, setDailyTaskEn] = useState("");
-  const [dailyTaskEs, setDailyTaskEs] = useState("");
-  const [generalTaskEn, setGeneralTaskEn] = useState("");
-  const [generalTaskEs, setGeneralTaskEs] = useState("");
-  const [backdropFile, setBackdropFile] = useState<File | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  if (!user) {
+    return <div className="text-red-500">Debes iniciar sesión</div>;
+  }
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === "description_en") {
-      setFormData((prev) => ({
-        ...prev,
-        description: { ...prev.description, en: value },
-      }));
-    } else if (name === "description_es") {
-      setFormData((prev) => ({
-        ...prev,
-        description: { ...prev.description, es: value },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleAddTask = (type: "daily" | "general") => {
-    const taskEn = type === "daily" ? dailyTaskEn : generalTaskEn;
-    const taskEs = type === "daily" ? dailyTaskEs : generalTaskEs;
-
-    if (taskEn.trim() && taskEs.trim()) {
-      const newTask = { en: taskEn.trim(), es: taskEs.trim() };
-
-      setFormData((prev) => ({
-        ...prev,
-        user: {
-          ...prev.user,
-          [type === "daily" ? "daily_tasks" : "general_tasks"]: [
-            ...prev.user[type === "daily" ? "daily_tasks" : "general_tasks"],
-            newTask,
-          ],
-        },
-      }));
-      if (type === "daily") {
-        setDailyTaskEn("");
-        setDailyTaskEs("");
-      } else {
-        setGeneralTaskEn("");
-        setGeneralTaskEs("");
-      }
-    }
-  };
-
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: "backdrop" | "image",
-  ) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      if (type === "backdrop") setBackdropFile(file);
-      else setImageFile(file);
-    }
-  };
-
-  const uploadFileToS3 = async (
-    file: File,
-    imageType: "backdrop" | "image",
-  ) => {
-    const functionUrl =
-      "https://us-central1-react-airdrop-dashboard.cloudfunctions.net/uploadImageToS3";
-    const maxSize = 1024;
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    return new Promise<string>((resolve, reject) => {
-      img.onload = () => {
-        let { width, height } = img;
-
-        if (width > maxSize) {
-          height = (maxSize / width) * height;
-          width = maxSize;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        ctx?.drawImage(img, 0, 0, width, height);
-        const base64Data = canvas
-          .toDataURL(file.type)
-          .replace(/^data:image\/\w+;base64,/, "");
-
-        axios
-          .post(functionUrl, {
-            imageData: `data:image/${file.type.split("/")[1]};base64,${base64Data}`,
-            fileName: file.name,
-            imageType,
-          })
-          .then((response) => resolve(response.data.url))
-          .catch(reject);
-      };
-      img.onerror = () => reject(new Error("Failed to process image"));
-      img.src = URL.createObjectURL(file);
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUploading(true);
-    try {
-      let updatedFormData = { ...formData };
-
-      if (backdropFile) {
-        updatedFormData.backdrop = await uploadFileToS3(
-          backdropFile,
-          "backdrop",
-        );
-      }
-      if (imageFile) {
-        updatedFormData.image = await uploadFileToS3(imageFile, "image");
-      }
-
-      await airdropService.createAirdrop(updatedFormData);
-      onSubmit();
-    } catch (error) {
-      console.error("Error creando airdrop:", error);
-    } finally {
-      setUploading(false);
-    }
-  };
+  if (role !== "admin") {
+    return (
+      <div className="text-red-500">Acceso denegado: Solo administradores</div>
+    );
+  }
 
   return (
-    <form className="w-full p-6 relative" onSubmit={handleSubmit}>
+    <form className="w-full p-6" onSubmit={handleSubmit}>
+      {error && <div className="mb-4 text-red-500">{error}</div>}
+
       {/* Información Básica */}
-      <Card className="w-full mb-6">
+      <Card className="mb-6">
         <CardHeader>
           <h2 className="text-2xl font-bold">Información Básica</h2>
         </CardHeader>
@@ -233,7 +105,6 @@ const AirdropForm = ({ onSubmit }: Props) => {
             label="Financiación"
             name="funding"
             placeholder="Cantidad en USD"
-            type="text"
             value={formData.funding}
             onChange={handleChange}
           />
@@ -290,7 +161,7 @@ const AirdropForm = ({ onSubmit }: Props) => {
       </Card>
 
       {/* Enlaces */}
-      <Card className="w-full mb-6">
+      <Card className="mb-6">
         <CardHeader>
           <h2 className="text-2xl font-bold">Enlaces</h2>
         </CardHeader>
@@ -330,8 +201,52 @@ const AirdropForm = ({ onSubmit }: Props) => {
         </CardBody>
       </Card>
 
+      {/* Tags */}
+      <Card className="mb-6">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">Etiquetas</h2>
+        </CardHeader>
+        <CardBody className="flex flex-col gap-4">
+          <div className="flex gap-2">
+            <Input
+              label="Añadir Etiqueta"
+              placeholder="Escribe una etiqueta"
+              value={tagInput}
+              onChange={handleTagChange}
+              onKeyDown={handleTagKeyPress}
+            />
+            <Button
+              disabled={!tagInput.trim()}
+              variant="flat"
+              onPress={handleAddTag}
+            >
+              Añadir
+            </Button>
+          </div>
+          {formData.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {formData.tags.map((tag) => (
+                <div
+                  key={tag}
+                  className="flex items-center bg-default-100 px-2 py-1 rounded-full text-sm"
+                >
+                  {tag}
+                  <button
+                    className="ml-2 text-red-500"
+                    type="button"
+                    onClick={() => handleRemoveTag(tag)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardBody>
+      </Card>
+
       {/* Imágenes */}
-      <Card className="w-full mb-6">
+      <Card className="mb-6">
         <CardHeader>
           <h2 className="text-2xl font-bold">Imágenes</h2>
         </CardHeader>
@@ -344,8 +259,12 @@ const AirdropForm = ({ onSubmit }: Props) => {
               type="file"
               onChange={(e) => handleFileChange(e, "backdrop")}
             />
-            {backdropFile && (
-              <p className="text-sm text-default-500">{backdropFile.name}</p>
+            {backdrop.preview && (
+              <img
+                alt="Backdrop preview"
+                className="mt-2 max-h-40 object-contain"
+                src={backdrop.preview}
+              />
             )}
           </div>
           <div className="border-2 border-dashed border-default-200 p-4 rounded-lg flex flex-col items-center gap-2 md:col-span-1">
@@ -356,15 +275,74 @@ const AirdropForm = ({ onSubmit }: Props) => {
               type="file"
               onChange={(e) => handleFileChange(e, "image")}
             />
-            {imageFile && (
-              <p className="text-sm text-default-500">{imageFile.name}</p>
+            {image.preview && (
+              <img
+                alt="Avatar preview"
+                className="mt-2 max-h-20 object-contain"
+                src={image.preview}
+              />
             )}
           </div>
         </CardBody>
       </Card>
 
+      {/* Enlaces Importantes */}
+      <Card className="mb-6">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">Enlaces Importantes</h2>
+        </CardHeader>
+        <CardBody className="flex flex-col gap-4">
+          <div className="flex gap-2">
+            <Input
+              label="Nombre del Enlace"
+              placeholder="Ej. Whitepaper"
+              value={importantLinkInput.key}
+              onChange={(e) => handleImportantLinkChange("key", e.target.value)}
+            />
+            <Input
+              label="URL"
+              placeholder="Ej. https://example.com/whitepaper"
+              type="url"
+              value={importantLinkInput.value}
+              onChange={(e) =>
+                handleImportantLinkChange("value", e.target.value)
+              }
+            />
+            <Button
+              disabled={
+                !importantLinkInput.key.trim() ||
+                !importantLinkInput.value.trim()
+              }
+              variant="flat"
+              onPress={handleAddImportantLink}
+            >
+              Añadir
+            </Button>
+          </div>
+          {formData.important_links.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {formData.important_links.map((link, index) => (
+                <div
+                  key={index}
+                  className="flex items-center bg-default-100 px-2 py-1 rounded-full text-sm"
+                >
+                  {link.key}: {link.value}
+                  <button
+                    className="ml-2 text-red-500"
+                    type="button"
+                    onClick={() => handleRemoveImportantLink(index)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardBody>
+      </Card>
+
       {/* Tareas */}
-      <Card className="w-full mb-6">
+      <Card className="mb-6">
         <CardHeader>
           <h2 className="text-2xl font-bold">Tareas</h2>
         </CardHeader>
@@ -374,14 +352,14 @@ const AirdropForm = ({ onSubmit }: Props) => {
             <Input
               label="Tarea Diaria (Inglés)"
               placeholder="Daily task in English"
-              value={dailyTaskEn}
-              onChange={(e) => setDailyTaskEn(e.target.value)}
+              value={dailyTask.en}
+              onChange={(e) => handleTaskChange("daily", "en", e.target.value)}
             />
             <Input
               label="Tarea Diaria (Español)"
               placeholder="Tarea diaria en Español"
-              value={dailyTaskEs}
-              onChange={(e) => setDailyTaskEs(e.target.value)}
+              value={dailyTask.es}
+              onChange={(e) => handleTaskChange("daily", "es", e.target.value)}
             />
             <Button variant="flat" onPress={() => handleAddTask("daily")}>
               Añadir
@@ -399,14 +377,18 @@ const AirdropForm = ({ onSubmit }: Props) => {
             <Input
               label="Tarea General (Inglés)"
               placeholder="General task in English"
-              value={generalTaskEn}
-              onChange={(e) => setGeneralTaskEn(e.target.value)}
+              value={generalTask.en}
+              onChange={(e) =>
+                handleTaskChange("general", "en", e.target.value)
+              }
             />
             <Input
               label="Tarea General (Español)"
               placeholder="Tarea general en Español"
-              value={generalTaskEs}
-              onChange={(e) => setGeneralTaskEs(e.target.value)}
+              value={generalTask.es}
+              onChange={(e) =>
+                handleTaskChange("general", "es", e.target.value)
+              }
             />
             <Button variant="flat" onPress={() => handleAddTask("general")}>
               Añadir

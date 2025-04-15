@@ -30,11 +30,10 @@ import { useUserAuth } from "@/context/AuthContext";
 
 // Mapeo de etiquetas a claves de traducción en snake_case
 const labelToTranslationKey: Record<string, string> = {
-  Home: "home",
   Login: "login",
   Register: "register",
   Airdrops: "airdrops",
-  Info: "info",
+  Favorites: "favorites",
   "Help & Feedback": "help_and_feedback",
   Create: "create",
   Profile: "profile",
@@ -49,24 +48,17 @@ export const Navbar = () => {
 
   const desktopNavItems = siteConfig.navItems.filter((item) => {
     if (!user) {
-      return ["Home", "Login", "Register", "Help & Feedback"].includes(
+      return ["Login", "Register", "Help & Feedback"].includes(item.label);
+    } else if (role === "user") {
+      return ["Dashboard", "Airdrops", "Favorites", "Help & Feedback"].includes(
         item.label,
       );
-    } else if (role === "user") {
-      return [
-        "Home",
-        "Dashboard",
-        "Airdrops",
-        "Info",
-        "Help & Feedback",
-      ].includes(item.label);
     } else if (role === "admin") {
       return [
-        "Home",
         "Dashboard",
         "Airdrops",
         "Create",
-        "Info",
+        "Favorites",
         "Help & Feedback",
       ].includes(item.label);
     }
@@ -89,7 +81,7 @@ export const Navbar = () => {
         "Profile",
         "Dashboard",
         "Airdrops",
-        "Info",
+        "Favorites",
         "Help & Feedback",
         "Logout",
       ].includes(item.label);
@@ -98,7 +90,7 @@ export const Navbar = () => {
         "Profile",
         "Dashboard",
         "Airdrops",
-        "Info",
+        "Favorites",
         "Help & Feedback",
         "Create",
         "Logout",

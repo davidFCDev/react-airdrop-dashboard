@@ -9,11 +9,10 @@
     "snippet_text": "Get started by editing"
   },
   "navbar": {
-    "home": "Home",
     "login": "Login",
     "register": "Register",
     "airdrops": "Airdrops",
-    "info": "Info",
+    "favorites": "Favorites",
     "help_and_feedback": "Help & Feedback",
     "create": "Create",
     "profile": "Profile",
@@ -53,9 +52,11 @@
     }
   },
   "airdrop": {
+    "title": "Airdrop List",
     "search_placeholder": "Search by name...",
     "columns": "Columns",
     "no_airdrops": "No airdrops found",
+    "invalid_id": "Invalid Airdrop ID",
     "not_found": "Airdrop not found",
     "name": "Project Name",
     "status": "Status",
@@ -77,6 +78,17 @@
     "add": "Add",
     "daily_tasks": "Daily Tasks",
     "general_tasks": "General Tasks",
-    "no_notes": "No notes added yet"
+    "no_notes": "No notes added yet",
+    "favorite": "Favorite",
+    "actions": "Actions",
+    "add_favorite": "Add to favorites",
+    "remove_favorite": "Remove from favorites"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "error_favorites": "Error loading favorites",
+    "loading": "Loading favorites...",
+    "no_favorites": "No favorites added yet",
+    "view_details": "View details"
   }
 }

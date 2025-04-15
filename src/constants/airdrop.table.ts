@@ -1,11 +1,10 @@
-// Mapas de colores tipados
 export const statusColorMap: Record<
   Status,
   "success" | "warning" | "default" | "danger"
 > = {
-  Active: "success",
-  Waiting: "warning",
-  "Not Started": "default",
+  Confirmed: "success",
+  "Not Confirmed": "warning",
+  Posible: "default",
   Ended: "danger",
 };
 
@@ -21,11 +20,13 @@ export const tierColorMap: Record<
 
 export const typeColorMap: Record<
   AirdropType,
-  "success" | "primary" | "warning"
+  "success" | "primary" | "warning" | "secondary" | "danger"
 > = {
   "Play-to-Earn": "success",
-  Testnet: "primary",
+  "Points System": "primary",
+  Testnet: "secondary",
   "Farm tx": "warning",
+  Trading: "danger",
 };
 
 export const costColorMap: Record<
@@ -55,7 +56,7 @@ export const stageColorMap: Record<
 // Definición de columnas
 interface Column {
   name: string;
-  uid: keyof Airdrop | "links" | "tags";
+  uid: keyof Airdrop | "links" | "tags" | "favorite" | "actions";
   sortable?: boolean;
 }
 
@@ -72,10 +73,18 @@ export const columns: Column[] = [
   { name: "Links", uid: "links" },
   { name: "Created", uid: "created_at", sortable: true },
   { name: "Last Edited", uid: "last_edited", sortable: true },
+  { name: "Favorite", uid: "favorite", sortable: false },
+  { name: "Actions", uid: "actions", sortable: false },
 ];
 
 // Definición de tipos
-export const types = ["Play-to-Earn", "Testnet", "Farm tx"] as const;
+export const types = [
+  "Play-to-Earn",
+  "Testnet",
+  "Farm tx",
+  "Trading",
+  "Points System",
+] as const;
 export const tiers = ["S", "A", "B", "C"] as const;
 export const stages = [
   "Testnet",
@@ -87,7 +96,12 @@ export const stages = [
   "Private",
   "Public",
 ] as const;
-export const status = ["Active", "Waiting", "Not Started", "Ended"] as const;
+export const status = [
+  "Confirmed",
+  "Not Confirmed",
+  "Posible",
+  "Ended",
+] as const;
 export const cost = [
   "FREE",
   "FREE/Optional Cost",
@@ -125,6 +139,6 @@ export interface Airdrop {
   user: {
     daily_tasks: { en: string; es: string }[];
     general_tasks: { en: string; es: string }[];
-    notes: string[];
+    notes: { id: string; text: string; created_at: string }[];
   };
 }
