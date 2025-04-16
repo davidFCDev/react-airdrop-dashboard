@@ -2,17 +2,28 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
+import { useNavigate } from "react-router-dom";
 
-import { cost, stages, status, tiers, types } from "@/constants/airdrop.table";
+import {
+  Airdrop,
+  cost,
+  stages,
+  status,
+  tiers,
+  types,
+} from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropForm } from "@/hooks/useAirdropForm";
 
 interface Props {
   onSubmit: () => void;
+  initialAirdrop?: Airdrop;
 }
 
-const AirdropForm = (props: Props) => {
+const AirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
   const { user, role } = useUserAuth();
+  const navigate = useNavigate();
+
   const {
     formData,
     dailyTask,
@@ -35,16 +46,14 @@ const AirdropForm = (props: Props) => {
     handleImportantLinkChange,
     handleAddImportantLink,
     handleRemoveImportantLink,
-  } = useAirdropForm(props);
+  } = useAirdropForm({ onSubmit, initialAirdrop });
 
   if (!user) {
     return <div className="text-red-500">Debes iniciar sesión</div>;
   }
 
   if (role !== "admin") {
-    return (
-      <div className="text-red-500">Acceso denegado: Solo administradores</div>
-    );
+    navigate("/unauthorized", { replace: true });
   }
 
   return (
@@ -52,7 +61,7 @@ const AirdropForm = (props: Props) => {
       {error && <div className="mb-4 text-red-500">{error}</div>}
 
       {/* Información Básica */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Información Básica</h2>
         </CardHeader>
@@ -161,7 +170,7 @@ const AirdropForm = (props: Props) => {
       </Card>
 
       {/* Enlaces */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Enlaces</h2>
         </CardHeader>
@@ -202,7 +211,7 @@ const AirdropForm = (props: Props) => {
       </Card>
 
       {/* Tags */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Etiquetas</h2>
         </CardHeader>
@@ -246,7 +255,7 @@ const AirdropForm = (props: Props) => {
       </Card>
 
       {/* Imágenes */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Imágenes</h2>
         </CardHeader>
@@ -287,7 +296,7 @@ const AirdropForm = (props: Props) => {
       </Card>
 
       {/* Enlaces Importantes */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Enlaces Importantes</h2>
         </CardHeader>
@@ -342,7 +351,7 @@ const AirdropForm = (props: Props) => {
       </Card>
 
       {/* Tareas */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-default-50" shadow="none">
         <CardHeader>
           <h2 className="text-2xl font-bold">Tareas</h2>
         </CardHeader>
@@ -413,7 +422,11 @@ const AirdropForm = (props: Props) => {
         type="submit"
         variant="solid"
       >
-        {uploading ? "Guardando..." : "Guardar Airdrop"}
+        {uploading
+          ? "Guardando..."
+          : initialAirdrop
+            ? "Actualizar Airdrop"
+            : "Guardar Airdrop"}
       </Button>
     </form>
   );

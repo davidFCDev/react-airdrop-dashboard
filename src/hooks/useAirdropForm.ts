@@ -4,9 +4,11 @@ import { useImageUpload } from "./useImageUpload";
 
 import { Airdrop } from "@/constants/airdrop.table";
 import { airdropService } from "@/service/airdrop.service";
+import { useAirdropStore } from "@/store/airdropStore";
 
 interface Props {
   onSubmit: () => void;
+  initialAirdrop?: Airdrop;
 }
 
 interface Task {
@@ -19,48 +21,71 @@ interface ImageUpload {
   preview: string | null;
 }
 
-export const useAirdropForm = ({ onSubmit }: Props) => {
-  const [formData, setFormData] = useState<Omit<Airdrop, "id">>({
-    name: "",
-    type: "Play-to-Earn",
-    description: { en: "", es: "" },
-    status: "Confirmed",
-    tier: "S",
-    funding: "",
-    cost: "FREE",
-    stage: "Testnet",
-    chain: "",
-    tags: [],
-    url: "",
-    discord: "",
-    twitter: "",
-    telegram: "",
-    backdrop: "",
-    image: "",
-    created_at: new Date().toISOString(),
-    last_edited: new Date().toISOString(),
-    important_links: [],
-    user: { daily_tasks: [], general_tasks: [], notes: [] },
-  });
+export const useAirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
+  const [formData, setFormData] = useState<Omit<Airdrop, "id">>(
+    initialAirdrop
+      ? {
+          name: initialAirdrop.name,
+          type: initialAirdrop.type,
+          description: initialAirdrop.description,
+          status: initialAirdrop.status,
+          tier: initialAirdrop.tier,
+          funding: initialAirdrop.funding,
+          cost: initialAirdrop.cost,
+          stage: initialAirdrop.stage,
+          chain: initialAirdrop.chain,
+          tags: initialAirdrop.tags,
+          url: initialAirdrop.url,
+          discord: initialAirdrop.discord,
+          twitter: initialAirdrop.twitter,
+          telegram: initialAirdrop.telegram,
+          backdrop: initialAirdrop.backdrop,
+          image: initialAirdrop.image,
+          created_at: initialAirdrop.created_at,
+          last_edited: initialAirdrop.last_edited,
+          important_links: initialAirdrop.important_links,
+          user: initialAirdrop.user,
+        }
+      : {
+          name: "",
+          type: "Play-to-Earn",
+          description: { en: "", es: "" },
+          status: "Confirmed",
+          tier: "S",
+          funding: "",
+          cost: "FREE",
+          stage: "Testnet",
+          chain: "",
+          tags: [],
+          url: "",
+          discord: "",
+          twitter: "",
+          telegram: "",
+          backdrop: "",
+          image: "",
+          created_at: new Date().toISOString(),
+          last_edited: new Date().toISOString(),
+          important_links: [],
+          user: { daily_tasks: [], general_tasks: [], notes: [] },
+        },
+  );
 
   const [dailyTask, setDailyTask] = useState<Task>({ en: "", es: "" });
   const [generalTask, setGeneralTask] = useState<Task>({ en: "", es: "" });
   const [backdrop, setBackdrop] = useState<ImageUpload>({
     file: null,
-    preview: null,
+    preview: initialAirdrop?.backdrop || null,
   });
   const [image, setImage] = useState<ImageUpload>({
     file: null,
-    preview: null,
+    preview: initialAirdrop?.image || null,
   });
   const [tagInput, setTagInput] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  // Nuevo estado para important_links
   const [importantLinkInput, setImportantLinkInput] = useState<{
     key: string;
     value: string;
   }>({ key: "", value: "" });
+  const [error, setError] = useState<string | null>(null);
 
   const { uploadFileToS3, uploading, setUploading } = useImageUpload();
 
@@ -169,7 +194,6 @@ export const useAirdropForm = ({ onSubmit }: Props) => {
     }));
   }, []);
 
-  // Nuevas funciones para important_links
   const handleImportantLinkChange = useCallback(
     (field: "key" | "value", value: string) => {
       setImportantLinkInput((prev) => ({ ...prev, [field]: value }));
@@ -216,10 +240,20 @@ export const useAirdropForm = ({ onSubmit }: Props) => {
         if (image.file) {
           updatedFormData.image = await uploadFileToS3(image.file, "image");
         }
-        await airdropService.createAirdrop(updatedFormData);
+
+        if (initialAirdrop) {
+          // Modo edición
+          await useAirdropStore
+            .getState()
+            .updateAirdrop(initialAirdrop.id, updatedFormData);
+        } else {
+          // Modo creación
+          await airdropService.createAirdrop(updatedFormData);
+        }
+
         onSubmit();
       } catch {
-        setError("Error al crear el airdrop");
+        setError("Error al guardar el airdrop");
       } finally {
         setUploading(false);
       }
@@ -228,6 +262,7 @@ export const useAirdropForm = ({ onSubmit }: Props) => {
       formData,
       backdrop.file,
       image.file,
+      initialAirdrop,
       uploadFileToS3,
       onSubmit,
       setUploading,
@@ -241,6 +276,7 @@ export const useAirdropForm = ({ onSubmit }: Props) => {
     backdrop,
     image,
     tagInput,
+    importantLinkInput,
     error,
     uploading,
     handleChange,
@@ -251,10 +287,9 @@ export const useAirdropForm = ({ onSubmit }: Props) => {
     handleAddTag,
     handleTagKeyPress,
     handleRemoveTag,
-    importantLinkInput, // Nuevo
-    handleImportantLinkChange, // Nuevo
-    handleAddImportantLink, // Nuevo
-    handleRemoveImportantLink, // Nuevo
+    handleImportantLinkChange,
+    handleAddImportantLink,
+    handleRemoveImportantLink,
     handleSubmit,
   };
 };

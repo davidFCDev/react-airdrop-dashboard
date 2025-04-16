@@ -17,10 +17,13 @@ import {
   TableRow,
 } from "@heroui/table";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import {
   ChevronDownIcon,
+  DeleteIcon,
   DiscordIcon,
+  EditIcon,
   HeartFilledIcon,
   HeartIcon,
   SearchIcon,
@@ -37,11 +40,14 @@ import {
   tierColorMap,
   typeColorMap,
 } from "@/constants/airdrop.table";
+import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropTable } from "@/hooks/useAirdropTable";
-import { useFavoriteAirdrops } from "@/hooks/useFavoriteAirdrops";
+import { useAirdropStore } from "@/store/airdropStore";
 
 const AirdropTable = () => {
   const { t, i18n } = useTranslation();
+  const { role } = useUserAuth();
+  const navigate = useNavigate();
   const {
     sortedItems,
     headerColumns,
@@ -52,16 +58,26 @@ const AirdropTable = () => {
     onClear,
     visibleColumns,
     setVisibleColumns,
-    handleRowClick,
+    toggleFavorites,
+    showFavorites,
   } = useAirdropTable();
-  const { favorites, updating, toggleFavorite } = useFavoriteAirdrops();
+  const { favorites, updatingFavorites, toggleFavorite } = useAirdropStore();
+
+  // Filtrar la columna "actions" si no es admin
+  const filteredHeaderColumns =
+    role === "admin"
+      ? headerColumns
+      : headerColumns.filter((column) => column.uid !== "actions");
 
   const renderCell = (
     airdrop: Airdrop,
-    columnKey: keyof Airdrop | "links" | "tags" | "favorite",
+    columnKey: keyof Airdrop | "links" | "tags" | "favorite" | "actions",
   ) => {
     const cellValue =
-      columnKey === "links" || columnKey === "tags" || columnKey === "favorite"
+      columnKey === "links" ||
+      columnKey === "tags" ||
+      columnKey === "favorite" ||
+      columnKey === "actions"
         ? undefined
         : airdrop[columnKey];
 
@@ -206,7 +222,7 @@ const AirdropTable = () => {
                 ? t("airdrop.remove_favorite")
                 : t("airdrop.add_favorite")
             }
-            isDisabled={updating.has(airdrop.id)}
+            isDisabled={updatingFavorites.has(airdrop.id)}
             variant="light"
             onPress={() => {
               toggleFavorite(airdrop.id, !isFavorite);
@@ -218,6 +234,31 @@ const AirdropTable = () => {
               <HeartIcon className="w-5 h-5" />
             )}
           </Button>
+        );
+      case "actions":
+        return (
+          <div className="flex gap-2">
+            <Button
+              isIconOnly
+              aria-label="Edit airdrop"
+              variant="light"
+              onPress={() =>
+                navigate(`/edit/${airdrop.id}`, { state: { airdrop } })
+              }
+            >
+              <EditIcon className="w-5 h-5" />
+            </Button>
+            <Button
+              isIconOnly
+              aria-label="Delete airdrop"
+              variant="light"
+              onPress={() =>
+                useAirdropStore.getState().deleteAirdrop(airdrop.id)
+              }
+            >
+              <DeleteIcon className="w-5 h-5" />
+            </Button>
+          </div>
         );
       case "created_at":
       case "last_edited":
@@ -257,19 +298,26 @@ const AirdropTable = () => {
             setVisibleColumns(new Set(keys as Iterable<string>))
           }
         >
-          {headerColumns.map((column) => (
+          {columns.map((column) => (
             <DropdownItem key={column.uid} className="capitalize">
               {t(`airdrop.${column.uid}`)}
             </DropdownItem>
           ))}
         </DropdownMenu>
       </Dropdown>
+      <Button
+        color={showFavorites ? "primary" : "default"}
+        variant="flat"
+        onPress={toggleFavorites}
+      >
+        {showFavorites ? t("airdrop.show_all") : t("airdrop.show_favorites")}
+      </Button>
     </div>
   );
 
   return (
     <Table
-      key={i18n.language}
+      key={`${i18n.language}-${favorites.size}`}
       isCompact
       removeWrapper
       aria-label="Airdrops Table"
@@ -288,7 +336,7 @@ const AirdropTable = () => {
       topContentPlacement="outside"
       onSortChange={setSortDescriptor}
     >
-      <TableHeader columns={columns}>
+      <TableHeader columns={filteredHeaderColumns}>
         {(column) => (
           <TableColumn
             key={column.uid}
@@ -301,12 +349,22 @@ const AirdropTable = () => {
       </TableHeader>
       <TableBody emptyContent={t("airdrop.no_airdrops")} items={sortedItems}>
         {(item) => (
-          <TableRow key={item.id} onClick={() => handleRowClick(item)}>
+          <TableRow
+            key={item.id}
+            onClick={() =>
+              navigate(`/airdrops/${item.id}`, { state: { airdrop: item } })
+            }
+          >
             {(columnKey) => (
               <TableCell>
                 {renderCell(
                   item,
-                  columnKey as keyof Airdrop | "links" | "tags" | "favorite",
+                  columnKey as
+                    | keyof Airdrop
+                    | "links"
+                    | "tags"
+                    | "favorite"
+                    | "actions",
                 )}
               </TableCell>
             )}

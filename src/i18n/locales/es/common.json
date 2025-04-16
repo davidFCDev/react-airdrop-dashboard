@@ -82,7 +82,9 @@
     "favorite": "Favorito",
     "actions": "Acciones",
     "add_favorite": "Añadir a favoritos",
-    "remove_favorite": "Quitar de favoritos"
+    "remove_favorite": "Quitar de favoritos",
+    "show_favorites": "Favoritos",
+    "show_all": "Todos"
   },
   "favorites": {
     "title": "Favoritos",
@@ -90,5 +92,36 @@
     "loading": "Cargando favoritos...",
     "no_favorites": "No se han añadido favoritos aún",
     "view_details": "Ver detalles"
+  },
+  "unauthorized": {
+    "title": "Acceso No Autorizado",
+    "message": "No tienes permiso para acceder a esta página.",
+    "back_to_airdrops": "Volver a Inicio"
+  },
+  "post": {
+    "create_title": "Crear Publicación",
+    "title": "Título",
+    "subtitle": "Subtítulo",
+    "description": "Descripción",
+    "image": "Imagen",
+    "links": "Enlaces",
+    "link_key": "Nombre del enlace",
+    "link_value": "URL",
+    "add_link": "Añadir enlace",
+    "remove_link": "Eliminar",
+    "create_button": "Crear",
+    "fill_all_fields": "Por favor, completa todos los campos",
+    "create_error": "Error al crear la publicación",
+    "read_more": "Ver más",
+    "invalid_id": "ID de publicación inválido",
+    "not_found": "Publicación no encontrada",
+    "error_fetching": "Error al cargar la publicación",
+    "created_at": "Creado el"
+  },
+  "user": {
+    "guest": "Invitado",
+    "total_favorites": "Airdrops favoritos",
+    "completed_tasks": "Tareas completadas",
+    "tasks_progress": "Progreso de tareas"
   }
 }

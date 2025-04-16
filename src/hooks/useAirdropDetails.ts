@@ -26,7 +26,7 @@ export const useAirdropDetails = () => {
 
         if (foundAirdrop) {
           setAirdrop(foundAirdrop);
-          setNotes(foundAirdrop.user?.notes || []);
+          setNotes(foundAirdrop.user?.notes.map((note) => note.text) || []);
         }
       } catch (error) {
         console.error("Error fetching airdrop:", error);

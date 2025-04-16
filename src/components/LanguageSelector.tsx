@@ -21,7 +21,7 @@ const LanguageSelector = () => {
       aria-label="Language Selector"
       className="w-20"
       defaultSelectedKeys={[defaultLanguage.key]}
-      variant="faded"
+      variant="bordered"
       onChange={handleLanguageChange}
     >
       {languages.map((lang) => (

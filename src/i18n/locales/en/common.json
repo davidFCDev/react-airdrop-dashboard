@@ -82,7 +82,9 @@
     "favorite": "Favorite",
     "actions": "Actions",
     "add_favorite": "Add to favorites",
-    "remove_favorite": "Remove from favorites"
+    "remove_favorite": "Remove from favorites",
+    "show_favorites": "Favorites",
+    "show_all": "All"
   },
   "favorites": {
     "title": "Favorites",
@@ -90,5 +92,36 @@
     "loading": "Loading favorites...",
     "no_favorites": "No favorites added yet",
     "view_details": "View details"
+  },
+  "unauthorized": {
+    "title": "Unauthorized Access",
+    "message": "You don't have permission to access this page.",
+    "back_to_airdrops": "Back home"
+  },
+  "post": {
+    "create_title": "Create Post",
+    "title": "Title",
+    "subtitle": "Subtitle",
+    "description": "Description",
+    "image": "Image",
+    "links": "Links",
+    "link_key": "Link name",
+    "link_value": "URL",
+    "add_link": "Add link",
+    "remove_link": "Remove",
+    "create_button": "Create",
+    "fill_all_fields": "Please fill all fields",
+    "create_error": "Error creating post",
+    "read_more": "Read more",
+    "invalid_id": "Invalid post ID",
+    "not_found": "Post not found",
+    "error_fetching": "Error fetching post",
+    "created_at": "Created at"
+  },
+  "user": {
+    "guest": "Guest",
+    "total_favorites": "Favorite Airdrops",
+    "completed_tasks": "Completed Tasks",
+    "tasks_progress": "Tasks Progress"
   }
 }

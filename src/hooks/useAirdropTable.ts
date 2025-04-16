@@ -1,14 +1,17 @@
 import { SortDescriptor } from "@heroui/table";
-import { collection, onSnapshot, query } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Airdrop, columns } from "@/constants/airdrop.table";
-import { db } from "@/lib/firebase";
+import { useUserAuth } from "@/context/AuthContext";
+import { useAirdropStore } from "@/store/airdropStore";
 
 export const useAirdropTable = () => {
   const navigate = useNavigate();
+  const { user } = useUserAuth();
+  const { airdrops, favorites, loading, error } = useAirdropStore();
   const [filterValue, setFilterValue] = useState("");
+  const [showFavorites, setShowFavorites] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
     new Set(columns.map((c) => c.uid)),
   );
@@ -16,40 +19,23 @@ export const useAirdropTable = () => {
     column: "name",
     direction: "ascending",
   });
-  const [airdrops, setAirdrops] = useState<Airdrop[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Cargar airdrops desde Firestore
+  // Cargar airdrops y favoritos al montar el componente
   useEffect(() => {
-    const q = query(collection(db, "airdrops"));
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const airdropData: Airdrop[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          created_at: doc.data().created_at
-            ? new Date(doc.data().created_at).toISOString()
-            : new Date().toISOString(),
-          last_edited: doc.data().last_edited
-            ? new Date(doc.data().last_edited).toISOString()
-            : new Date().toISOString(),
-        })) as Airdrop[];
+    const unsubscribeAirdrops = useAirdropStore.getState().fetchAirdrops();
+    let unsubscribeFavorites: (() => void) | undefined;
 
-        setAirdrops(airdropData);
-        setLoading(false);
-      },
-      (err) => {
-        console.error("Error fetching airdrops:", err);
-        setError("Failed to load airdrops");
-        setLoading(false);
-      },
-    );
+    if (user?.uid) {
+      unsubscribeFavorites = useAirdropStore
+        .getState()
+        .fetchFavorites(user.uid);
+    }
 
-    // Limpiar el listener al desmontar
-    return () => unsubscribe();
-  }, []);
+    return () => {
+      unsubscribeAirdrops();
+      if (unsubscribeFavorites) unsubscribeFavorites();
+    };
+  }, [user]);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -67,8 +53,14 @@ export const useAirdropTable = () => {
       );
     }
 
+    if (showFavorites) {
+      filteredAirdrops = filteredAirdrops.filter((airdrop) =>
+        favorites.has(airdrop.id),
+      );
+    }
+
     return filteredAirdrops;
-  }, [airdrops, filterValue]);
+  }, [airdrops, filterValue, showFavorites, favorites]);
 
   const sortedItems = useMemo(() => {
     return [...filteredItems].sort((a: Airdrop, b: Airdrop) => {
@@ -95,6 +87,10 @@ export const useAirdropTable = () => {
     setFilterValue("");
   }, []);
 
+  const toggleFavorites = useCallback(() => {
+    setShowFavorites((prev) => !prev);
+  }, []);
+
   const handleRowClick = (airdrop: Airdrop) => {
     navigate(`/airdrops/${airdrop.id}`, { state: { airdrop } });
   };
@@ -109,6 +105,8 @@ export const useAirdropTable = () => {
     onClear,
     visibleColumns,
     setVisibleColumns,
+    toggleFavorites,
+    showFavorites,
     handleRowClick,
     loading,
     error,

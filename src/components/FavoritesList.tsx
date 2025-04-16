@@ -1,3 +1,4 @@
+import { Spinner } from "@heroui/spinner";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -28,7 +29,12 @@ const FavoriteAirdrops = () => {
     fetchFavorites();
   }, [t]);
 
-  if (loading) return <div>{t("favorites.loading")}</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Spinner className="mx-auto" size="lg" />
+      </div>
+    );
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
@@ -38,7 +44,7 @@ const FavoriteAirdrops = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           {favorites.map((airdrop) => (
-            <AirdropCard key={airdrop.id} {...airdrop} />
+            <AirdropCard key={airdrop.id} airdrop={airdrop} />
           ))}
         </div>
       )}
