@@ -110,7 +110,7 @@ const CreatePostPage = () => {
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center p-4">
-        <Card className="w-full max-w-2xl">
+        <Card className="w-full max-w-2xl bg-default-50" shadow="none">
           <CardHeader>
             <h1 className="text-2xl font-bold">{t("post.create_title")}</h1>
           </CardHeader>

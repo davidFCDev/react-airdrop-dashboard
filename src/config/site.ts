@@ -25,6 +25,10 @@ export const siteConfig = {
       href: "/create",
     },
     {
+      label: "Posts",
+      href: "/create-post",
+    },
+    {
       label: "Favorites",
       href: "/favorites",
     },
@@ -57,6 +61,22 @@ export const siteConfig = {
     {
       label: "Create",
       href: "/create",
+    },
+    {
+      label: "Posts",
+      href: "/create-post",
+    },
+    {
+      label: "Profile",
+      href: "/profile",
+    },
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      label: "Airdrops",
+      href: "/airdrops",
     },
     {
       label: "Favorites",

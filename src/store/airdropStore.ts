@@ -1,13 +1,25 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { create } from "zustand";
 
 import { Airdrop } from "@/constants/airdrop.table";
 import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
 
+interface TaskStatus {
+  id: string;
+  completed: boolean;
+}
+
+interface UserAirdropData {
+  favorite: boolean;
+  daily_tasks: TaskStatus[];
+  general_tasks: TaskStatus[];
+}
+
 interface AirdropState {
   airdrops: Airdrop[];
   favorites: Set<string>;
+  userAirdropData: Map<string, UserAirdropData>;
   updatingFavorites: Set<string>;
   error: string | null;
   loading: boolean;
@@ -21,6 +33,7 @@ interface AirdropState {
 export const useAirdropStore = create<AirdropState>((set) => ({
   airdrops: [],
   favorites: new Set(),
+  userAirdropData: new Map(),
   updatingFavorites: new Set(),
   error: null,
   loading: true,
@@ -56,13 +69,21 @@ export const useAirdropStore = create<AirdropState>((set) => ({
 
   fetchFavorites: (uid: string) => {
     const userAirdropsRef = collection(db, "user_airdrops", uid, "airdrops");
-    const favQuery = query(userAirdropsRef, where("favorite", "==", true));
     const unsubscribeFavorites = onSnapshot(
-      favQuery,
+      userAirdropsRef,
       (snapshot) => {
-        const favoriteIds = new Set<string>(snapshot.docs.map((doc) => doc.id));
+        const favoriteIds = new Set<string>();
+        const userData = new Map<string, UserAirdropData>();
 
-        set({ favorites: favoriteIds });
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data() as UserAirdropData;
+
+          userData.set(doc.id, data);
+          if (data.favorite) {
+            favoriteIds.add(doc.id);
+          }
+        });
+        set({ favorites: favoriteIds, userAirdropData: userData });
       },
       (err) => {
         set({ error: `Error fetching favorites: ${err.message}` });

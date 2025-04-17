@@ -36,6 +36,7 @@ const labelToTranslationKey: Record<string, string> = {
   Favorites: "favorites",
   "Help & Feedback": "help_and_feedback",
   Create: "create",
+  Posts: "posts",
   Profile: "profile",
   Dashboard: "dashboard",
   Logout: "logout",
@@ -58,6 +59,7 @@ export const Navbar = () => {
         "Dashboard",
         "Airdrops",
         "Create",
+        "Posts",
         "Favorites",
         "Help & Feedback",
       ].includes(item.label);
@@ -91,6 +93,7 @@ export const Navbar = () => {
         "Dashboard",
         "Airdrops",
         "Favorites",
+        "Posts",
         "Help & Feedback",
         "Create",
         "Logout",

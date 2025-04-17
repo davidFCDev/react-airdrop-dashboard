@@ -1,3 +1,4 @@
+import { Divider } from "@heroui/divider";
 import { useEffect } from "react";
 
 import AirdropCard from "@/components/AirdropCard";
@@ -45,13 +46,13 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row p-4 gap-4 min-h-screen">
+      <section className="flex flex-col md:flex-row  min-h-screen">
         {/* Columna 1: Resumen del usuario */}
-        <div className="w-full md:w-1/4">
+        <div className="w-full md:w-1/6 border-r border-default-300">
           <UserSummary />
         </div>
         {/* Columna 2: Airdrops y Posts */}
-        <div className="w-full md:w-3/4 flex flex-col gap-6">
+        <div className="w-full md:w-5/6 flex flex-col gap-6">
           {/* Fila 1: Últimos Airdrops */}
           <div>
             <h2 className="text-2xl font-bold mb-4">Latest Airdrops</h2>
@@ -61,6 +62,7 @@ const DashboardPage = () => {
               ))}
             </div>
           </div>
+          <Divider className="w-full" />
           {/* Fila 2: Últimos Posts */}
           <div>
             <h2 className="text-2xl font-bold mb-4">Latest Posts</h2>

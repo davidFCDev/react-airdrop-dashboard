@@ -4,40 +4,26 @@ import { CircularProgress } from "@heroui/progress";
 import { useTranslation } from "react-i18next";
 
 import { useUserAuth } from "@/context/AuthContext";
+import { useFavoriteAirdropSummaries } from "@/hooks/useDashboard";
 import { useAirdropStore } from "@/store/airdropStore";
 
 const UserSummary = () => {
   const { t } = useTranslation();
   const { user } = useUserAuth();
   const { airdrops, favorites } = useAirdropStore();
+  const { totalTasks, completedTasks } = useFavoriteAirdropSummaries();
 
   const favoriteAirdrops = airdrops.filter((airdrop) =>
     favorites.has(airdrop.id),
   );
   const totalFavorites = favoriteAirdrops.length;
-  const totalTasks = favoriteAirdrops.reduce(
-    (sum, airdrop) =>
-      sum + airdrop.user.daily_tasks.length + airdrop.user.general_tasks.length,
-    0,
-  );
-  const completedTasks = favoriteAirdrops.reduce((sum, airdrop) => {
-    const completed = new Set<string>([
-      ...airdrop.user.daily_tasks
-        .filter((t) => t.completed)
-        .map((t) => `daily_${t.id}`),
-      ...airdrop.user.general_tasks
-        .filter((t) => t.completed)
-        .map((t) => `general_${t.id}`),
-    ]);
 
-    return sum + completed.size;
-  }, 0);
   const progress =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <Card className="w-full h-full bg-default-100">
-      <CardHeader className="flex flex-col items-center">
+    <Card className="w-full h-full bg-default-50" shadow="none">
+      <CardHeader className="flex flex-col items-start">
         <Avatar
           className="mb-2"
           name={user?.email?.charAt(0).toUpperCase() || "?"}
