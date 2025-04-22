@@ -3,6 +3,7 @@ import { Card, CardBody } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { t } from "i18next";
 
+import { CheckIcon, DeleteIcon } from "@/components/icons";
 import { Note } from "@/pages/dashboard";
 
 interface NotesSectionProps {
@@ -21,39 +22,62 @@ const NotesSection = ({
   notes,
 }: NotesSectionProps) => {
   return (
-    <section className="flex flex-col gap-4 p-4">
+    <section className="flex flex-col gap-4 p-4 ">
       <div className="flex gap-2 w-full bg-default-50 p-4 border border-default-200">
         <Input
+          aria-label={t("dashboard.add_note")}
           placeholder={t("dashboard.add_note")}
           radius="none"
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
         />
-        <Button color="primary" radius="none" onPress={handleAddNote}>
+        <Button
+          aria-label={t("dashboard.add")}
+          color="primary"
+          radius="none"
+          onPress={handleAddNote}
+        >
           {t("dashboard.add")}
         </Button>
       </div>
       <Card
-        className="bg-default-50 min-h-96 border border-default-200"
+        className="bg-default-50 border border-default-200 min-h-[500px]"
         radius="none"
         shadow="none"
       >
-        <CardBody className="flex flex-col gap-2">
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className="flex justify-between items-center p-4"
-            >
-              <p className="text-xl">{note.content}</p>
-              <Button
-                color="danger"
-                size="sm"
-                onPress={() => handleRemoveNote(note.id)}
+        <CardBody className="flex flex-col gap-2 p-4 overflow-y-auto">
+          {notes.length === 0 ? (
+            <p className="text-sm text-default-500">
+              {t("dashboard.no_notes")}
+            </p>
+          ) : (
+            notes.map((note) => (
+              <div
+                key={note.id}
+                className="flex justify-between items-center"
+                role="listitem"
               >
-                {t("dashboard.delete")}
-              </Button>
-            </div>
-          ))}
+                <div className="flex items-center gap-2">
+                  <CheckIcon
+                    aria-hidden="true"
+                    className="text-primary"
+                    size={18}
+                  />
+                  <p className="font-light">{note.content}</p>
+                </div>
+                <Button
+                  isIconOnly
+                  aria-label={t("dashboard.delete_note")}
+                  color="danger"
+                  size="sm"
+                  variant="light"
+                  onPress={() => handleRemoveNote(note.id)}
+                >
+                  <DeleteIcon size={18} />
+                </Button>
+              </div>
+            ))
+          )}
         </CardBody>
       </Card>
     </section>

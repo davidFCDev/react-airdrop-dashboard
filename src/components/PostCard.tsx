@@ -21,7 +21,7 @@ const PostCard = ({ post }: Props) => {
 
   return (
     <Card
-      className="w-full max-w-[600px] bg-default-50 flex flex-col border border-default-200 hover:border-primary transition-all duration-300"
+      className="w-full bg-default-50 flex flex-col border border-default-200 hover:border-primary transition-all duration-300"
       radius="none"
       shadow="sm"
     >

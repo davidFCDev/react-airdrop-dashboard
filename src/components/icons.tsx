@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { IconSvgProps } from "@/types";
 
@@ -218,12 +218,17 @@ export const WebsiteIcon: React.FC<IconSvgProps> = ({
   );
 };
 
-export function EditIcon(props: React.SVGProps<SVGSVGElement>) {
+export const EditIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
-      height="1em"
+      height={size || height}
       viewBox="0 0 24 24"
-      width="1em"
+      width={size || width}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
@@ -233,14 +238,22 @@ export function EditIcon(props: React.SVGProps<SVGSVGElement>) {
       />
     </svg>
   );
-}
-
-export function DeleteIcon(props: React.SVGProps<SVGSVGElement>) {
+};
+<path
+  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75z"
+  fill="currentColor"
+/>;
+export const DeleteIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
-      height="1em"
+      height={size || height}
       viewBox="0 0 24 24"
-      width="1em"
+      width={size || width}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
@@ -250,7 +263,29 @@ export function DeleteIcon(props: React.SVGProps<SVGSVGElement>) {
       />
     </svg>
   );
-}
+};
+
+export const CheckIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M9 16.17L4.83 12l-1.42 1.41L9 19l11-11-1.41-1.41z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
 
 export const MoonFilledIcon = ({
   size = 24,

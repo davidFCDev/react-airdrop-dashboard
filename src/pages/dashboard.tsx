@@ -91,7 +91,7 @@ const DashboardPage = () => {
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
-    .slice(0, 3);
+    .slice(0, 10); // Limitar a 10 posts
 
   return (
     <DefaultLayout>
@@ -112,15 +112,17 @@ const DashboardPage = () => {
             </div>
           </div>
           <Divider className="w-full" />
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col md:flex-row h-full">
             <div className="w-full md:w-1/2">
               <h2 className="text-2xl font-bold p-4 bg-default-50">
                 {t("dashboard.important_news")}
               </h2>
               <Divider className="w-full" />
-              <div className="flex flex-col gap-4 p-4">
+              <div className="flex flex-col gap-4 p-4 overflow-y-auto">
                 {latestPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <div key={post.id} className="w-full">
+                    <PostCard post={post} />
+                  </div>
                 ))}
               </div>
             </div>

@@ -5,6 +5,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { image_avatar } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 import { useFavoriteAirdropSummaries } from "@/hooks/useDashboard";
 import { db } from "@/lib/firebase";
@@ -86,11 +87,14 @@ const UserSummary = () => {
       <CardHeader className="flex flex-col items-center w-full">
         <div className="flex flex-col items-center gap-4 border border-default-200 bg-default-50 px-4 py-16 w-full">
           <Avatar
-            alt="Avatar"
+            isBordered
+            aria-label={t("user.avatar")}
+            className="cursor-pointer"
+            color="primary"
             name={user?.email?.charAt(0).toUpperCase() || "?"}
             radius="md"
             size="lg"
-            src={user?.photoURL || undefined}
+            src={image_avatar || user?.photoURL || undefined}
           />
           <h2 className="text-base font-bold">
             {user?.email || t("user.guest")}
@@ -99,31 +103,31 @@ const UserSummary = () => {
       </CardHeader>
       <CardBody className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 border border-default-200 bg-default-50 p-4">
-          <div className="flex items-center gap-2">
-            <p className="font-semibold">{t("user.invested")}:</p>
-            <p className="text-success">{totalInvested.toFixed(2)} USD</p>
+          <div className="flex justify-between items-center">
+            <p className="font-semibold">Invested:</p>
+            <p className="text-success">{totalInvested.toFixed(2)}$</p>
           </div>
-          <div className="flex items-center gap-2">
-            <p className="font-semibold">{t("user.received")}:</p>
-            <p className="text-success">{totalReceived.toFixed(2)} USD</p>
+          <div className="flex justify-between items-center">
+            <p className="font-semibold">Received:</p>
+            <p className="text-success">{totalReceived.toFixed(2)}$</p>
           </div>
-          <div className="flex items-center gap-2">
-            <p className="font-semibold">{t("user.profit")}:</p>
+          <div className="flex justify-between items-center">
+            <p className="font-semibold">Profit:</p>
             <p className={totalProfit >= 0 ? "text-success" : "text-danger"}>
-              {totalProfit.toFixed(2)} USD
+              {totalProfit.toFixed(2)}$
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 border border-default-200 bg-default-50 p-4">
+        <div className="flex justify-between items-center gap-2 border border-default-200 bg-default-50 p-4">
           <p className="font-semibold">{t("user.started_airdrops")}:</p>
           <p className="text-success">{totalFavorites}</p>
         </div>
-        <div className="flex flex-col gap-2">
-          <div className="border border-default-200 bg-default-50 p-4 flex flex-col gap-2">
+        <div className="flex flex-col gap-2 h-full">
+          <div className="border border-default-200 bg-default-50 p-4 flex flex-col gap-2 ">
             <p className="font-semibold">{t("user.daily_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
-                aria-label="Daily tasks progress"
+                aria-label={t("user.daily_tasks_progress")}
                 className="mt-2 flex-grow"
                 color="success"
                 formatOptions={{ style: "percent" }}
@@ -137,7 +141,7 @@ const UserSummary = () => {
             <p className="font-semibold">{t("user.general_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
-                aria-label="General tasks progress"
+                aria-label={t("user.general_tasks_progress")}
                 className="mt-2 flex-grow"
                 color="success"
                 formatOptions={{ style: "percent" }}
