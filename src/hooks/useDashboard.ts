@@ -3,6 +3,10 @@ import { useMemo } from "react";
 import { useAirdropStore } from "@/store/airdropStore";
 
 interface AirdropSummary {
+  totalDailyTasks: number;
+  completedDailyTasks: number;
+  totalGeneralTasks: number;
+  completedGeneralTasks: number;
   totalTasks: number;
   completedTasks: number;
 }
@@ -21,18 +25,34 @@ export const useFavoriteAirdropSummaries = (): AirdropSummary => {
 
         if (!data) return acc;
 
-        const totalTasks =
-          airdrop.user.daily_tasks.length + airdrop.user.general_tasks.length;
-        const completedTasks =
-          data.daily_tasks.filter((t) => t.completed).length +
-          data.general_tasks.filter((t) => t.completed).length;
+        const totalDailyTasks = airdrop.user.daily_tasks.length;
+        const completedDailyTasks = data.daily_tasks.filter(
+          (t) => t.completed,
+        ).length;
+        const totalGeneralTasks = airdrop.user.general_tasks.length;
+        const completedGeneralTasks = data.general_tasks.filter(
+          (t) => t.completed,
+        ).length;
 
         return {
-          totalTasks: acc.totalTasks + totalTasks,
-          completedTasks: acc.completedTasks + completedTasks,
+          totalDailyTasks: acc.totalDailyTasks + totalDailyTasks,
+          completedDailyTasks: acc.completedDailyTasks + completedDailyTasks,
+          totalGeneralTasks: acc.totalGeneralTasks + totalGeneralTasks,
+          completedGeneralTasks:
+            acc.completedGeneralTasks + completedGeneralTasks,
+          totalTasks: acc.totalTasks + totalDailyTasks + totalGeneralTasks,
+          completedTasks:
+            acc.completedTasks + completedDailyTasks + completedGeneralTasks,
         };
       },
-      { totalTasks: 0, completedTasks: 0 },
+      {
+        totalDailyTasks: 0,
+        completedDailyTasks: 0,
+        totalGeneralTasks: 0,
+        completedGeneralTasks: 0,
+        totalTasks: 0,
+        completedTasks: 0,
+      },
     );
   }, [airdrops, favorites, userAirdropData]);
 };

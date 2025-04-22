@@ -19,7 +19,10 @@
     "profile": "Profile",
     "dashboard": "Dashboard",
     "logout": "Logout",
-    "language": "Language"
+    "language": "Language",
+    "tracker": "Tracker",
+    "notifications": "Notifications",
+    "no_notifications": "No notifications"
   },
   "register": {
     "title": "Register",
@@ -85,7 +88,10 @@
     "add_favorite": "Add to favorites",
     "remove_favorite": "Remove from favorites",
     "show_favorites": "Favorites",
-    "show_all": "All"
+    "show_all": "All",
+    "delete": "Delete",
+    "invested": "Money Invested (USD)",
+    "received": "Money Received (USD)"
   },
   "favorites": {
     "title": "Favorites",
@@ -102,8 +108,14 @@
   "post": {
     "create_title": "Create Post",
     "title": "Title",
+    "title_en": "Title (English)",
+    "title_es": "Title (Spanish)",
     "subtitle": "Subtitle",
+    "subtitle_en": "Subtitle (English)",
+    "subtitle_es": "Subtitle (Spanish)",
     "description": "Description",
+    "description_en": "Description (English)",
+    "description_es": "Description (Spanish)",
     "image": "Image",
     "links": "Links",
     "link_key": "Link name",
@@ -117,12 +129,40 @@
     "invalid_id": "Invalid post ID",
     "not_found": "Post not found",
     "error_fetching": "Error fetching post",
-    "created_at": "Created at"
+    "created_at": "Created at",
+    "edit_title": "Edit Post",
+    "update_button": "Update",
+    "update_error": "Error updating post",
+    "new": "New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm_delete": "Are you sure you want to delete this post?",
+    "delete_error": "Error deleting post"
+  },
+  "tracker": {
+    "title": "Profit Tracker",
+    "total_profit": "Total Profit",
+    "airdrop": "Airdrop",
+    "invested": "Invested",
+    "received": "Received",
+    "profit": "Profit",
+    "roi": "ROI"
+  },
+  "dashboard": {
+    "latest_airdrops": "Latest Airdrops",
+    "important_news": "Important News",
+    "notes": "Important Notes",
+    "add_note": "Add note",
+    "add": "Add",
+    "delete": "Delete"
   },
   "user": {
     "guest": "Guest",
-    "total_favorites": "Favorite Airdrops",
-    "completed_tasks": "Completed Tasks",
-    "tasks_progress": "Tasks Progress"
+    "started_airdrops": "Started Airdrops",
+    "daily_tasks": "Daily Tasks",
+    "general_tasks": "General Tasks",
+    "invested": "Money Invested",
+    "received": "Money Received",
+    "profit": "Profit"
   }
 }

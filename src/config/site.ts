@@ -21,6 +21,18 @@ export const siteConfig = {
       href: "/airdrops",
     },
     {
+      label: "Favorites",
+      href: "/favorites",
+    },
+    {
+      label: "Tracker",
+      href: "/tracker",
+    },
+    {
+      label: "Help & Feedback",
+      href: "/help-feedback",
+    },
+    {
       label: "Create",
       href: "/create",
     },
@@ -28,20 +40,8 @@ export const siteConfig = {
       label: "Posts",
       href: "/create-post",
     },
-    {
-      label: "Favorites",
-      href: "/favorites",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
   ],
   navMenuItems: [
-    {
-      label: "Profile",
-      href: "/profile",
-    },
     {
       label: "Login",
       href: "/login",
@@ -59,28 +59,20 @@ export const siteConfig = {
       href: "/airdrops",
     },
     {
+      label: "Favorites",
+      href: "/favorites",
+    },
+    {
+      label: "Tracker",
+      href: "/tracker",
+    },
+    {
       label: "Create",
       href: "/create",
     },
     {
       label: "Posts",
       href: "/create-post",
-    },
-    {
-      label: "Profile",
-      href: "/profile",
-    },
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      label: "Airdrops",
-      href: "/airdrops",
-    },
-    {
-      label: "Favorites",
-      href: "/favorites",
     },
     {
       label: "Help & Feedback",

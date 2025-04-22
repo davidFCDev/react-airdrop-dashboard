@@ -6,11 +6,13 @@ import CreatePage from "./pages/create";
 import CreatePostPage from "./pages/createPost";
 import DashboardPage from "./pages/dashboard";
 import EditPage from "./pages/edit";
+import EditPostPage from "./pages/editPost";
 import FavoritesPage from "./pages/favorites";
 import LoginPage from "./pages/login";
 import PostDetailsPage from "./pages/postDetails";
 import ProfilePage from "./pages/profile";
 import RegisterPage from "./pages/register";
+import TrackerPage from "./pages/tracker";
 import UnauthorizedPage from "./pages/unauthorized";
 
 import { RouteGuard } from "@/hoc/RouteGuard";
@@ -78,7 +80,15 @@ function App() {
           }
           path="/profile"
         />
-        {/* Ruta protegida solo para admin */}
+        <Route
+          element={
+            <RouteGuard>
+              <TrackerPage />
+            </RouteGuard>
+          }
+          path="/tracker"
+        />
+        {/* Rutas protegidas solo para admin */}
         <Route
           element={
             <RouteGuard requiredRole="admin">
@@ -102,6 +112,14 @@ function App() {
             </RouteGuard>
           }
           path="/edit/:id"
+        />
+        <Route
+          element={
+            <RouteGuard requiredRole="admin">
+              <EditPostPage />
+            </RouteGuard>
+          }
+          path="/edit-post/:id"
         />
       </Routes>
     </>

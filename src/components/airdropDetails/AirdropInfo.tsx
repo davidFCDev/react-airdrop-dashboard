@@ -37,7 +37,7 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
       <div className="flex items-center gap-4 mb-6">
         <h1 className="text-5xl font-bold">{airdrop.name}</h1>
         <div
-          className={`w-8 h-8 rounded-full animate-pulse ${statusDotColor}`}
+          className={`w-5 h-5 rounded-full animate-pulse ${statusDotColor}`}
         />
       </div>
       <div className="relative">

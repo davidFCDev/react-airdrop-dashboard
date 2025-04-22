@@ -1,25 +1,31 @@
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Input, Textarea } from "@heroui/input";
-import { useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useUserAuth } from "@/context/AuthContext";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import DefaultLayout from "@/layouts/default";
-import { postService } from "@/service/post.service";
+import { db } from "@/lib/firebase";
+import { Post, postService } from "@/service/post.service";
 
 interface Link {
   key: string;
   value: string;
 }
 
-const CreatePostPage = () => {
+const EditPostPage = () => {
   const { t } = useTranslation();
+  const { id } = useParams<{ id: string }>();
   const { role } = useUserAuth();
   const navigate = useNavigate();
   const { uploadFileToS3, uploading, error: uploadError } = useImageUpload();
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: { en: "", es: "" },
@@ -35,12 +41,65 @@ const CreatePostPage = () => {
   });
   const [links, setLinks] = useState<Link[]>([]);
   const [linkInput, setLinkInput] = useState<Link>({ key: "", value: "" });
-  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!id) {
+        setError(t("post.invalid_id"));
+        setLoading(false);
+
+        return;
+      }
+
+      try {
+        const postData = await postService.getPost(id);
+
+        if (!postData) {
+          setError(t("post.not_found"));
+        } else {
+          setPost(postData);
+          setFormData({
+            title: postData.title,
+            subtitle: postData.subtitle,
+            description: postData.description,
+          });
+          setImage({ file: null, preview: postData.image });
+          setLinks(postData.links);
+        }
+      } catch {
+        setError(t("post.error_fetching"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id, t]);
 
   if (role !== "admin") {
     navigate("/unauthorized");
 
     return null;
+  }
+
+  if (loading) {
+    return (
+      <DefaultLayout>
+        <section className="flex flex-col items-center justify-center p-10 min-h-screen">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </section>
+      </DefaultLayout>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <DefaultLayout>
+        <section className="flex flex-col items-start justify-start p-10">
+          <h1 className="text-2xl font-bold">{error || t("post.not_found")}</h1>
+        </section>
+      </DefaultLayout>
+    );
   }
 
   const handleChange = (
@@ -88,8 +147,7 @@ const CreatePostPage = () => {
       !formData.subtitle.en ||
       !formData.subtitle.es ||
       !formData.description.en ||
-      !formData.description.es ||
-      !image.file
+      !formData.description.es
     ) {
       setError(t("post.fill_all_fields"));
 
@@ -98,27 +156,31 @@ const CreatePostPage = () => {
 
     try {
       setError(null);
-      const imageUrl = await uploadFileToS3(image.file, "image");
+      let imageUrl = post.image;
 
-      await postService.createPost({
+      if (image.file) {
+        imageUrl = await uploadFileToS3(image.file, "image");
+      }
+      await updateDoc(doc(db, "posts", id!), {
         image: imageUrl,
         title: formData.title,
         subtitle: formData.subtitle,
         description: formData.description,
         links,
+        last_edited: new Date().toISOString(),
       });
       navigate("/dashboard");
     } catch {
-      setError(t("post.create_error"));
+      setError(t("post.update_error"));
     }
   };
 
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center p-4">
-        <Card className="w-full max-w-2xl bg-default-50" shadow="none">
+        <Card className="w-full max-w-2xl">
           <CardHeader>
-            <h1 className="text-2xl font-bold">{t("post.create_title")}</h1>
+            <h1 className="text-2xl font-bold">{t("post.edit_title")}</h1>
           </CardHeader>
           <CardBody>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -219,7 +281,7 @@ const CreatePostPage = () => {
               {error && <p className="text-red-500">{error}</p>}
               {uploadError && <p className="text-red-500">{uploadError}</p>}
               <Button color="primary" isLoading={uploading} type="submit">
-                {t("post.create_button")}
+                {t("post.update_button")}
               </Button>
             </form>
           </CardBody>
@@ -229,4 +291,4 @@ const CreatePostPage = () => {
   );
 };
 
-export default CreatePostPage;
+export default EditPostPage;

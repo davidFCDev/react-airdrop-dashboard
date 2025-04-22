@@ -19,7 +19,10 @@
     "profile": "Perfil",
     "dashboard": "Panel",
     "logout": "Cerrar sesión",
-    "language": "Idioma"
+    "language": "Idioma",
+    "tracker": "Seguimiento",
+    "notifications": "Notificaciones",
+    "no_notifications": "No hay notificaciones"
   },
   "register": {
     "title": "Regístrate",
@@ -74,18 +77,21 @@
     "progress": "Progreso",
     "tasks": "Tareas",
     "important_links": "Links Importantes",
-    "notes": "Notas",
-    "add_note": "Añade una nota...",
-    "add": "Añadir",
     "daily_tasks": "Tareas Diarias",
     "general_tasks": "Tareas Generales",
     "no_notes": "No hay notas disponibles",
     "favorite": "Favorito",
     "actions": "Acciones",
+    "show_favorites": "Favoritos",
+    "show_all": "Todos",
+    "notes": "Notas",
+    "add_note": "Añadir nota",
+    "add": "Añadir",
+    "delete": "Eliminar",
     "add_favorite": "Añadir a favoritos",
     "remove_favorite": "Quitar de favoritos",
-    "show_favorites": "Favoritos",
-    "show_all": "Todos"
+    "invested": "Dinero invertido (USD)",
+    "received": "Dinero recibido (USD)"
   },
   "favorites": {
     "title": "Favoritos",
@@ -102,8 +108,14 @@
   "post": {
     "create_title": "Crear Publicación",
     "title": "Título",
+    "title_en": "Título (Inglés)",
+    "title_es": "Título (Español)",
     "subtitle": "Subtítulo",
+    "subtitle_en": "Subtítulo (Inglés)",
+    "subtitle_es": "Subtítulo (Español)",
     "description": "Descripción",
+    "description_en": "Descripción (Inglés)",
+    "description_es": "Descripción (Español)",
     "image": "Imagen",
     "links": "Enlaces",
     "link_key": "Nombre del enlace",
@@ -117,12 +129,40 @@
     "invalid_id": "ID de publicación inválido",
     "not_found": "Publicación no encontrada",
     "error_fetching": "Error al cargar la publicación",
-    "created_at": "Creado el"
+    "created_at": "Creado el",
+    "edit_title": "Editar Publicación",
+    "update_button": "Actualizar",
+    "update_error": "Error al actualizar la publicación",
+    "new": "Nuevo",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar esta publicación?",
+    "delete_error": "Error al eliminar la publicación"
+  },
+  "dashboard": {
+    "latest_airdrops": "Últimos Airdrops",
+    "important_news": "Noticias Importantes",
+    "notes": "Notas Importantes",
+    "add_note": "Añadir nota",
+    "add": "Añadir",
+    "delete": "Eliminar"
+  },
+  "tracker": {
+    "title": "Seguimiento de Beneficios",
+    "total_profit": "Beneficio Total",
+    "airdrop": "Airdrop",
+    "invested": "Invertido",
+    "received": "Recibido",
+    "profit": "Beneficio",
+    "roi": "ROI"
   },
   "user": {
     "guest": "Invitado",
-    "total_favorites": "Airdrops favoritos",
-    "completed_tasks": "Tareas completadas",
-    "tasks_progress": "Progreso de tareas"
+    "started_airdrops": "Airdrops empezados",
+    "daily_tasks": "Tareas diarias",
+    "general_tasks": "Tareas generales",
+    "invested": "Dinero invertido",
+    "received": "Dinero recibido",
+    "profit": "Beneficio"
   }
 }

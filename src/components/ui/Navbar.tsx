@@ -1,4 +1,5 @@
 import { Avatar } from "@heroui/avatar";
+import { Button } from "@heroui/button";
 import {
   Dropdown,
   DropdownItem,
@@ -17,6 +18,9 @@ import {
 } from "@heroui/navbar";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -27,8 +31,9 @@ import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { siteConfig } from "@/config/site";
 import { image_avatar } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
+import { auth, db } from "@/lib/firebase";
+import { Post } from "@/service/post.service";
 
-// Mapeo de etiquetas a claves de traducción en snake_case
 const labelToTranslationKey: Record<string, string> = {
   Login: "login",
   Register: "register",
@@ -40,20 +45,111 @@ const labelToTranslationKey: Record<string, string> = {
   Profile: "profile",
   Dashboard: "dashboard",
   Logout: "logout",
+  Tracker: "tracker",
 };
 
 export const Navbar = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, role, signOut } = useUserAuth();
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState<Post[]>([]);
+  const [viewedPosts, setViewedPosts] = useState<Set<string>>(new Set());
+  const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Calcular unreadNotifications antes de usarlo
+  const unreadNotifications = notifications.filter(
+    (post) => !viewedPosts.has(post.id),
+  ).length;
+
+  // Definir items después de unreadNotifications
+  const items = [
+    {
+      key: "notifications",
+      label: `${t("navbar.notifications")} (${unreadNotifications})`,
+    },
+    { key: "logout", label: t("navbar.logout") },
+  ];
+
+  useEffect(() => {
+    // Esperar a que el estado de autenticación esté listo
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        setNotifications([]);
+        setError(null);
+
+        return;
+      }
+
+      const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
+      const unsubscribeSnapshot = onSnapshot(
+        q,
+        (snapshot) => {
+          const posts = snapshot.docs.map(
+            (doc) =>
+              ({
+                id: doc.id,
+                ...doc.data(),
+              }) as Post,
+          );
+
+          setNotifications(posts);
+          setError(null);
+        },
+        (err) => {
+          console.error("Firestore error in Navbar:", err);
+          setError(`Error fetching notifications: ${err.message}`);
+          setNotifications([]);
+        },
+      );
+
+      const storedViewed = localStorage.getItem(
+        `viewedPosts_${currentUser.uid}`,
+      );
+
+      if (storedViewed) {
+        setViewedPosts(new Set(JSON.parse(storedViewed)));
+      }
+
+      return () => unsubscribeSnapshot();
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
+
+  const handleNotificationClick = (postId: string) => {
+    const newViewed = new Set(viewedPosts).add(postId);
+
+    setViewedPosts(newViewed);
+    localStorage.setItem(
+      `viewedPosts_${user?.uid}`,
+      JSON.stringify([...newViewed]),
+    );
+    setIsMainDropdownOpen(false); // Cerrar el menú
+    setShowNotifications(false); // Ocultar notificaciones
+    navigate(`/posts/${postId}`);
+  };
+
+  const handleNotificationsToggle = () => {
+    console.log(
+      "Toggling notifications, showNotifications:",
+      !showNotifications,
+    );
+    setShowNotifications((prev) => !prev);
+  };
 
   const desktopNavItems = siteConfig.navItems.filter((item) => {
     if (!user) {
       return ["Login", "Register", "Help & Feedback"].includes(item.label);
     } else if (role === "user") {
-      return ["Dashboard", "Airdrops", "Favorites", "Help & Feedback"].includes(
-        item.label,
-      );
+      return [
+        "Dashboard",
+        "Airdrops",
+        "Favorites",
+        "Tracker",
+        "Help & Feedback",
+      ].includes(item.label);
     } else if (role === "admin") {
       return [
         "Dashboard",
@@ -61,17 +157,13 @@ export const Navbar = () => {
         "Create",
         "Posts",
         "Favorites",
+        "Tracker",
         "Help & Feedback",
       ].includes(item.label);
     }
 
     return false;
   });
-
-  const items = [
-    { key: "profile", label: t("navbar.profile") },
-    { key: "logout", label: t("navbar.logout") },
-  ];
 
   const mobileNavItems = siteConfig.navMenuItems.filter((item) => {
     if (!user) {
@@ -80,20 +172,20 @@ export const Navbar = () => {
       );
     } else if (role === "user") {
       return [
-        "Profile",
         "Dashboard",
         "Airdrops",
         "Favorites",
+        "Tracker",
         "Help & Feedback",
         "Logout",
       ].includes(item.label);
     } else if (role === "admin") {
       return [
-        "Profile",
         "Dashboard",
         "Airdrops",
         "Favorites",
         "Posts",
+        "Tracker",
         "Help & Feedback",
         "Create",
         "Logout",
@@ -104,11 +196,11 @@ export const Navbar = () => {
   });
 
   const handleDropdownAction = (key: string) => {
-    if (key === "profile") {
-      navigate("/profile");
-    } else if (key === "logout") {
+    if (key === "logout") {
       signOut();
       navigate("/");
+      setIsMainDropdownOpen(false);
+      setShowNotifications(false);
     }
   };
 
@@ -177,19 +269,31 @@ export const Navbar = () => {
 
         {user && (
           <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
-            <Dropdown>
+            <Dropdown
+              isOpen={isMainDropdownOpen}
+              onOpenChange={setIsMainDropdownOpen}
+            >
               <DropdownTrigger>
-                <Avatar
-                  isBordered
-                  className="cursor-pointer"
-                  color="primary"
-                  radius="md"
-                  size="sm"
-                  src={image_avatar}
-                />
+                <div className="relative">
+                  <Avatar
+                    isBordered
+                    className="cursor-pointer"
+                    color="primary"
+                    name={user?.email?.charAt(0).toUpperCase() || "?"}
+                    radius="md"
+                    size="sm"
+                    src={image_avatar}
+                  />
+                  {unreadNotifications > 0 && (
+                    <span className="absolute bottom-0 right-0 bg-danger text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadNotifications}
+                    </span>
+                  )}
+                </div>
               </DropdownTrigger>
               <DropdownMenu
                 aria-label="User Actions"
+                className="z-50" // Asegurar visibilidad
                 items={items}
                 onAction={(key) => handleDropdownAction(key as string)}
               >
@@ -198,8 +302,61 @@ export const Navbar = () => {
                     key={item.key}
                     className={item.key === "logout" ? "text-danger" : ""}
                     color={item.key === "logout" ? "danger" : "default"}
+                    textValue={item.label}
                   >
-                    {item.label}
+                    {item.key === "notifications" ? (
+                      <div className="w-full">
+                        <Button
+                          aria-controls="notifications-submenu"
+                          aria-expanded={showNotifications}
+                          className="w-full text-left justify-start"
+                          variant="light"
+                          onPress={handleNotificationsToggle}
+                        >
+                          {item.label}
+                        </Button>
+                        {showNotifications && (
+                          <div
+                            className="mt-2 bg-default-100 border border-default-200 rounded-md shadow-lg p-2 z-50"
+                            id="notifications-submenu"
+                          >
+                            {error ? (
+                              <div className="px-3 py-2 text-sm text-danger">
+                                {t("navbar.error_notifications")}
+                              </div>
+                            ) : notifications.length === 0 ? (
+                              <div className="px-3 py-2 text-sm">
+                                {t("navbar.no_notifications")}
+                              </div>
+                            ) : (
+                              notifications.map((post) => (
+                                <button
+                                  key={post.id}
+                                  aria-label={
+                                    i18n.language === "es"
+                                      ? post.title.es
+                                      : post.title.en
+                                  }
+                                  className={clsx(
+                                    "w-full text-left px-3 py-2 text-sm hover:bg-default-200 rounded",
+                                    !viewedPosts.has(post.id) && "font-bold",
+                                  )}
+                                  onClick={() =>
+                                    handleNotificationClick(post.id)
+                                  }
+                                >
+                                  {i18n.language === "es"
+                                    ? post.title.es
+                                    : post.title.en}
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      item.label
+                    )}
                   </DropdownItem>
                 )}
               </DropdownMenu>

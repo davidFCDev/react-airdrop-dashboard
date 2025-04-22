@@ -1,19 +1,26 @@
+import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Image } from "@heroui/image";
 import { Link } from "@heroui/link";
+import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { useUserAuth } from "@/context/AuthContext";
 import DefaultLayout from "@/layouts/default";
+import { db } from "@/lib/firebase";
 import { Post, postService } from "@/service/post.service";
 
 const PostDetailsPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
+  const { role } = useUserAuth();
+  const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -42,6 +49,19 @@ const PostDetailsPage = () => {
     fetchPost();
   }, [id, t]);
 
+  const handleDelete = async () => {
+    if (!id || !window.confirm(t("post.confirm_delete"))) return;
+    setIsDeleting(true);
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      navigate("/dashboard");
+    } catch {
+      setError(t("post.delete_error"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <DefaultLayout>
@@ -62,21 +82,26 @@ const PostDetailsPage = () => {
     );
   }
 
+  const title = i18n.language === "es" ? post.title.es : post.title.en;
+  const subtitle = i18n.language === "es" ? post.subtitle.es : post.subtitle.en;
+  const description =
+    i18n.language === "es" ? post.description.es : post.description.en;
+
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center p-4">
         <Card className="w-full max-w-3xl">
           <CardHeader>
-            <h1 className="text-3xl font-bold">{post.title}</h1>
+            <h1 className="text-3xl font-bold">{title}</h1>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
             <Image
-              alt={post.title}
+              alt={title}
               className="w-full h-64 object-cover"
               src={post.image}
             />
-            <h2 className="text-xl font-semibold">{post.subtitle}</h2>
-            <p className="text-default-600">{post.description}</p>
+            <h2 className="text-xl font-semibold">{subtitle}</h2>
+            <p className="text-default-600">{description}</p>
             {post.links.length > 0 && (
               <div className="flex flex-col gap-2">
                 <h3 className="font-semibold">{t("post.links")}</h3>
@@ -92,10 +117,31 @@ const PostDetailsPage = () => {
                 ))}
               </div>
             )}
-            <p className="text-sm text-default-500">
-              {t("post.created_at")}:{" "}
-              {new Date(post.created_at).toLocaleDateString()}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-default-500">
+                {t("post.created_at")}:{" "}
+                {new Date(post.created_at).toLocaleDateString()}
+              </p>
+              {role === "admin" && (
+                <div className="flex gap-2">
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onPress={() => navigate(`/edit-post/${post.id}`)}
+                  >
+                    {t("post.edit")}
+                  </Button>
+                  <Button
+                    color="danger"
+                    isLoading={isDeleting}
+                    size="sm"
+                    onPress={handleDelete}
+                  >
+                    {t("post.delete")}
+                  </Button>
+                </div>
+              )}
+            </div>
           </CardBody>
         </Card>
       </section>

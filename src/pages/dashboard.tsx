@@ -1,35 +1,84 @@
 import { Divider } from "@heroui/divider";
-import { useEffect } from "react";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import AirdropCard from "@/components/AirdropCard";
+import NotesSection from "@/components/NotesSection";
 import PostCard from "@/components/PostCard";
 import UserSummary from "@/components/UserSummary";
 import { useUserAuth } from "@/context/AuthContext";
 import DefaultLayout from "@/layouts/default";
+import { db } from "@/lib/firebase";
 import { useAirdropStore } from "@/store/airdropStore";
 import { usePostStore } from "@/store/postStore";
 
+export interface Note {
+  id: string;
+  content: string;
+  created_at: string;
+}
+
 const DashboardPage = () => {
+  const { t } = useTranslation();
   const { user } = useUserAuth();
-  const { airdrops, fetchAirdrops, favorites, fetchFavorites } =
-    useAirdropStore();
+  const { airdrops, fetchAirdrops, fetchFavorites } = useAirdropStore();
   const { posts, fetchPosts } = usePostStore();
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
     const unsubscribeAirdrops = fetchAirdrops();
     const unsubscribePosts = fetchPosts();
     let unsubscribeFavorites: (() => void) | undefined;
+    let unsubscribeNotes: (() => void) | undefined;
 
     if (user?.uid) {
       unsubscribeFavorites = fetchFavorites(user.uid);
+      const notesRef = doc(db, "user_notes", user.uid);
+
+      unsubscribeNotes = onSnapshot(notesRef, (docSnap) => {
+        if (docSnap.exists()) {
+          setNotes(docSnap.data().notes || []);
+        }
+      });
     }
 
     return () => {
       unsubscribeAirdrops();
       unsubscribePosts();
       if (unsubscribeFavorites) unsubscribeFavorites();
+      if (unsubscribeNotes) unsubscribeNotes();
     };
   }, [user, fetchAirdrops, fetchFavorites, fetchPosts]);
+
+  const handleAddNote = async () => {
+    if (!user?.uid || !newNote.trim()) return;
+    const newNoteObj: Note = {
+      id: new Date().toISOString(),
+      content: newNote,
+      created_at: new Date().toISOString(),
+    };
+    const updatedNotes = [...notes, newNoteObj];
+
+    try {
+      await setDoc(doc(db, "user_notes", user.uid), { notes: updatedNotes });
+      setNewNote("");
+    } catch {
+      // Handle error
+    }
+  };
+
+  const handleRemoveNote = async (noteId: string) => {
+    if (!user?.uid) return;
+    const updatedNotes = notes.filter((note) => note.id !== noteId);
+
+    try {
+      await setDoc(doc(db, "user_notes", user.uid), { notes: updatedNotes });
+    } catch {
+      // Handle error
+    }
+  };
 
   const latestAirdrops = airdrops
     .sort(
@@ -46,30 +95,47 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row  min-h-screen">
-        {/* Columna 1: Resumen del usuario */}
-        <div className="w-full md:w-1/6 border-r border-default-300">
+      <section className="flex flex-col md:flex-row min-h-screen border-b border-default-300">
+        <div className="w-full md:w-72 border-r border-default-300">
           <UserSummary />
         </div>
-        {/* Columna 2: Airdrops y Posts */}
-        <div className="w-full md:w-5/6 flex flex-col gap-6">
-          {/* Fila 1: Últimos Airdrops */}
+        <div className="w-full flex flex-col bg-default-100">
           <div>
-            <h2 className="text-2xl font-bold mb-4">Latest Airdrops</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <h2 className="text-2xl font-bold p-4 bg-default-50">
+              {t("dashboard.latest_airdrops")}
+            </h2>
+            <Divider className="w-full" />
+            <div className="flex gap-4 p-4">
               {latestAirdrops.map((airdrop) => (
                 <AirdropCard key={airdrop.id} airdrop={airdrop} />
               ))}
             </div>
           </div>
           <Divider className="w-full" />
-          {/* Fila 2: Últimos Posts */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Latest Posts</h2>
-            <div className="flex flex-col gap-4">
-              {latestPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/2">
+              <h2 className="text-2xl font-bold p-4 bg-default-50">
+                {t("dashboard.important_news")}
+              </h2>
+              <Divider className="w-full" />
+              <div className="flex flex-col gap-4 p-4">
+                {latestPosts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 border-l border-default-300">
+              <h2 className="text-2xl font-bold p-4 bg-default-50">
+                {t("dashboard.notes")}
+              </h2>
+              <Divider className="w-full" />
+              <NotesSection
+                handleAddNote={handleAddNote}
+                handleRemoveNote={handleRemoveNote}
+                newNote={newNote}
+                notes={notes}
+                setNewNote={setNewNote}
+              />
             </div>
           </div>
         </div>

@@ -1,8 +1,7 @@
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Card, CardFooter, CardHeader } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Image } from "@heroui/image";
 import { Link as HeroUILink } from "@heroui/link";
-import { CircularProgress } from "@heroui/progress";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +17,6 @@ import {
   statusColorMap,
   tierColorMap,
 } from "@/constants/airdrop.table";
-import { useUserAirdrop } from "@/hooks/useUserAirdrop";
 
 interface Props {
   airdrop: Airdrop;
@@ -27,7 +25,6 @@ interface Props {
 const AirdropCard = ({ airdrop }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { progress } = useUserAirdrop(airdrop.id);
 
   const handleCardClick = () => {
     navigate(`/airdrops/${airdrop.id}`, { state: { airdrop } });
@@ -36,7 +33,8 @@ const AirdropCard = ({ airdrop }: Props) => {
   return (
     <Card
       isPressable
-      className="w-[300px] bg-default-100 cursor-pointer hover:bg-default-200 transition-colors"
+      className="w-[250px] bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200"
+      radius="none"
       shadow="sm"
       onPress={handleCardClick}
     >
@@ -55,13 +53,6 @@ const AirdropCard = ({ airdrop }: Props) => {
               <span className="text-xs text-default-600">{airdrop.type}</span>
             </div>
           </div>
-          <CircularProgress
-            color="success"
-            formatOptions={{ style: "unit", unit: "percent" }}
-            showValueLabel={true}
-            size="md"
-            value={progress}
-          />
         </div>
 
         <div className="flex gap-2 flex-wrap w-full">
@@ -91,7 +82,7 @@ const AirdropCard = ({ airdrop }: Props) => {
           </Chip>
         </div>
       </CardHeader>
-      <CardBody />
+
       <CardFooter className="flex justify-end gap-2">
         <div className="flex gap-2">
           {airdrop.url && (

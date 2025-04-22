@@ -1,12 +1,10 @@
-export const statusColorMap: Record<
-  Status,
-  "success" | "warning" | "default" | "danger"
-> = {
-  Confirmed: "success",
-  "Not Confirmed": "warning",
-  Posible: "default",
-  Ended: "danger",
-};
+export const statusColorMap: Record<Status, "success" | "warning" | "danger"> =
+  {
+    Confirmed: "success",
+    "Not Confirmed": "warning",
+    Posible: "warning",
+    Ended: "danger",
+  };
 
 export const tierColorMap: Record<
   Tier,
@@ -34,7 +32,7 @@ export const costColorMap: Record<
   "success" | "warning" | "danger" | "primary"
 > = {
   FREE: "success",
-  "FREE/Optional Cost": "primary",
+  "Low Cost": "warning",
   "Gas Fees": "warning",
   Liquidity: "danger",
 };
@@ -102,12 +100,7 @@ export const status = [
   "Posible",
   "Ended",
 ] as const;
-export const cost = [
-  "FREE",
-  "FREE/Optional Cost",
-  "Gas Fees",
-  "Liquidity",
-] as const;
+export const cost = ["FREE", "Low Cost", "Gas Fees", "Liquidity"] as const;
 
 export type AirdropType = (typeof types)[number];
 export type Tier = (typeof tiers)[number];

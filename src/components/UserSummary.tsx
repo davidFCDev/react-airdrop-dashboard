@@ -1,56 +1,152 @@
 import { Avatar } from "@heroui/avatar";
 import { Card, CardBody, CardHeader } from "@heroui/card";
-import { CircularProgress } from "@heroui/progress";
+import { Progress } from "@heroui/progress";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useUserAuth } from "@/context/AuthContext";
 import { useFavoriteAirdropSummaries } from "@/hooks/useDashboard";
+import { db } from "@/lib/firebase";
 import { useAirdropStore } from "@/store/airdropStore";
+
+interface UserAirdropData {
+  invested: number;
+  received: number;
+}
 
 const UserSummary = () => {
   const { t } = useTranslation();
   const { user } = useUserAuth();
   const { airdrops, favorites } = useAirdropStore();
-  const { totalTasks, completedTasks } = useFavoriteAirdropSummaries();
+  const {
+    totalDailyTasks,
+    completedDailyTasks,
+    totalGeneralTasks,
+    completedGeneralTasks,
+  } = useFavoriteAirdropSummaries();
+  const [userAirdropData, setUserAirdropData] = useState<
+    Map<string, UserAirdropData>
+  >(new Map());
+
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const favoriteAirdropIds = airdrops
+      .filter((airdrop) => favorites.has(airdrop.id))
+      .map((airdrop) => airdrop.id);
+    const unsubscribe = favoriteAirdropIds.map((airdropId) => {
+      const userAirdropRef = doc(
+        db,
+        "user_airdrops",
+        user.uid,
+        "airdrops",
+        airdropId,
+      );
+
+      return onSnapshot(userAirdropRef, (docSnap) => {
+        if (docSnap.exists()) {
+          setUserAirdropData((prev) =>
+            new Map(prev).set(airdropId, docSnap.data() as UserAirdropData),
+          );
+        }
+      });
+    });
+
+    return () => unsubscribe.forEach((unsub) => unsub());
+  }, [user, airdrops, favorites]);
 
   const favoriteAirdrops = airdrops.filter((airdrop) =>
     favorites.has(airdrop.id),
   );
   const totalFavorites = favoriteAirdrops.length;
+  const totalInvested = favoriteAirdrops.reduce((sum, airdrop) => {
+    const data = userAirdropData.get(airdrop.id);
 
-  const progress =
-    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+    return sum + (data?.invested || 0);
+  }, 0);
+  const totalReceived = favoriteAirdrops.reduce((sum, airdrop) => {
+    const data = userAirdropData.get(airdrop.id);
+
+    return sum + (data?.received || 0);
+  }, 0);
+  const totalProfit = totalReceived - totalInvested;
+
+  const dailyProgress =
+    totalDailyTasks > 0
+      ? Math.round((completedDailyTasks / totalDailyTasks) * 100)
+      : 0;
+  const generalProgress =
+    totalGeneralTasks > 0
+      ? Math.round((completedGeneralTasks / totalGeneralTasks) * 100)
+      : 0;
 
   return (
-    <Card className="w-full h-full bg-default-50" shadow="none">
-      <CardHeader className="flex flex-col items-start">
-        <Avatar
-          className="mb-2"
-          name={user?.email?.charAt(0).toUpperCase() || "?"}
-          size="lg"
-          src={user?.photoURL || undefined}
-        />
-        <h2 className="text-lg font-bold">{user?.email || t("user.guest")}</h2>
-      </CardHeader>
-      <CardBody className="flex flex-col gap-4">
-        <div>
-          <p className="font-semibold">{t("user.total_favorites")}</p>
-          <p>{totalFavorites}</p>
-        </div>
-        <div>
-          <p className="font-semibold">{t("user.completed_tasks")}</p>
-          <p>{`${completedTasks} / ${totalTasks}`}</p>
-        </div>
-        <div className="flex flex-col items-center">
-          <CircularProgress
-            showValueLabel
-            aria-label="Tasks progress"
-            color="success"
-            formatOptions={{ style: "percent" }}
+    <Card className="w-full h-full bg-default-100 p-1" radius="none">
+      <CardHeader className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center gap-4 border border-default-200 bg-default-50 px-4 py-16 w-full">
+          <Avatar
+            alt="Avatar"
+            name={user?.email?.charAt(0).toUpperCase() || "?"}
+            radius="md"
             size="lg"
-            value={progress}
+            src={user?.photoURL || undefined}
           />
-          <p className="text-sm mt-2">{t("user.tasks_progress")}</p>
+          <h2 className="text-base font-bold">
+            {user?.email || t("user.guest")}
+          </h2>
+        </div>
+      </CardHeader>
+      <CardBody className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 border border-default-200 bg-default-50 p-4">
+          <div className="flex items-center gap-2">
+            <p className="font-semibold">{t("user.invested")}:</p>
+            <p className="text-success">{totalInvested.toFixed(2)} USD</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold">{t("user.received")}:</p>
+            <p className="text-success">{totalReceived.toFixed(2)} USD</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold">{t("user.profit")}:</p>
+            <p className={totalProfit >= 0 ? "text-success" : "text-danger"}>
+              {totalProfit.toFixed(2)} USD
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 border border-default-200 bg-default-50 p-4">
+          <p className="font-semibold">{t("user.started_airdrops")}:</p>
+          <p className="text-success">{totalFavorites}</p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="border border-default-200 bg-default-50 p-4 flex flex-col gap-2">
+            <p className="font-semibold">{t("user.daily_tasks")}</p>
+            <div className="flex items-center gap-2">
+              <Progress
+                aria-label="Daily tasks progress"
+                className="mt-2 flex-grow"
+                color="success"
+                formatOptions={{ style: "percent" }}
+                value={dailyProgress}
+              />
+              <p className="text-sm text-default-500">{`${dailyProgress}%`}</p>
+            </div>
+            <p className="text-sm text-default-500 mt-1">{`${completedDailyTasks} / ${totalDailyTasks}`}</p>
+          </div>
+          <div className="border border-default-200 bg-default-50 p-4 flex flex-col gap-2">
+            <p className="font-semibold">{t("user.general_tasks")}</p>
+            <div className="flex items-center gap-2">
+              <Progress
+                aria-label="General tasks progress"
+                className="mt-2 flex-grow"
+                color="success"
+                formatOptions={{ style: "percent" }}
+                value={generalProgress}
+              />
+              <p className="text-sm text-default-500">{`${generalProgress}%`}</p>
+            </div>
+            <p className="text-sm text-default-500 mt-1">{`${completedGeneralTasks} / ${totalGeneralTasks}`}</p>
+          </div>
         </div>
       </CardBody>
     </Card>

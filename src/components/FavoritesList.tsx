@@ -40,9 +40,9 @@ const FavoriteAirdrops = () => {
   return (
     <div>
       {favorites.length === 0 ? (
-        <p>{t("airdrop.no_favorites")}</p>
+        <p className="font-light">{t("favorites.no_favorites")}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-4 justify-center">
           {favorites.map((airdrop) => (
             <AirdropCard key={airdrop.id} airdrop={airdrop} />
           ))}

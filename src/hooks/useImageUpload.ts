@@ -9,7 +9,8 @@ export const useImageUpload = () => {
     async (file: File, imageType: "backdrop" | "image"): Promise<string> => {
       const functionUrl =
         "https://us-central1-react-airdrop-dashboard.cloudfunctions.net/uploadImageToS3";
-      const maxSize = 1024;
+      const maxSize = 2048; // Aumentado de 1024 a 2048 para mejor calidad
+      const quality = 0.9; // Calidad para JPEG (0.0 a 1.0)
       const img = new Image();
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -18,27 +19,49 @@ export const useImageUpload = () => {
         img.onload = () => {
           let { width, height } = img;
 
-          if (width > maxSize) {
-            height = (maxSize / width) * height;
-            width = maxSize;
+          // Solo redimensionar si la imagen es más grande que maxSize
+          if (width > maxSize || height > maxSize) {
+            const scale = Math.min(maxSize / width, maxSize / height);
+
+            width = width * scale;
+            height = height * scale;
           }
+
           canvas.width = width;
           canvas.height = height;
           ctx?.drawImage(img, 0, 0, width, height);
+
+          // Usar calidad alta para JPEG, sin compresión para PNG
+          const mimeType =
+            file.type === "image/jpeg" ? "image/jpeg" : file.type;
           const base64Data = canvas
-            .toDataURL(file.type)
+            .toDataURL(
+              mimeType,
+              mimeType === "image/jpeg" ? quality : undefined,
+            )
             .replace(/^data:image\/\w+;base64,/, "");
 
+          setUploading(true);
           axios
             .post(functionUrl, {
               imageData: `data:image/${file.type.split("/")[1]};base64,${base64Data}`,
               fileName: file.name,
               imageType,
             })
-            .then((response) => resolve(response.data.url))
-            .catch(() => reject(new Error("Error al subir la imagen")));
+            .then((response) => {
+              setUploading(false);
+              resolve(response.data.url);
+            })
+            .catch(() => {
+              setUploading(false);
+              setError("Error al subir la imagen");
+              reject(new Error("Error al subir la imagen"));
+            });
         };
-        img.onerror = () => reject(new Error("Error al procesar la imagen"));
+        img.onerror = () => {
+          setError("Error al procesar la imagen");
+          reject(new Error("Error al procesar la imagen"));
+        };
         img.src = URL.createObjectURL(file);
       });
     },

@@ -15,6 +15,7 @@ const AirdropDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const {
     airdrop,
+    userAirdropData,
     completedTasks,
     notes,
     progress,
@@ -23,6 +24,7 @@ const AirdropDetailsPage = () => {
     toggleTask,
     addNote,
     removeNote,
+    updateInvestment,
   } = useUserAirdrop(id || "");
   const [newNote, setNewNote] = useState("");
 
@@ -85,10 +87,13 @@ const AirdropDetailsPage = () => {
               />
               <AirdropNotes
                 handleAddNote={handleAddNote}
+                invested={userAirdropData?.invested || 0}
                 newNote={newNote}
                 notes={notes}
+                received={userAirdropData?.received || 0}
                 removeNote={removeNote}
                 setNewNote={setNewNote}
+                updateInvestment={updateInvestment}
               />
             </div>
           </div>

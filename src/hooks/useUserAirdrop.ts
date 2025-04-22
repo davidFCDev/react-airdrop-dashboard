@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 import { Airdrop } from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
+import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
 
 interface TaskStatus {
@@ -11,7 +13,7 @@ interface TaskStatus {
 
 interface Note {
   id: string;
-  text: string;
+  content: string;
   created_at: string;
 }
 
@@ -20,6 +22,8 @@ interface UserAirdropData {
   daily_tasks: TaskStatus[];
   general_tasks: TaskStatus[];
   notes: Note[];
+  invested: number;
+  received: number;
 }
 
 export const useUserAirdrop = (airdropId: string) => {
@@ -30,168 +34,84 @@ export const useUserAirdrop = (airdropId: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = useCallback(async () => {
-    if (!airdropId) {
-      setError("ID del airdrop no proporcionado");
-      setLoading(false);
-
-      return;
-    }
-
-    if (!user) {
-      setError("Usuario no autenticado");
-      setLoading(false);
-
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      // Obtener datos del airdrop
-      const airdropData = await airdropService.getAirdrop(airdropId);
-
-      if (!airdropData) {
-        setError("Airdrop no encontrado");
-        setLoading(false);
-
-        return;
-      }
-      setAirdrop(airdropData);
-
-      // Intentar inicializar datos del usuario
-      try {
-        await airdropService.initializeUserAirdrop(airdropId);
-      } catch (initError) {
-        console.warn("No se pudo inicializar datos del usuario:", initError);
-        // Continuar para obtener datos existentes
-      }
-
-      // Obtener datos del usuario
-      const userData = await airdropService.getUserAirdropData(airdropId);
-
-      setUserAirdropData(
-        userData || {
-          favorite: false,
-          daily_tasks: [],
-          general_tasks: [],
-          notes: [],
-        },
-      );
-    } catch (err) {
-      setError(
-        `Error al cargar datos: ${err instanceof Error ? err.message : "Desconocido"}`,
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [user, airdropId]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!airdropId) {
+      setError("Invalid airdrop ID");
+      setLoading(false);
 
-  const completedTasks = new Set<string>([
-    ...(userAirdropData?.daily_tasks.filter((t) => t.completed) || []).map(
-      (t) => `daily_${t.id.split("_")[1]}`,
-    ),
-    ...(userAirdropData?.general_tasks.filter((t) => t.completed) || []).map(
-      (t) => `general_${t.id.split("_")[1]}`,
-    ),
-  ]);
+      return;
+    }
 
-  const toggleTask = useCallback(
-    async (taskType: "daily" | "general", taskIndex: number) => {
-      if (!userAirdropData) return;
-      const taskId = `${taskType}_${taskIndex}`;
-      const tasks = userAirdropData[`${taskType}_tasks`];
-      const task = tasks.find((t) => t.id === taskId);
-
-      if (!task) return;
-
+    const fetchAirdrop = async () => {
       try {
-        const newCompleted = !task.completed;
+        const airdropData = await airdropService.getAirdrop(airdropId);
 
-        await airdropService.toggleTaskCompletion(
-          airdropId,
-          taskType,
-          taskId,
-          newCompleted,
-        );
-        setUserAirdropData((prev) =>
-          prev
-            ? {
-                ...prev,
-                [`${taskType}_tasks`]: prev[`${taskType}_tasks`].map((t) =>
-                  t.id === taskId ? { ...t, completed: newCompleted } : t,
-                ),
-              }
-            : prev,
-        );
-      } catch {
-        setError("Error al actualizar tarea");
-      }
-    },
-    [airdropId, userAirdropData],
-  );
+        if (!airdropData) {
+          setError("Airdrop not found");
+          setLoading(false);
 
-  const addNote = useCallback(
-    async (text: string) => {
-      if (!text.trim()) return;
-      try {
-        await airdropService.addNote(airdropId, text);
-        setUserAirdropData((prev) =>
-          prev
-            ? {
-                ...prev,
-                notes: [
-                  ...prev.notes,
-                  {
-                    id: `note_${Date.now()}`,
-                    text,
-                    created_at: new Date().toISOString(),
-                  },
-                ],
-              }
-            : prev,
+          return;
+        }
+        setAirdrop(airdropData);
+      } catch (err) {
+        setError(
+          `Error fetching airdrop: ${err instanceof Error ? err.message : "Unknown"}`,
         );
-      } catch {
-        setError("Error al añadir nota");
       }
-    },
-    [airdropId],
-  );
+    };
 
-  const removeNote = useCallback(
-    async (noteId: string) => {
-      try {
-        await airdropService.removeNote(airdropId, noteId);
-        setUserAirdropData((prev) =>
-          prev
-            ? {
-                ...prev,
-                notes: prev.notes.filter((note) => note.id !== noteId),
-              }
-            : prev,
-        );
-      } catch {
-        setError("Error al eliminar nota");
-      }
-    },
-    [airdropId],
-  );
+    fetchAirdrop();
 
-  const toggleFavorite = useCallback(
-    async (favorite: boolean) => {
-      try {
-        await airdropService.toggleFavorite(airdropId, favorite);
-        setUserAirdropData((prev) => (prev ? { ...prev, favorite } : prev));
-      } catch {
-        setError("Error al actualizar favoritos");
-      }
-    },
-    [airdropId],
-  );
+    if (!user?.uid) {
+      setUserAirdropData(null);
+      setLoading(false);
+
+      return;
+    }
+
+    const userAirdropRef = doc(
+      db,
+      "user_airdrops",
+      user.uid,
+      "airdrops",
+      airdropId,
+    );
+    const unsubscribe = onSnapshot(
+      userAirdropRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setUserAirdropData(docSnap.data() as UserAirdropData);
+        } else {
+          airdropService.initializeUserAirdrop(airdropId).then(() => {
+            setUserAirdropData({
+              favorite: false,
+              daily_tasks: [],
+              general_tasks: [],
+              notes: [],
+              invested: 0,
+              received: 0,
+            });
+          });
+        }
+        setLoading(false);
+      },
+      (err) => {
+        setError(`Error fetching user airdrop data: ${err.message}`);
+        setLoading(false);
+      },
+    );
+
+    return () => unsubscribe();
+  }, [airdropId, user]);
+
+  const completedTasks = new Set<string>();
+
+  userAirdropData?.daily_tasks.forEach((task, index) => {
+    if (task.completed) completedTasks.add(`daily_${index}`);
+  });
+  userAirdropData?.general_tasks.forEach((task, index) => {
+    if (task.completed) completedTasks.add(`general_${index}`);
+  });
 
   const progress =
     airdrop && userAirdropData
@@ -200,8 +120,111 @@ export const useUserAirdrop = (airdropId: string) => {
             (airdrop.user.daily_tasks.length +
               airdrop.user.general_tasks.length)) *
             100,
-        ) || 0
+        )
       : 0;
+
+  const toggleTask = async (type: "daily" | "general", index: number) => {
+    if (!userAirdropData || !airdrop || !user?.uid) return;
+
+    const tasks =
+      type === "daily"
+        ? userAirdropData.daily_tasks
+        : userAirdropData.general_tasks;
+    const newTasks = [...tasks];
+
+    newTasks[index] = {
+      ...newTasks[index],
+      completed: !newTasks[index].completed,
+    };
+
+    try {
+      const userAirdropRef = doc(
+        db,
+        "user_airdrops",
+        user.uid,
+        "airdrops",
+        airdropId,
+      );
+
+      await updateDoc(userAirdropRef, {
+        [`${type}_tasks`]: newTasks,
+        favorite: true,
+      });
+    } catch (err) {
+      setError(
+        `Error updating task: ${err instanceof Error ? err.message : "Unknown"}`,
+      );
+    }
+  };
+
+  const addNote = async (content: string) => {
+    if (!userAirdropData || !user?.uid) return;
+
+    const newNote: Note = {
+      id: new Date().toISOString(),
+      content,
+      created_at: new Date().toISOString(),
+    };
+    const newNotes = [...userAirdropData.notes, newNote];
+
+    try {
+      const userAirdropRef = doc(
+        db,
+        "user_airdrops",
+        user.uid,
+        "airdrops",
+        airdropId,
+      );
+
+      await updateDoc(userAirdropRef, { notes: newNotes });
+    } catch (err) {
+      setError(
+        `Error adding note: ${err instanceof Error ? err.message : "Unknown"}`,
+      );
+    }
+  };
+
+  const removeNote = async (noteId: string) => {
+    if (!userAirdropData || !user?.uid) return;
+
+    const newNotes = userAirdropData.notes.filter((note) => note.id !== noteId);
+
+    try {
+      const userAirdropRef = doc(
+        db,
+        "user_airdrops",
+        user.uid,
+        "airdrops",
+        airdropId,
+      );
+
+      await updateDoc(userAirdropRef, { notes: newNotes });
+    } catch (err) {
+      setError(
+        `Error removing note: ${err instanceof Error ? err.message : "Unknown"}`,
+      );
+    }
+  };
+
+  const updateInvestment = async (invested: number, received: number) => {
+    if (!userAirdropData || !user?.uid) return;
+
+    try {
+      const userAirdropRef = doc(
+        db,
+        "user_airdrops",
+        user.uid,
+        "airdrops",
+        airdropId,
+      );
+
+      await updateDoc(userAirdropRef, { invested, received });
+    } catch (err) {
+      setError(
+        `Error updating investment: ${err instanceof Error ? err.message : "Unknown"}`,
+      );
+    }
+  };
 
   return {
     airdrop,
@@ -214,6 +237,6 @@ export const useUserAirdrop = (airdropId: string) => {
     toggleTask,
     addNote,
     removeNote,
-    toggleFavorite,
+    updateInvestment,
   };
 };
