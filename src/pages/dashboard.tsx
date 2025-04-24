@@ -30,6 +30,7 @@ const DashboardPage = () => {
   const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
+    console.log("Total airdrops:", airdrops.length); // Para depurar
     const unsubscribeAirdrops = fetchAirdrops();
     const unsubscribePosts = fetchPosts();
     let unsubscribeFavorites: (() => void) | undefined;
@@ -87,7 +88,8 @@ const DashboardPage = () => {
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
-    .slice(0, 4);
+    .slice(0, 6); // Mantener 6 airdrops
+
   const latestPosts = posts
     .sort(
       (a, b) =>
@@ -108,11 +110,19 @@ const DashboardPage = () => {
               {t("dashboard.latest_airdrops")}
             </h2>
             <Divider className="w-full" />
-            <div className="flex gap-4 p-4">
-              {latestAirdrops.map((airdrop) => (
-                <AirdropCard key={airdrop.id} airdrop={airdrop} />
-              ))}
-            </div>
+            <ScrollShadow className="grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] gap-4 p-4  overflow-y-auto">
+              {latestAirdrops.length === 0 ? (
+                <p className="text-sm text-default-500">
+                  {t("dashboard.no_airdrops")}
+                </p>
+              ) : (
+                latestAirdrops.map((airdrop) => (
+                  <div key={airdrop.id}>
+                    <AirdropCard airdrop={airdrop} />
+                  </div>
+                ))
+              )}
+            </ScrollShadow>
           </div>
           <Divider className="w-full" />
           <div className="flex flex-col md:flex-row h-full">

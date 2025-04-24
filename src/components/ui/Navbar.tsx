@@ -1,5 +1,6 @@
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
+import { Card, CardBody, CardHeader } from "@heroui/card";
 import {
   Dropdown,
   DropdownItem,
@@ -16,6 +17,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/navbar";
+import { ScrollShadow } from "@heroui/scroll-shadow";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { onAuthStateChanged } from "firebase/auth";
@@ -26,7 +28,7 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -35,7 +37,7 @@ import { ThemeSwitch } from "../theme-switch";
 
 import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { siteConfig } from "@/config/site";
-import { avatar1 } from "@/constants"; // Default avatar
+import { avatar1 } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 import { auth, db } from "@/lib/firebase";
 import { Post } from "@/service/post.service";
@@ -58,6 +60,27 @@ const labelToTranslationKey: Record<string, string> = {
   Tracker: "tracker",
 };
 
+// Hook personalizado para detectar clics fuera
+const useOutsideClick = (callback: () => void) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [callback]);
+
+  return ref;
+};
+
 export const Navbar = () => {
   const { t, i18n } = useTranslation();
   const { user, role, signOut } = useUserAuth();
@@ -68,6 +91,11 @@ export const Navbar = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | undefined>(avatar1);
+
+  const notificationsRef = useOutsideClick(() => {
+    setIsNotificationsOpen(false);
+    setIsMainDropdownOpen(false);
+  });
 
   const unreadNotifications = notifications.filter(
     (post) => !viewedPosts.has(post.id),
@@ -121,11 +149,7 @@ export const Navbar = () => {
         q,
         (snapshot) => {
           const posts = snapshot.docs.map(
-            (doc) =>
-              ({
-                id: doc.id,
-                ...doc.data(),
-              }) as Post,
+            (doc) => ({ id: doc.id, ...doc.data() }) as Post,
           );
 
           setNotifications(posts);
@@ -168,8 +192,9 @@ export const Navbar = () => {
     navigate(`/posts/${postId}`);
   };
 
-  const handleNotificationsToggle = () => {
-    setIsNotificationsOpen((prev) => !prev);
+  const handleNotificationsOpen = () => {
+    setIsNotificationsOpen(true);
+    setIsMainDropdownOpen(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, postId?: string) => {
@@ -178,16 +203,20 @@ export const Navbar = () => {
       if (postId) {
         handleNotificationClick(postId);
       } else {
-        handleNotificationsToggle();
+        handleNotificationsOpen();
       }
     }
   };
 
-  const handleCloseOutside = (element: Element) => {
-    setIsMainDropdownOpen(false);
-    setIsNotificationsOpen(false);
-
-    return true;
+  const handleDropdownAction = (key: string) => {
+    if (key === "logout") {
+      signOut();
+      navigate("/");
+      setIsMainDropdownOpen(false);
+      setIsNotificationsOpen(false);
+    } else if (key === "notifications") {
+      handleNotificationsOpen();
+    }
   };
 
   const desktopNavItems = siteConfig.navItems.filter((item) => {
@@ -245,15 +274,6 @@ export const Navbar = () => {
 
     return false;
   });
-
-  const handleDropdownAction = (key: string) => {
-    if (key === "logout") {
-      signOut();
-      navigate("/");
-      setIsMainDropdownOpen(false);
-      setIsNotificationsOpen(false);
-    }
-  };
 
   return (
     <HeroUINavbar
@@ -321,10 +341,9 @@ export const Navbar = () => {
         {user && (
           <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
             <Dropdown
+              className="bg-default-100 border border-default-200"
               isOpen={isMainDropdownOpen}
-              shouldCloseOnInteractOutside={(element: Element) =>
-                !isNotificationsOpen
-              }
+              radius="none"
               onOpenChange={setIsMainDropdownOpen}
             >
               <DropdownTrigger>
@@ -340,7 +359,7 @@ export const Navbar = () => {
                     src={userAvatar}
                   />
                   {unreadNotifications > 0 && (
-                    <span className="absolute bottom-0 right-0 bg-danger text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="absolute -bottom-2 -right-2 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                       {unreadNotifications}
                     </span>
                   )}
@@ -361,86 +380,7 @@ export const Navbar = () => {
                     textValue={item.label}
                     onKeyDown={(e) => handleKeyDown(e)}
                   >
-                    {item.key === "notifications" ? (
-                      <div className="relative">
-                        <Button
-                          aria-controls="notifications-submenu"
-                          aria-expanded={isNotificationsOpen}
-                          aria-label={item.label}
-                          className="w-full text-left justify-start"
-                          variant="light"
-                          onPress={handleNotificationsToggle}
-                        >
-                          {item.label}
-                        </Button>
-                        {isNotificationsOpen && (
-                          <Dropdown
-                            isOpen={isNotificationsOpen}
-                            placement="left"
-                            shouldCloseOnInteractOutside={handleCloseOutside}
-                            onOpenChange={(open) =>
-                              setIsNotificationsOpen(open)
-                            }
-                          >
-                            <DropdownTrigger>
-                              <span className="hidden" />
-                            </DropdownTrigger>
-                            <DropdownMenu
-                              aria-label={t("navbar.notifications")}
-                              className="z-50 max-h-64 overflow-y-auto w-64"
-                              role="menu"
-                            >
-                              {error ? (
-                                <DropdownItem
-                                  key="error"
-                                  role="menuitem"
-                                  textValue="Error loading notifications"
-                                >
-                                  <span className="text-danger">
-                                    {t("navbar.error_notifications")}
-                                  </span>
-                                </DropdownItem>
-                              ) : sortedNotifications.length === 0 ? (
-                                <DropdownItem
-                                  key="no_notifications"
-                                  role="menuitem"
-                                  textValue={t("navbar.no_notifications")}
-                                >
-                                  {t("navbar.no_notifications")}
-                                </DropdownItem>
-                              ) : (
-                                sortedNotifications.map((post) => (
-                                  <DropdownItem
-                                    key={post.id}
-                                    className={
-                                      !viewedPosts.has(post.id)
-                                        ? "font-bold"
-                                        : ""
-                                    }
-                                    role="menuitem"
-                                    textValue={
-                                      i18n.language === "es"
-                                        ? post.title.es
-                                        : post.title.en
-                                    }
-                                    onKeyDown={(e) => handleKeyDown(e, post.id)}
-                                    onPress={() =>
-                                      handleNotificationClick(post.id)
-                                    }
-                                  >
-                                    {i18n.language === "es"
-                                      ? post.title.es
-                                      : post.title.en}
-                                  </DropdownItem>
-                                ))
-                              )}
-                            </DropdownMenu>
-                          </Dropdown>
-                        )}
-                      </div>
-                    ) : (
-                      item.label
-                    )}
+                    {item.label}
                   </DropdownItem>
                 )}
               </DropdownMenu>
@@ -481,6 +421,49 @@ export const Navbar = () => {
           ))}
         </div>
       </NavbarMenu>
+
+      {/* Tarjeta para notificaciones */}
+      {isNotificationsOpen && (
+        <Card
+          ref={notificationsRef}
+          className="absolute top-16 right-4 z-50 border border-default-200 bg-default-50"
+          radius="none"
+        >
+          <CardHeader className="px-4 py-2 border-b border-default-200">
+            {t("navbar.notifications")}
+          </CardHeader>
+          <CardBody className="p-0">
+            <ScrollShadow className="max-h-64 w-full">
+              {error ? (
+                <p className="p-4 text-danger">
+                  {t("navbar.error_notifications")}
+                </p>
+              ) : sortedNotifications.length === 0 ? (
+                <p className="p-4">{t("navbar.no_notifications")}</p>
+              ) : (
+                sortedNotifications.map((post) => (
+                  <Button
+                    key={post.id}
+                    aria-label={
+                      i18n.language === "es" ? post.title.es : post.title.en
+                    }
+                    className={`w-full justify-start px-4 py-2 text-left ${
+                      viewedPosts.has(post.id)
+                        ? "text-default-500"
+                        : "text-foreground"
+                    }`}
+                    variant="light"
+                    onKeyDown={(e) => handleKeyDown(e, post.id)}
+                    onPress={() => handleNotificationClick(post.id)}
+                  >
+                    {i18n.language === "es" ? post.title.es : post.title.en}
+                  </Button>
+                ))
+              )}
+            </ScrollShadow>
+          </CardBody>
+        </Card>
+      )}
     </HeroUINavbar>
   );
 };

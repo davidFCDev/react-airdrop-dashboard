@@ -33,12 +33,12 @@ const AirdropCard = ({ airdrop }: Props) => {
   return (
     <Card
       isPressable
-      className="w-[250px] bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200"
+      className="w-64 h-40 bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200 flex flex-col"
       radius="none"
       shadow="sm"
       onPress={handleCardClick}
     >
-      <CardHeader className="flex flex-col gap-3">
+      <CardHeader className="flex flex-col gap-3 flex-grow">
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-3 items-center">
             <Image
@@ -49,13 +49,13 @@ const AirdropCard = ({ airdrop }: Props) => {
               width={50}
             />
             <div className="flex flex-col text-left">
-              <p className="text-2xl font-bold">{airdrop.name}</p>
+              <p className="text-2xl font-bold truncate">{airdrop.name}</p>
               <span className="text-xs text-default-600">{airdrop.type}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2 flex-wrap w-full">
+        <div className="flex gap-2 flex-wrap w-full min-h-[2.5rem]">
           <Chip
             className="capitalize"
             color={statusColorMap[airdrop.status]}
