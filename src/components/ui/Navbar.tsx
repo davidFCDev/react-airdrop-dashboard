@@ -19,7 +19,13 @@ import {
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -29,10 +35,14 @@ import { ThemeSwitch } from "../theme-switch";
 
 import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { siteConfig } from "@/config/site";
-import { image_avatar } from "@/constants";
+import { avatar1 } from "@/constants"; // Default avatar
 import { useUserAuth } from "@/context/AuthContext";
 import { auth, db } from "@/lib/firebase";
 import { Post } from "@/service/post.service";
+
+interface UserData {
+  avatar?: string;
+}
 
 const labelToTranslationKey: Record<string, string> = {
   Login: "login",
@@ -55,15 +65,28 @@ export const Navbar = () => {
   const [notifications, setNotifications] = useState<Post[]>([]);
   const [viewedPosts, setViewedPosts] = useState<Set<string>>(new Set());
   const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | undefined>(avatar1);
 
-  // Calcular unreadNotifications antes de usarlo
   const unreadNotifications = notifications.filter(
     (post) => !viewedPosts.has(post.id),
   ).length;
 
-  // Definir items después de unreadNotifications
+  const sortedNotifications = notifications
+    .sort((a, b) => {
+      const aIsUnread = !viewedPosts.has(a.id);
+      const bIsUnread = !viewedPosts.has(b.id);
+
+      if (aIsUnread && !bIsUnread) return -1;
+      if (!aIsUnread && bIsUnread) return 1;
+
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    })
+    .slice(0, 10);
+
   const items = [
     {
       key: "notifications",
@@ -73,15 +96,26 @@ export const Navbar = () => {
   ];
 
   useEffect(() => {
-    // Esperar a que el estado de autenticación esté listo
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         setNotifications([]);
         setError(null);
+        setUserAvatar(avatar1);
 
         return;
       }
 
+      // Fetch user avatar
+      const userRef = doc(db, "users", currentUser.uid);
+      const unsubscribeUser = onSnapshot(userRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as UserData;
+
+          setUserAvatar(data.avatar || avatar1);
+        }
+      });
+
+      // Fetch notifications
       const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
       const unsubscribeSnapshot = onSnapshot(
         q,
@@ -112,7 +146,10 @@ export const Navbar = () => {
         setViewedPosts(new Set(JSON.parse(storedViewed)));
       }
 
-      return () => unsubscribeSnapshot();
+      return () => {
+        unsubscribeSnapshot();
+        unsubscribeUser();
+      };
     });
 
     return () => unsubscribeAuth();
@@ -126,17 +163,31 @@ export const Navbar = () => {
       `viewedPosts_${user?.uid}`,
       JSON.stringify([...newViewed]),
     );
-    setIsMainDropdownOpen(false); // Cerrar el menú
-    setShowNotifications(false); // Ocultar notificaciones
+    setIsMainDropdownOpen(false);
+    setIsNotificationsOpen(false);
     navigate(`/posts/${postId}`);
   };
 
   const handleNotificationsToggle = () => {
-    console.log(
-      "Toggling notifications, showNotifications:",
-      !showNotifications,
-    );
-    setShowNotifications((prev) => !prev);
+    setIsNotificationsOpen((prev) => !prev);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, postId?: string) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (postId) {
+        handleNotificationClick(postId);
+      } else {
+        handleNotificationsToggle();
+      }
+    }
+  };
+
+  const handleCloseOutside = (element: Element) => {
+    setIsMainDropdownOpen(false);
+    setIsNotificationsOpen(false);
+
+    return true;
   };
 
   const desktopNavItems = siteConfig.navItems.filter((item) => {
@@ -200,7 +251,7 @@ export const Navbar = () => {
       signOut();
       navigate("/");
       setIsMainDropdownOpen(false);
-      setShowNotifications(false);
+      setIsNotificationsOpen(false);
     }
   };
 
@@ -271,18 +322,22 @@ export const Navbar = () => {
           <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
             <Dropdown
               isOpen={isMainDropdownOpen}
+              shouldCloseOnInteractOutside={(element: Element) =>
+                !isNotificationsOpen
+              }
               onOpenChange={setIsMainDropdownOpen}
             >
               <DropdownTrigger>
                 <div className="relative">
                   <Avatar
                     isBordered
+                    aria-label={t("navbar.user_avatar")}
                     className="cursor-pointer"
                     color="primary"
                     name={user?.email?.charAt(0).toUpperCase() || "?"}
                     radius="md"
                     size="sm"
-                    src={image_avatar}
+                    src={userAvatar}
                   />
                   {unreadNotifications > 0 && (
                     <span className="absolute bottom-0 right-0 bg-danger text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -292,8 +347,8 @@ export const Navbar = () => {
                 </div>
               </DropdownTrigger>
               <DropdownMenu
-                aria-label="User Actions"
-                className="z-50" // Asegurar visibilidad
+                aria-label={t("navbar.user_actions")}
+                className="z-50"
                 items={items}
                 onAction={(key) => handleDropdownAction(key as string)}
               >
@@ -302,56 +357,85 @@ export const Navbar = () => {
                     key={item.key}
                     className={item.key === "logout" ? "text-danger" : ""}
                     color={item.key === "logout" ? "danger" : "default"}
+                    role="menuitem"
                     textValue={item.label}
+                    onKeyDown={(e) => handleKeyDown(e)}
                   >
                     {item.key === "notifications" ? (
-                      <div className="w-full">
+                      <div className="relative">
                         <Button
                           aria-controls="notifications-submenu"
-                          aria-expanded={showNotifications}
+                          aria-expanded={isNotificationsOpen}
+                          aria-label={item.label}
                           className="w-full text-left justify-start"
                           variant="light"
                           onPress={handleNotificationsToggle}
                         >
                           {item.label}
                         </Button>
-                        {showNotifications && (
-                          <div
-                            className="mt-2 bg-default-100 border border-default-200 rounded-md shadow-lg p-2 z-50"
-                            id="notifications-submenu"
+                        {isNotificationsOpen && (
+                          <Dropdown
+                            isOpen={isNotificationsOpen}
+                            placement="left"
+                            shouldCloseOnInteractOutside={handleCloseOutside}
+                            onOpenChange={(open) =>
+                              setIsNotificationsOpen(open)
+                            }
                           >
-                            {error ? (
-                              <div className="px-3 py-2 text-sm text-danger">
-                                {t("navbar.error_notifications")}
-                              </div>
-                            ) : notifications.length === 0 ? (
-                              <div className="px-3 py-2 text-sm">
-                                {t("navbar.no_notifications")}
-                              </div>
-                            ) : (
-                              notifications.map((post) => (
-                                <button
-                                  key={post.id}
-                                  aria-label={
-                                    i18n.language === "es"
-                                      ? post.title.es
-                                      : post.title.en
-                                  }
-                                  className={clsx(
-                                    "w-full text-left px-3 py-2 text-sm hover:bg-default-200 rounded",
-                                    !viewedPosts.has(post.id) && "font-bold",
-                                  )}
-                                  onClick={() =>
-                                    handleNotificationClick(post.id)
-                                  }
+                            <DropdownTrigger>
+                              <span className="hidden" />
+                            </DropdownTrigger>
+                            <DropdownMenu
+                              aria-label={t("navbar.notifications")}
+                              className="z-50 max-h-64 overflow-y-auto w-64"
+                              role="menu"
+                            >
+                              {error ? (
+                                <DropdownItem
+                                  key="error"
+                                  role="menuitem"
+                                  textValue="Error loading notifications"
                                 >
-                                  {i18n.language === "es"
-                                    ? post.title.es
-                                    : post.title.en}
-                                </button>
-                              ))
-                            )}
-                          </div>
+                                  <span className="text-danger">
+                                    {t("navbar.error_notifications")}
+                                  </span>
+                                </DropdownItem>
+                              ) : sortedNotifications.length === 0 ? (
+                                <DropdownItem
+                                  key="no_notifications"
+                                  role="menuitem"
+                                  textValue={t("navbar.no_notifications")}
+                                >
+                                  {t("navbar.no_notifications")}
+                                </DropdownItem>
+                              ) : (
+                                sortedNotifications.map((post) => (
+                                  <DropdownItem
+                                    key={post.id}
+                                    className={
+                                      !viewedPosts.has(post.id)
+                                        ? "font-bold"
+                                        : ""
+                                    }
+                                    role="menuitem"
+                                    textValue={
+                                      i18n.language === "es"
+                                        ? post.title.es
+                                        : post.title.en
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, post.id)}
+                                    onPress={() =>
+                                      handleNotificationClick(post.id)
+                                    }
+                                  >
+                                    {i18n.language === "es"
+                                      ? post.title.es
+                                      : post.title.en}
+                                  </DropdownItem>
+                                ))
+                              )}
+                            </DropdownMenu>
+                          </Dropdown>
                         )}
                       </div>
                     ) : (

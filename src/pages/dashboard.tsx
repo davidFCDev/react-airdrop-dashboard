@@ -1,9 +1,11 @@
 import { Divider } from "@heroui/divider";
+import { ScrollShadow } from "@heroui/scroll-shadow";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import AirdropCard from "@/components/AirdropCard";
+import { AnnounceIcon, NewIcon, NotesIcon } from "@/components/icons";
 import NotesSection from "@/components/NotesSection";
 import PostCard from "@/components/PostCard";
 import UserSummary from "@/components/UserSummary";
@@ -95,13 +97,14 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row min-h-screen border-b border-default-300">
+      <section className="flex flex-col md:flex-row min-h-screen border-b border-default-300 pt-4 bg-default-100">
         <div className="w-full md:w-72 border-r border-default-300">
           <UserSummary />
         </div>
         <div className="w-full flex flex-col bg-default-100">
-          <div>
-            <h2 className="text-2xl font-bold p-4 bg-default-50">
+          <div className="border-t border-default-300">
+            <h2 className="text-2xl font-bold p-4 bg-default-50 flex items-center">
+              <NewIcon className="inline-block mr-2 text-primary" size={32} />
               {t("dashboard.latest_airdrops")}
             </h2>
             <Divider className="w-full" />
@@ -113,21 +116,29 @@ const DashboardPage = () => {
           </div>
           <Divider className="w-full" />
           <div className="flex flex-col md:flex-row h-full">
-            <div className="w-full md:w-1/2">
-              <h2 className="text-2xl font-bold p-4 bg-default-50">
+            <div className="w-full md:w-1/2 min-h-[24rem]">
+              <h2 className="text-2xl font-bold p-4 bg-default-50 flex items-center">
+                <AnnounceIcon
+                  className="inline-block mr-2 text-primary"
+                  size={32}
+                />
                 {t("dashboard.important_news")}
               </h2>
               <Divider className="w-full" />
-              <div className="flex flex-col gap-4 p-4 overflow-y-auto">
+              <ScrollShadow className="flex flex-col gap-4 p-4 h-[39rem] overflow-y-auto">
                 {latestPosts.map((post) => (
                   <div key={post.id} className="w-full">
                     <PostCard post={post} />
                   </div>
                 ))}
-              </div>
+              </ScrollShadow>
             </div>
-            <div className="w-full md:w-1/2 border-l border-default-300">
-              <h2 className="text-2xl font-bold p-4 bg-default-50">
+            <div className="w-full md:w-1/2 border-l border-default-300 min-h-[28rem]">
+              <h2 className="text-2xl font-bold p-4 bg-default-50 flex items-center">
+                <NotesIcon
+                  className="inline-block mr-2 text-primary"
+                  size={32}
+                />
                 {t("dashboard.notes")}
               </h2>
               <Divider className="w-full" />

@@ -21,8 +21,11 @@
     "logout": "Logout",
     "language": "Language",
     "tracker": "Tracker",
+    "user_actions": "User actions",
     "notifications": "Notifications",
-    "no_notifications": "No notifications"
+    "error_notifications": "Error loading notifications",
+    "no_notifications": "No notifications",
+    "user_avatar": "User avatar"
   },
   "register": {
     "title": "Register",
@@ -151,8 +154,8 @@
   "dashboard": {
     "latest_airdrops": "Latest Airdrops",
     "important_news": "Important News",
-    "notes": "Important Notes",
-    "add_note": "Add note",
+    "notes": "Your Notes",
+    "add_note": "Add here what you need to remember...",
     "add": "Add",
     "delete": "Delete"
   },
@@ -163,6 +166,18 @@
     "general_tasks": "General Tasks",
     "invested": "Money Invested",
     "received": "Money Received",
-    "profit": "Profit"
+    "profit": "Profit",
+    "change_avatar": "Change avatar",
+    "select_avatar": "Select an avatar",
+    "create_nickname": "Create nickname",
+    "set_nickname": "Set nickname",
+    "nickname": "Nickname",
+    "avatar": "User avatar",
+    "daily_tasks_progress": "Daily tasks progress",
+    "general_tasks_progress": "General tasks progress"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save"
   }
 }

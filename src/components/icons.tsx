@@ -287,6 +287,94 @@ export const CheckIcon: React.FC<IconSvgProps> = ({
   );
 };
 
+export const PushpinIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 64 64"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M62 23.448L40.544 2c-.315 2.875.297 6.054 1.764 9.111L27.77 25.646c-5.529-3.519-11.593-5.079-16.941-4.483l14.143 14.148C18.714 42.195 4.687 59.055 2.59 61.152l-.071.068c-.845.844-.586 1.106.258.262c1.852-1.846 18.983-16.113 25.92-22.445L42.83 53.174c.592-5.298-.927-11.291-4.369-16.772l14.62-14.616c2.995 1.399 6.103 1.975 8.919 1.662"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const NotesIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M17 10H7v2h10zm2-7h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V8h14zm-5-5H7v2h7z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const AnnounceIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2m-7 9h-2V5h2zm0 4h-2v-2h2z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const NewIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2M8.5 15H7.3l-2.55-3.5V15H3.5V9h1.25l2.5 3.5V9H8.5zm5-4.74H11v1.12h2.5v1.26H11v1.11h2.5V15h-4V9h4zm7 3.74c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1V9h1.25v4.51h1.13V9.99h1.25v3.51h1.12V9h1.25z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
 export const MoonFilledIcon = ({
   size = 24,
   width,

@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
+import { avatar1 } from "@/constants"; // Default avatar
 import { auth, db } from "@/lib/firebase";
 
 export type Role = "admin" | "user";
@@ -26,6 +27,8 @@ export class AuthService {
         email: user.email,
         role: "user",
         createdAt: new Date(),
+        avatar: avatar1, // Default avatar
+        nickname: "", // Empty nickname
       });
     } catch (error) {
       console.error("Error saving on firestore:", error);

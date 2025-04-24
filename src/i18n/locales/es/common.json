@@ -22,7 +22,10 @@
     "language": "Idioma",
     "tracker": "Seguimiento",
     "notifications": "Notificaciones",
-    "no_notifications": "No hay notificaciones"
+    "no_notifications": "No hay notificaciones",
+    "user_actions": "Acciones del usuario",
+    "error_notifications": "Error al cargar notificaciones",
+    "user_avatar": "Avatar de usuario"
   },
   "register": {
     "title": "Regístrate",
@@ -143,7 +146,7 @@
     "latest_airdrops": "Últimos Airdrops",
     "important_news": "Noticias Importantes",
     "notes": "Notas Importantes",
-    "add_note": "Añadir nota",
+    "add_note": "Añade aquí lo que necesitas recordar...",
     "add": "Añadir",
     "delete": "Eliminar"
   },
@@ -163,6 +166,18 @@
     "general_tasks": "Tareas generales",
     "invested": "Dinero invertido",
     "received": "Dinero recibido",
-    "profit": "Beneficio"
+    "profit": "Beneficio",
+    "change_avatar": "Cambiar avatar",
+    "select_avatar": "Seleccionar avatar",
+    "create_nickname": "Crear usuario",
+    "set_nickname": "Establecer usuario",
+    "nickname": "Usuario",
+    "avatar": "Avatar de usuario",
+    "daily_tasks_progress": "Progreso de tareas diarias",
+    "general_tasks_progress": "Progreso de tareas generales"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar"
   }
 }
