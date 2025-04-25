@@ -1,6 +1,9 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import cors from "cors";
+import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+
+admin.initializeApp();
 
 // Inicializar el middleware CORS
 const corsHandler = cors({

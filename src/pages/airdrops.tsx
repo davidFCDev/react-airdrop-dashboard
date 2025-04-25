@@ -8,9 +8,16 @@ export default function AirdropsPage() {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-start justify-start p-4">
-        <h2 className="text-3xl font-bold">{t("airdrop.title")}</h2>
-        <div className="w-full mt-4">
+      <section className="flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center justify-center py-4">
+          <h2 className="text-4xl text-neutral-100 font-bold">
+            {t("airdrop.title")}
+          </h2>
+          <p className="text-neutral-400 text-lg mt-2">
+            {t("airdrop.subtitle")}
+          </p>
+        </div>
+        <div className="w-full mt-4 px-00">
           <AirdropTable />
         </div>
       </section>

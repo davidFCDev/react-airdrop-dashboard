@@ -269,7 +269,7 @@ const AirdropTable = () => {
   };
 
   const topContent = (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center justify-center">
       <Input
         isClearable
         className="w-64"

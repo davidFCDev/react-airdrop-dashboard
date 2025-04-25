@@ -59,7 +59,9 @@
     }
   },
   "airdrop": {
-    "title": "Airdrop List",
+    "title": "Airdrop list",
+    "subtitle": "Search and manage your airdrops",
+    "description": "What's",
     "search_placeholder": "Search by name...",
     "columns": "Columns",
     "no_airdrops": "No airdrops found",
@@ -93,11 +95,13 @@
     "show_favorites": "Favorites",
     "show_all": "All",
     "delete": "Delete",
-    "invested": "Money Invested (USD)",
-    "received": "Money Received (USD)"
+    "invested": "Invested (USD)",
+    "received": "Received (USD)",
+    "investment": "Your investment"
   },
   "favorites": {
     "title": "Favorites",
+    "subtitle": "Airdrops you have marked as favorites",
     "error_favorites": "Error loading favorites",
     "loading": "Loading favorites...",
     "no_favorites": "No favorites added yet",
@@ -153,8 +157,8 @@
   },
   "dashboard": {
     "latest_airdrops": "Latest Airdrops",
-    "important_news": "Important News",
-    "notes": "Your Notes",
+    "important_news": "News",
+    "notes": "Taskboard",
     "add_note": "Add here what you need to remember...",
     "add": "Add",
     "delete": "Delete"

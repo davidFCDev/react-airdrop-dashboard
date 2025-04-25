@@ -43,7 +43,7 @@ const AirdropNotes = ({
   };
 
   return (
-    <Card className="w-full bg-default-100">
+    <Card className="w-80 bg-default-100">
       <CardBody className="flex flex-col gap-4">
         <h3 className="text-lg font-bold">{t("airdrop.notes")}</h3>
         <div className="flex gap-2">

@@ -60,6 +60,8 @@
   },
   "airdrop": {
     "title": "Lista de Airdrops",
+    "subtitle": "Busca y gestiona tus airdrops",
+    "description": "¿Qué es",
     "search_placeholder": "Buscar por nombre...",
     "columns": "Columnas",
     "no_airdrops": "No se encontraron airdrops",
@@ -93,11 +95,13 @@
     "delete": "Eliminar",
     "add_favorite": "Añadir a favoritos",
     "remove_favorite": "Quitar de favoritos",
-    "invested": "Dinero invertido (USD)",
-    "received": "Dinero recibido (USD)"
+    "invested": "Invertido (USD)",
+    "received": "Recibido (USD)",
+    "investment": "Tu inversión"
   },
   "favorites": {
     "title": "Favoritos",
+    "subtitle": "Airdrops que has añadido a favoritos",
     "error_favorites": "Error cargando favoritos",
     "loading": "Cargando favoritos...",
     "no_favorites": "No se han añadido favoritos aún",
@@ -144,8 +148,8 @@
   },
   "dashboard": {
     "latest_airdrops": "Últimos Airdrops",
-    "important_news": "Noticias Importantes",
-    "notes": "Notas Importantes",
+    "important_news": "Noticias",
+    "notes": "Taskboard",
     "add_note": "Añade aquí lo que necesitas recordar...",
     "add": "Añadir",
     "delete": "Eliminar"

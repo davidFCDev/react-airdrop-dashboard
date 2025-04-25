@@ -28,14 +28,12 @@ const NotesSection = ({
         <Input
           aria-label={t("dashboard.add_note")}
           placeholder={t("dashboard.add_note")}
-          radius="none"
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
         />
         <Button
           aria-label={t("dashboard.add")}
           color="primary"
-          radius="none"
           onPress={handleAddNote}
         >
           {t("dashboard.add")}

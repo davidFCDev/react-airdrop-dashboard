@@ -1,12 +1,6 @@
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/dropdown";
 import { Link } from "@heroui/link";
 import {
   Navbar as HeroUINavbar,
@@ -58,6 +52,7 @@ const labelToTranslationKey: Record<string, string> = {
   Dashboard: "dashboard",
   Logout: "logout",
   Tracker: "tracker",
+  Notifications: "notifications",
 };
 
 // Hook personalizado para detectar clics fuera
@@ -87,14 +82,19 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Post[]>([]);
   const [viewedPosts, setViewedPosts] = useState<Set<string>>(new Set());
-  const [isMainDropdownOpen, setIsMainDropdownOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isActionsCardOpen, setIsActionsCardOpen] = useState(false);
+  const [isNotificationsCardOpen, setIsNotificationsCardOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | undefined>(avatar1);
 
+  const actionsRef = useOutsideClick(() => {
+    setIsActionsCardOpen(false);
+    setIsNotificationsCardOpen(false);
+  });
+
   const notificationsRef = useOutsideClick(() => {
-    setIsNotificationsOpen(false);
-    setIsMainDropdownOpen(false);
+    setIsActionsCardOpen(false);
+    setIsNotificationsCardOpen(false);
   });
 
   const unreadNotifications = notifications.filter(
@@ -114,14 +114,6 @@ export const Navbar = () => {
       );
     })
     .slice(0, 10);
-
-  const items = [
-    {
-      key: "notifications",
-      label: `${t("navbar.notifications")} (${unreadNotifications})`,
-    },
-    { key: "logout", label: t("navbar.logout") },
-  ];
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -187,14 +179,23 @@ export const Navbar = () => {
       `viewedPosts_${user?.uid}`,
       JSON.stringify([...newViewed]),
     );
-    setIsMainDropdownOpen(false);
-    setIsNotificationsOpen(false);
+    setIsActionsCardOpen(false);
+    setIsNotificationsCardOpen(false);
     navigate(`/posts/${postId}`);
   };
 
   const handleNotificationsOpen = () => {
-    setIsNotificationsOpen(true);
-    setIsMainDropdownOpen(false);
+    setIsActionsCardOpen(false);
+    setIsNotificationsCardOpen(true);
+  };
+
+  const handleAvatarClick = () => {
+    if (isNotificationsCardOpen) {
+      setIsNotificationsCardOpen(false);
+      setIsActionsCardOpen(true);
+    } else {
+      setIsActionsCardOpen(!isActionsCardOpen);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, postId?: string) => {
@@ -208,12 +209,12 @@ export const Navbar = () => {
     }
   };
 
-  const handleDropdownAction = (key: string) => {
+  const handleActionClick = (key: string) => {
     if (key === "logout") {
       signOut();
       navigate("/");
-      setIsMainDropdownOpen(false);
-      setIsNotificationsOpen(false);
+      setIsActionsCardOpen(false);
+      setIsNotificationsCardOpen(false);
     } else if (key === "notifications") {
       handleNotificationsOpen();
     }
@@ -256,6 +257,7 @@ export const Navbar = () => {
         "Airdrops",
         "Favorites",
         "Tracker",
+        "Notifications",
         "Help & Feedback",
         "Logout",
       ].includes(item.label);
@@ -266,6 +268,7 @@ export const Navbar = () => {
         "Favorites",
         "Posts",
         "Tracker",
+        "Notifications",
         "Help & Feedback",
         "Create",
         "Logout",
@@ -340,51 +343,24 @@ export const Navbar = () => {
 
         {user && (
           <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
-            <Dropdown
-              className="bg-default-100 border border-default-200"
-              isOpen={isMainDropdownOpen}
-              radius="none"
-              onOpenChange={setIsMainDropdownOpen}
-            >
-              <DropdownTrigger>
-                <div className="relative">
-                  <Avatar
-                    isBordered
-                    aria-label={t("navbar.user_avatar")}
-                    className="cursor-pointer"
-                    color="primary"
-                    name={user?.email?.charAt(0).toUpperCase() || "?"}
-                    radius="md"
-                    size="sm"
-                    src={userAvatar}
-                  />
-                  {unreadNotifications > 0 && (
-                    <span className="absolute -bottom-2 -right-2 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                      {unreadNotifications}
-                    </span>
-                  )}
-                </div>
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label={t("navbar.user_actions")}
-                className="z-50"
-                items={items}
-                onAction={(key) => handleDropdownAction(key as string)}
-              >
-                {(item) => (
-                  <DropdownItem
-                    key={item.key}
-                    className={item.key === "logout" ? "text-danger" : ""}
-                    color={item.key === "logout" ? "danger" : "default"}
-                    role="menuitem"
-                    textValue={item.label}
-                    onKeyDown={(e) => handleKeyDown(e)}
-                  >
-                    {item.label}
-                  </DropdownItem>
-                )}
-              </DropdownMenu>
-            </Dropdown>
+            <div className="relative">
+              <Avatar
+                isBordered
+                aria-label={t("navbar.user_avatar")}
+                className="cursor-pointer"
+                color="primary"
+                name={user?.email?.charAt(0).toUpperCase() || "?"}
+                radius="md"
+                size="sm"
+                src={userAvatar}
+                onClick={handleAvatarClick}
+              />
+              {unreadNotifications > 0 && (
+                <span className="absolute -bottom-2 -right-2 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  {unreadNotifications}
+                </span>
+              )}
+            </div>
           </NavbarItem>
         )}
       </NavbarContent>
@@ -404,29 +380,73 @@ export const Navbar = () => {
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {mobileNavItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === mobileNavItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href={item.href}
-                size="lg"
-              >
-                {t(`navbar.${labelToTranslationKey[item.label]}`)}
-              </Link>
+              {item.label === "Notifications" ? (
+                <Button
+                  className="w-full text-left"
+                  color={
+                    index === mobileNavItems.length - 1 ? "danger" : "default"
+                  }
+                  variant="light"
+                  onPress={handleNotificationsOpen}
+                >
+                  {t(`navbar.${labelToTranslationKey[item.label]}`)} (
+                  {unreadNotifications})
+                </Button>
+              ) : (
+                <Link
+                  color={
+                    index === 2
+                      ? "primary"
+                      : index === mobileNavItems.length - 1
+                        ? "danger"
+                        : "foreground"
+                  }
+                  href={item.href}
+                  size="lg"
+                >
+                  {t(`navbar.${labelToTranslationKey[item.label]}`)}
+                </Link>
+              )}
             </NavbarMenuItem>
           ))}
         </div>
       </NavbarMenu>
 
-      {/* Tarjeta para notificaciones */}
-      {isNotificationsOpen && (
+      {/* Primera Card para acciones */}
+      {isActionsCardOpen && (
+        <Card
+          ref={actionsRef}
+          className="absolute sm:top-16 sm:right-1 top-1/2  sm:-translate-x-0 sm:-translate-y-0 -translate-x-1/2 -translate-y-1/2 w-80 bg-default-50 border border-default-200 shadow-md z-50"
+          radius="none"
+        >
+          <CardBody className="p-0">
+            <Button
+              aria-label={t("navbar.notifications")}
+              className="w-full justify-start px-4 py-2 text-left"
+              variant="light"
+              onKeyDown={(e) => handleKeyDown(e)}
+              onPress={() => handleActionClick("notifications")}
+            >
+              {t("navbar.notifications")} ({unreadNotifications})
+            </Button>
+            <Button
+              aria-label={t("navbar.logout")}
+              className="w-full justify-start px-4 py-2 text-left text-danger"
+              variant="light"
+              onKeyDown={(e) => handleKeyDown(e)}
+              onPress={() => handleActionClick("logout")}
+            >
+              {t("navbar.logout")}
+            </Button>
+          </CardBody>
+        </Card>
+      )}
+
+      {/* Segunda Card para notificaciones */}
+      {isNotificationsCardOpen && (
         <Card
           ref={notificationsRef}
-          className="absolute top-16 right-4 z-50 border border-default-200 bg-default-50"
+          className="absolute sm:top-16 sm:right-1 top-1/2 sm:-translate-x-0 sm:-translate-y-0 -translate-x-1/2 -translate-y-1/2 w-80 bg-default-50 border border-default-200 shadow-md z-50"
           radius="none"
         >
           <CardHeader className="px-4 py-2 border-b border-default-200">
@@ -456,6 +476,7 @@ export const Navbar = () => {
                     onKeyDown={(e) => handleKeyDown(e, post.id)}
                     onPress={() => handleNotificationClick(post.id)}
                   >
+                    <span className="mr-2">•</span>
                     {i18n.language === "es" ? post.title.es : post.title.en}
                   </Button>
                 ))

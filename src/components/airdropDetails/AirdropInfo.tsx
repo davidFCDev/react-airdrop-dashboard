@@ -1,19 +1,11 @@
 import { Chip } from "@heroui/chip";
-import { Link } from "@heroui/link";
 import { Progress } from "@heroui/progress";
 import { useTranslation } from "react-i18next";
 
 import {
-  DiscordIcon,
-  TelegramIcon,
-  TwitterIcon,
-  WebsiteIcon,
-} from "@/components/icons";
-import {
   Airdrop,
   costColorMap,
   stageColorMap,
-  statusColorMap,
   tierColorMap,
   typeColorMap,
 } from "@/constants/airdrop.table";
@@ -25,130 +17,99 @@ interface Props {
 
 const AirdropInfo = ({ airdrop, progress }: Props) => {
   const { t } = useTranslation();
-  const statusDotColor = {
-    success: "bg-success-500",
-    warning: "bg-warning-500",
-    default: "bg-default-500",
-    danger: "bg-danger-500",
-  }[statusColorMap[airdrop.status]];
 
   return (
-    <div className="w-full md:w-1/3 flex flex-col gap-4">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="w-full flex flex-col gap-4 bg-default-100 border border-default-200 p-6">
+      <div className="flex items-center gap-4 mb-2">
         <h1 className="text-5xl font-bold">{airdrop.name}</h1>
-        <div
-          className={`w-5 h-5 rounded-full animate-pulse ${statusDotColor}`}
-        />
       </div>
-      <div className="relative">
-        <Progress
-          aria-label="Airdrop progress"
-          className="w-96"
-          color="success"
-          showValueLabel={false}
-          value={progress}
-        />
-        <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-medium">
-          {Math.round(progress)}%
-        </span>
-      </div>
-      <div className="flex items-center gap-4">
+
+      <div className="flex gap-2 flex-wrap">
         <Chip
           className="capitalize"
           color={tierColorMap[airdrop.tier]}
-          size="lg"
+          size="md"
           variant="flat"
         >
           Tier {airdrop.tier}
         </Chip>
         <Chip
           className="capitalize"
-          color={typeColorMap[airdrop.type]}
-          size="lg"
-          variant="flat"
-        >
-          {airdrop.type}
-        </Chip>
-        <div className="flex gap-3">
-          {airdrop.url && (
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.url}
-              title="Website"
-            >
-              <WebsiteIcon className="w-7 h-7" />
-            </Link>
-          )}
-          {airdrop.discord && (
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.discord}
-              title="Discord"
-            >
-              <DiscordIcon className="w-7 h-7" />
-            </Link>
-          )}
-          {airdrop.twitter && (
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.twitter}
-              title="Twitter"
-            >
-              <TwitterIcon className="w-7 h-7" />
-            </Link>
-          )}
-          {airdrop.telegram && (
-            <Link
-              isExternal
-              color="foreground"
-              href={airdrop.telegram}
-              title="Telegram"
-            >
-              <TelegramIcon className="w-7 h-7" />
-            </Link>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-4 flex-wrap">
-        <Chip
-          className="capitalize"
           color={costColorMap[airdrop.cost]}
-          size="lg"
+          size="md"
           variant="flat"
         >
           {airdrop.cost}
         </Chip>
         <Chip
           className="capitalize"
+          color={typeColorMap[airdrop.type]}
+          size="md"
+          variant="flat"
+        >
+          {airdrop.type}
+        </Chip>
+        <Chip
+          className="capitalize"
           color={stageColorMap[airdrop.stage]}
-          size="lg"
+          size="md"
           variant="flat"
         >
           {airdrop.stage}
         </Chip>
-        <Chip className="capitalize" color="default" size="lg" variant="flat">
+        <Chip className="capitalize" color="default" size="md" variant="flat">
           {airdrop.chain}
         </Chip>
-        <span className="text-lg">{`$ ${airdrop.funding}`}</span>
-      </div>
-      <div className="flex gap-2 flex-wrap">
-        {airdrop.tags.map((tag, index) => (
-          <Chip key={index} color="default" size="lg" variant="flat">
-            {tag}
-          </Chip>
-        ))}
       </div>
       <div className="flex flex-col gap-2">
+        {airdrop.tags.length > 0 && (
+          <span className="text-sm font-semibold text-default-600">
+            {t("airdrop.tags")}
+          </span>
+        )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {airdrop.tags.map((tag, index) => (
+            <Chip key={index} color="default" size="lg" variant="flat">
+              {tag}
+            </Chip>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold text-default-600">
+          {t("airdrop.funding")}
+        </span>
+        <span className="text-lg">{`${airdrop.funding} $ `}</span>
+      </div>
+      <div className="flex gap-2">
         <div>
-          <span className="font-semibold">{t("airdrop.created_at")}: </span>
+          <span className="text-sm font-semibold text-default-600">
+            {t("airdrop.created_at")}:{" "}
+          </span>
           <span>{new Date(airdrop.created_at).toLocaleDateString()}</span>
         </div>
         <div>
-          <span className="font-semibold">{t("airdrop.last_edited")}: </span>
+          <span className="text-sm font-semibold text-default-600">
+            {t("airdrop.last_edited")}:{" "}
+          </span>
           <span>{new Date(airdrop.last_edited).toLocaleDateString()}</span>
+        </div>
+      </div>
+      <div className="relative flex flex-col gap-2 mb-4">
+        <span className="text-sm font-semibold text-default-600">
+          {t("airdrop.progress")}
+        </span>
+        <div className="flex items-center gap-2 w-full">
+          <Progress
+            aria-label="Airdrop progress"
+            className="w-96"
+            color="success"
+            showValueLabel={false}
+            value={progress}
+          />
+          <span className=" flex items-center justify-center text-white text-sm font-medium">
+            {Math.round(progress)}%
+          </span>
         </div>
       </div>
     </div>

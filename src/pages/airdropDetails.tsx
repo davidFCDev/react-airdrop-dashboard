@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import AirdropDescription from "@/components/airdropDetails/AirdropDescription";
 import AirdropHeader from "@/components/airdropDetails/AirdropHeader";
 import AirdropInfo from "@/components/airdropDetails/AirdropInfo";
-import AirdropNotes from "@/components/airdropDetails/AirdropNotes";
+import AirdropInvestment from "@/components/airdropDetails/AirdropInvestment";
 import AirdropTasks from "@/components/airdropDetails/AirdropTasks";
 import { useUserAirdrop } from "@/hooks/useUserAirdrop";
 import DefaultLayout from "@/layouts/default";
@@ -69,12 +69,29 @@ const AirdropDetailsPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-start justify-start p-4 w-full">
+      <section className="flex flex-col items-start justify-start px-10 py-4 w-full">
         <AirdropHeader airdrop={airdrop} />
-        <div className="w-full px-10 mt-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <AirdropInfo airdrop={airdrop} progress={progress} />
-            <div className="w-full md:w-2/3 flex flex-col gap-6">
+        <div className="w-full mt-6">
+          <div className="flex flex-col md:flex-row gap-6 w-full">
+            <div className="w-1/6 flex flex-col gap-6">
+              <AirdropInfo airdrop={airdrop} progress={progress} />
+              <AirdropInvestment
+                invested={userAirdropData?.invested || 0}
+                received={userAirdropData?.received || 0}
+                updateInvestment={updateInvestment}
+              />
+              {/* <AirdropNotes
+                handleAddNote={handleAddNote}
+                invested={userAirdropData?.invested || 0}
+                newNote={newNote}
+                notes={notes}
+                received={userAirdropData?.received || 0}
+                removeNote={removeNote}
+                setNewNote={setNewNote}
+                updateInvestment={updateInvestment}
+              /> */}
+            </div>
+            <div className="w-full flex flex-col gap-6">
               <AirdropDescription airdrop={airdrop} />
               <AirdropTasks
                 airdrop={airdrop}
@@ -84,16 +101,6 @@ const AirdropDetailsPage = () => {
 
                   toggleTask(type as "daily" | "general", parseInt(index));
                 }}
-              />
-              <AirdropNotes
-                handleAddNote={handleAddNote}
-                invested={userAirdropData?.invested || 0}
-                newNote={newNote}
-                notes={notes}
-                received={userAirdropData?.received || 0}
-                removeNote={removeNote}
-                setNewNote={setNewNote}
-                updateInvestment={updateInvestment}
               />
             </div>
           </div>
