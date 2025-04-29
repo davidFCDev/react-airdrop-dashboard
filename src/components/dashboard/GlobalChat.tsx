@@ -75,7 +75,7 @@ const GlobalChat = () => {
   };
 
   return (
-    <section className="flex flex-col gap-4 p-4 h-full">
+    <section className="flex flex-col gap-4 py-4 h-full">
       {error && (
         <Alert className="mb-4" color="danger">
           {error.message}
@@ -140,7 +140,7 @@ const GlobalChat = () => {
                           isBordered
                           color="primary"
                           name={message.userName}
-                          radius="full"
+                          radius="lg"
                           size="lg"
                           src={message.avatar ?? undefined}
                         />

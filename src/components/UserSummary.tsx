@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Image } from "@heroui/image";
@@ -159,9 +160,12 @@ const UserSummary = () => {
   };
 
   return (
-    <Card className="w-full h-full bg-default-100 p-0" radius="none">
-      <CardHeader className="flex flex-col items-center w-full px-4 pb-4 pt-0">
-        <div className="flex flex-col items-center gap-4 border border-default-200 bg-default-50 px-4 py-10 w-full">
+    <Card
+      className="w-full md:w-72 h-full bg-default-100 p-0 flex flex-col gap-4"
+      radius="none"
+    >
+      <CardHeader className="flex flex-col items-center w-full p-0">
+        <div className="flex flex-col items-center gap-4 border border-default-300 bg-default-50 px-4 py-10 w-full">
           <div className="border-3 border-primary bg-default-50 rounded-2xl relative">
             <Image
               alt={t("user.avatar")}
@@ -198,8 +202,8 @@ const UserSummary = () => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="flex flex-col gap-2 py-0 px-4">
-        <div className="flex flex-col gap-2 border border-default-200 bg-default-50 p-4">
+      <CardBody className="flex flex-col gap-2 p-0">
+        <div className="flex flex-col gap-2 border border-default-300 bg-default-50 p-4">
           <div className="flex justify-between items-center">
             <p className="font-semibold">{t("tracker.invested")}</p>
             <p className="text-success">{totalInvested.toFixed(2)}$</p>
@@ -215,12 +219,12 @@ const UserSummary = () => {
             </p>
           </div>
         </div>
-        <div className="flex justify-between items-center gap-2 border border-default-200 bg-default-50 p-4">
+        <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
           <p className="font-semibold">{t("user.started_airdrops")}:</p>
           <p className="text-success">{totalFavorites}</p>
         </div>
         <div className="flex flex-col gap-2 h-full">
-          <div className="border border-default-200 bg-default-50 p-4 flex flex-col">
+          <div className="border border-default-300 bg-default-50 p-4 flex flex-col">
             <p className="font-semibold">{t("user.daily_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
@@ -235,7 +239,7 @@ const UserSummary = () => {
             </div>
             <p className="text-xs text-default-500 mt-1">{`${completedDailyTasks} / ${totalDailyTasks}`}</p>
           </div>
-          <div className="border border-default-200 bg-default-50 p-4 flex flex-col">
+          <div className="border border-default-300 bg-default-50 p-4 flex flex-col">
             <p className="font-semibold">{t("user.general_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
