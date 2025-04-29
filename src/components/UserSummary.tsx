@@ -201,15 +201,15 @@ const UserSummary = () => {
       <CardBody className="flex flex-col gap-2 py-0 px-4">
         <div className="flex flex-col gap-2 border border-default-200 bg-default-50 p-4">
           <div className="flex justify-between items-center">
-            <p className="font-semibold">Invested:</p>
+            <p className="font-semibold">{t("tracker.invested")}</p>
             <p className="text-success">{totalInvested.toFixed(2)}$</p>
           </div>
           <div className="flex justify-between items-center">
-            <p className="font-semibold">Received:</p>
+            <p className="font-semibold">{t("tracker.received")}</p>
             <p className="text-success">{totalReceived.toFixed(2)}$</p>
           </div>
           <div className="flex justify-between items-center">
-            <p className="font-semibold">Profit:</p>
+            <p className="font-semibold">{t("tracker.profit")}</p>
             <p className={totalProfit >= 0 ? "text-success" : "text-danger"}>
               {totalProfit.toFixed(2)}$
             </p>

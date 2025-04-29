@@ -38,7 +38,7 @@ const FavoriteAirdrops = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div>
+    <div className="flex items-center justify-center">
       {favorites.length === 0 ? (
         <p className="font-light">{t("favorites.no_favorites")}</p>
       ) : (

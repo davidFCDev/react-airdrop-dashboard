@@ -1,86 +1,39 @@
 import { Divider } from "@heroui/divider";
 import { ScrollShadow } from "@heroui/scroll-shadow";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import AirdropCard from "@/components/AirdropCard";
-import NotesSection from "@/components/dashboard/NotesSection";
-import { AnnounceIcon, NewIcon, NotesIcon } from "@/components/icons";
+import GlobalChat from "@/components/dashboard/GlobalChat";
+import { AnnounceIcon, NewIcon } from "@/components/icons";
 import PostCard from "@/components/PostCard";
 import UserSummary from "@/components/UserSummary";
 import { useUserAuth } from "@/context/AuthContext";
 import DefaultLayout from "@/layouts/default";
-import { db } from "@/lib/firebase";
 import { useAirdropStore } from "@/store/airdropStore";
 import { usePostStore } from "@/store/postStore";
-
-export interface Note {
-  id: string;
-  content: string;
-  created_at: string;
-}
 
 const DashboardPage = () => {
   const { t } = useTranslation();
   const { user } = useUserAuth();
   const { airdrops, fetchAirdrops, fetchFavorites } = useAirdropStore();
   const { posts, fetchPosts } = usePostStore();
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
     const unsubscribeAirdrops = fetchAirdrops();
     const unsubscribePosts = fetchPosts();
     let unsubscribeFavorites: (() => void) | undefined;
-    let unsubscribeNotes: (() => void) | undefined;
 
     if (user?.uid) {
       unsubscribeFavorites = fetchFavorites(user.uid);
-      const notesRef = doc(db, "user_notes", user.uid);
-
-      unsubscribeNotes = onSnapshot(notesRef, (docSnap) => {
-        if (docSnap.exists()) {
-          setNotes(docSnap.data().notes || []);
-        }
-      });
     }
 
     return () => {
       unsubscribeAirdrops();
       unsubscribePosts();
       if (unsubscribeFavorites) unsubscribeFavorites();
-      if (unsubscribeNotes) unsubscribeNotes();
     };
   }, [user, fetchAirdrops, fetchFavorites, fetchPosts]);
-
-  const handleAddNote = async () => {
-    if (!user?.uid || !newNote.trim()) return;
-    const newNoteObj: Note = {
-      id: new Date().toISOString(),
-      content: newNote,
-      created_at: new Date().toISOString(),
-    };
-    const updatedNotes = [...notes, newNoteObj];
-
-    try {
-      await setDoc(doc(db, "user_notes", user.uid), { notes: updatedNotes });
-      setNewNote("");
-    } catch {
-      // Handle error
-    }
-  };
-
-  const handleRemoveNote = async (noteId: string) => {
-    if (!user?.uid) return;
-    const updatedNotes = notes.filter((note) => note.id !== noteId);
-
-    try {
-      await setDoc(doc(db, "user_notes", user.uid), { notes: updatedNotes });
-    } catch {
-      // Handle error
-    }
-  };
 
   const latestAirdrops = airdrops
     .sort(
@@ -98,7 +51,7 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row min-h-screen  pt-4 ">
+      <section className="flex flex-col md:flex-row min-h-screen pt-4">
         <div className="w-full md:w-72">
           <UserSummary />
         </div>
@@ -135,29 +88,29 @@ const DashboardPage = () => {
               </h2>
               <Divider className="w-full" />
               <ScrollShadow className="flex flex-col gap-4 p-4 h-[39rem] overflow-y-auto">
-                {latestPosts.map((post) => (
-                  <div key={post.id} className="w-full">
-                    <PostCard post={post} />
-                  </div>
-                ))}
+                {latestPosts.length === 0 ? (
+                  <p className="text-sm text-default-500">
+                    {t("dashboard.no_posts")}
+                  </p>
+                ) : (
+                  latestPosts.map((post) => (
+                    <div key={post.id} className="w-full">
+                      <PostCard post={post} />
+                    </div>
+                  ))
+                )}
               </ScrollShadow>
             </div>
             <div className="w-full md:w-1/2 border-l border-default-200 min-h-[28rem]">
               <h2 className="text-2xl font-bold p-4 bg-default-50 flex items-center">
-                <NotesIcon
+                <AnnounceIcon
                   className="inline-block mr-2 text-primary"
                   size={32}
                 />
-                {t("dashboard.notes")}
+                {t("dashboard.chat")}
               </h2>
               <Divider className="w-full" />
-              <NotesSection
-                handleAddNote={handleAddNote}
-                handleRemoveNote={handleRemoveNote}
-                newNote={newNote}
-                notes={notes}
-                setNewNote={setNewNote}
-              />
+              <GlobalChat />
             </div>
           </div>
         </div>

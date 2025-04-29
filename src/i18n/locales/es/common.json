@@ -2,9 +2,10 @@
   "home": {
     "title_part_1": "Gestiona",
     "title_part_2": "Airdrops",
-    "title_part_3": "de forma rápida y sencilla.",
+    "title_part_3": "de forma rápida y sencilla",
     "subtitle": "Tu herramienta de gestión favorita",
-    "button_docs": "Documentación",
+    "register": "Registrarse",
+    "login": "Iniciar sesión",
     "button_git_hub": "GitHub",
     "snippet_text": "Empieza editando"
   },
@@ -149,10 +150,28 @@
   "dashboard": {
     "latest_airdrops": "Últimos Airdrops",
     "important_news": "Noticias",
-    "notes": "Taskboard",
-    "add_note": "Añade aquí lo que necesitas recordar...",
+    "no_airdrops": "No se encontraron airdrops",
+    "no_posts": "No se encontraron posts",
     "add": "Añadir",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "chat": "Chat"
+  },
+  "chat": {
+    "send_message": "Escribe un mensaje",
+    "send": "Enviar",
+    "no_messages": "Aún no hay mensajes",
+    "delete_message": "Eliminar mensaje",
+    "edit_message": "Editar mensaje",
+    "error_sending": "Error al enviar el mensaje",
+    "error_deleting": "Error al eliminar el mensaje",
+    "error_updating": "Error al actualizar el mensaje",
+    "error_pinning": "Error al fijar el mensaje",
+    "new": "Nuevo",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "pin": "Fijar mensaje",
+    "unpin": "Quitar fijación",
+    "view_pinned": "Mensajes fijados"
   },
   "tracker": {
     "title": "Seguimiento de Beneficios",

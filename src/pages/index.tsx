@@ -1,12 +1,7 @@
-import { Code } from "@heroui/code";
 import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
 import { button as buttonStyles } from "@heroui/theme";
 import { useTranslation } from "react-i18next";
 
-import { GithubIcon } from "@/components/icons";
-import { subtitle, title } from "@/components/primitives";
-import { siteConfig } from "@/config/site";
 import DefaultLayout from "@/layouts/default";
 
 export default function IndexPage() {
@@ -14,64 +9,37 @@ export default function IndexPage() {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <div className="inline-block max-w-2xl text-center justify-center">
-          <span
-            className={title({
-              size: "xl",
-            })}
-          >
+      <section className="flex flex-col items-center justify-center gap-10 py-8 md:py-24">
+        <div className="inline-block text-center justify-center">
+          <h1 className="text-[5rem] font-bold leading-none">
             {t("home.title_part_1")}&nbsp;
-          </span>
-          <span
-            className={`${title({
-              size: "xl",
-            })} text-primary`}
-          >
-            {t("home.title_part_2")}&nbsp;
-          </span>
-          <br />
-          <span
-            className={title({
-              size: "xl",
-            })}
-          >
+            <span className="text-primary">{t("home.title_part_2")}&nbsp;</span>
+            <br />
             {t("home.title_part_3")}
-          </span>
-          <div className={subtitle({ class: "mt-4" })}>
-            {t("home.subtitle")}
-          </div>
+          </h1>
         </div>
+
+        <h4 className="text-neutral-300 uppercase font-light">
+          {t("home.subtitle")}
+        </h4>
 
         <div className="flex gap-3">
           <Link
-            isExternal
             className={buttonStyles({
               color: "primary",
               radius: "full",
-              variant: "shadow",
+              variant: "solid",
             })}
-            href={siteConfig.links.docs}
+            href={"/register"}
           >
-            {t("home.button_docs")}
+            {t("home.register")}
           </Link>
           <Link
-            isExternal
             className={buttonStyles({ variant: "bordered", radius: "full" })}
-            href={siteConfig.links.github}
+            href={"/login"}
           >
-            <GithubIcon size={20} />
-            {t("home.button_git_hub")}
+            {t("home.login")}
           </Link>
-        </div>
-
-        <div className="mt-8">
-          <Snippet hideCopyButton hideSymbol variant="bordered">
-            <span>
-              {t("home.snippet_text")}{" "}
-              <Code color="primary">pages/index.tsx</Code>
-            </span>
-          </Snippet>
         </div>
       </section>
     </DefaultLayout>

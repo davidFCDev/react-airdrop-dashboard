@@ -2,9 +2,10 @@
   "home": {
     "title_part_1": "Manage",
     "title_part_2": "Airdrops",
-    "title_part_3": "quickly and easily.",
+    "title_part_3": "quickly and easily",
     "subtitle": "Your favorite management tool",
-    "button_docs": "Documentation",
+    "register": "Register",
+    "login": "Login",
     "button_git_hub": "GitHub",
     "snippet_text": "Get started by editing"
   },
@@ -157,11 +158,29 @@
   },
   "dashboard": {
     "latest_airdrops": "Latest Airdrops",
+    "no_airdrops": "No airdrops found",
     "important_news": "News",
-    "notes": "Taskboard",
-    "add_note": "Add here what you need to remember...",
+    "no_posts": "No posts found",
     "add": "Add",
-    "delete": "Delete"
+    "delete": "Delete",
+    "chat": "Chat"
+  },
+  "chat": {
+    "send_message": "Type a message",
+    "send": "Send",
+    "no_messages": "No messages yet",
+    "delete_message": "Delete message",
+    "edit_message": "Edit message",
+    "error_sending": "Failed to send message",
+    "error_deleting": "Failed to delete message",
+    "error_updating": "Failed to update message",
+    "error_pinning": "Failed to pin message",
+    "new": "New",
+    "save": "Save",
+    "cancel": "Cancel",
+    "pin": "Pin message",
+    "unpin": "Unpin message",
+    "view_pinned": "Pinned messages"
   },
   "user": {
     "guest": "Guest",

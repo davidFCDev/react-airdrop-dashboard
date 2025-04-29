@@ -48,10 +48,8 @@ const AirdropDetailsPage = () => {
   if (error || !id) {
     return (
       <DefaultLayout>
-        <section className="flex flex-col items-start justify-start p-10">
-          <h1 className="text-2xl font-bold">
-            {error || t("airdrop.invalid_id")}
-          </h1>
+        <section className="flex flex-col items-center justify-center p-10">
+          <p className=" font-light">{error || t("airdrop.invalid_id")}</p>
         </section>
       </DefaultLayout>
     );
@@ -60,8 +58,8 @@ const AirdropDetailsPage = () => {
   if (!airdrop) {
     return (
       <DefaultLayout>
-        <section className="flex flex-col items-start justify-start p-10">
-          <h1 className="text-2xl font-bold">{t("airdrop.not_found")}</h1>
+        <section className="flex flex-col items-center justify-center p-10">
+          <p className=" font-light">{t("airdrop.not_found")}</p>
         </section>
       </DefaultLayout>
     );
