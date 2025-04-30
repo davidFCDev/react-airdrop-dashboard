@@ -87,7 +87,7 @@ const GlobalChat = () => {
         shadow="none"
       >
         {currentPinnedMessage && (
-          <div className="">
+          <div>
             <Button
               className="w-full text-left"
               color="default"
@@ -96,7 +96,10 @@ const GlobalChat = () => {
               onPress={handlePinnedMessageClick}
             >
               <span className="text-sm font-semibold truncate">
-                <PinIcon className="inline-block mr-2 rotate-45" size={16} />
+                <PinIcon
+                  className="inline-block mr-2 rotate-45 text-primary"
+                  size={16}
+                />
                 {t("chat.view_pinned")}: {currentPinnedMessage.userName}:{" "}
                 {currentPinnedMessage.text.slice(0, 50)}
                 {currentPinnedMessage.text.length > 50 ? "..." : ""}

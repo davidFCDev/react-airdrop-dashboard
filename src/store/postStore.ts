@@ -2,7 +2,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { create } from "zustand";
 
 import { db } from "@/lib/firebase";
-import { Post } from "@/service/post.service";
+import { Post } from "@/types";
 
 interface PostState {
   posts: Post[];

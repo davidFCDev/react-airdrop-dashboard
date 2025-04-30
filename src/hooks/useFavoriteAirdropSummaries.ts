@@ -1,15 +1,7 @@
 import { useMemo } from "react";
 
 import { useAirdropStore } from "@/store/airdropStore";
-
-interface AirdropSummary {
-  totalDailyTasks: number;
-  completedDailyTasks: number;
-  totalGeneralTasks: number;
-  completedGeneralTasks: number;
-  totalTasks: number;
-  completedTasks: number;
-}
+import { AirdropSummary } from "@/types";
 
 export const useFavoriteAirdropSummaries = (): AirdropSummary => {
   const { airdrops, favorites, userAirdropData } = useAirdropStore();

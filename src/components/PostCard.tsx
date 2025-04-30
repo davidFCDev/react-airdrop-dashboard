@@ -4,7 +4,7 @@ import { Chip } from "@heroui/chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { Post } from "@/service/post.service";
+import { Post } from "@/types";
 
 interface Props {
   post: Post;

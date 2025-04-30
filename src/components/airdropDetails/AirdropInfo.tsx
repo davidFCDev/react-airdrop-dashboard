@@ -3,12 +3,12 @@ import { Progress } from "@heroui/progress";
 import { useTranslation } from "react-i18next";
 
 import {
-  Airdrop,
   costColorMap,
   stageColorMap,
   tierColorMap,
   typeColorMap,
 } from "@/constants/airdrop.table";
+import { Airdrop } from "@/types";
 
 interface Props {
   airdrop: Airdrop;
@@ -21,7 +21,7 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
   return (
     <div className="w-full flex flex-col gap-4 bg-default-100 border border-default-200 p-6">
       <div className="flex items-center gap-4 mb-2">
-        <h1 className="text-5xl font-bold">{airdrop.name}</h1>
+        <h1 className="text-[2.7rem] font-bold">{airdrop.name}</h1>
       </div>
 
       <div className="flex gap-2 flex-wrap">

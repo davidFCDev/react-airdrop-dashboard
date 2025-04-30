@@ -2,9 +2,10 @@ import { SortDescriptor } from "@heroui/table";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Airdrop, columns } from "@/constants/airdrop.table";
+import { columns } from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropStore } from "@/store/airdropStore";
+import { Airdrop } from "@/types";
 
 export const useAirdropTable = () => {
   const navigate = useNavigate();

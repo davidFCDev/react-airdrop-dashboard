@@ -1,4 +1,4 @@
-import { Airdrop } from "@/constants/airdrop.table";
+import { Airdrop } from "@/types";
 
 interface Props {
   airdrop: Airdrop;

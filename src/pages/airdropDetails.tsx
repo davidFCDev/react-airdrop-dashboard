@@ -6,6 +6,8 @@ import AirdropDescription from "@/components/airdropDetails/AirdropDescription";
 import AirdropHeader from "@/components/airdropDetails/AirdropHeader";
 import AirdropInfo from "@/components/airdropDetails/AirdropInfo";
 import AirdropInvestment from "@/components/airdropDetails/AirdropInvestment";
+import AirdropLinks from "@/components/airdropDetails/AirdropLinks";
+import AirdropNotes from "@/components/airdropDetails/AirdropNotes";
 import AirdropTasks from "@/components/airdropDetails/AirdropTasks";
 import { useUserAirdrop } from "@/hooks/useUserAirdrop";
 import DefaultLayout from "@/layouts/default";
@@ -69,16 +71,35 @@ const AirdropDetailsPage = () => {
     <DefaultLayout>
       <section className="flex flex-col items-start justify-start px-10 py-4 w-full">
         <AirdropHeader airdrop={airdrop} />
-        <div className="w-full mt-6">
-          <div className="flex flex-col md:flex-row gap-6 w-full">
-            <div className="w-1/6 flex flex-col gap-6">
-              <AirdropInfo airdrop={airdrop} progress={progress} />
-              <AirdropInvestment
-                invested={userAirdropData?.invested || 0}
-                received={userAirdropData?.received || 0}
-                updateInvestment={updateInvestment}
-              />
-              {/* <AirdropNotes
+
+        <div className="flex flex-col md:flex-row gap-6 w-full my-6">
+          <div className="w-80 flex flex-col gap-6">
+            <AirdropInfo airdrop={airdrop} progress={progress} />
+            <AirdropInvestment
+              invested={userAirdropData?.invested || 0}
+              received={userAirdropData?.received || 0}
+              updateInvestment={updateInvestment}
+            />
+          </div>
+          <div className="w-full flex flex-col gap-4">
+            <AirdropDescription airdrop={airdrop} />
+            <div className="flex w-full gap-4 flex-col md:flex-row">
+              <div className="flex flex-col gap-4 w-full ">
+                {airdrop.important_links.length > 0 && (
+                  <AirdropLinks airdrop={airdrop} />
+                )}
+                <AirdropTasks
+                  airdrop={airdrop}
+                  completedTasks={completedTasks}
+                  handleTaskToggle={(task: string) => {
+                    const [type, index] = task.split("_");
+
+                    toggleTask(type as "daily" | "general", parseInt(index));
+                  }}
+                />
+              </div>
+
+              <AirdropNotes
                 handleAddNote={handleAddNote}
                 invested={userAirdropData?.invested || 0}
                 newNote={newNote}
@@ -87,18 +108,6 @@ const AirdropDetailsPage = () => {
                 removeNote={removeNote}
                 setNewNote={setNewNote}
                 updateInvestment={updateInvestment}
-              /> */}
-            </div>
-            <div className="w-full flex flex-col gap-6">
-              <AirdropDescription airdrop={airdrop} />
-              <AirdropTasks
-                airdrop={airdrop}
-                completedTasks={completedTasks}
-                handleTaskToggle={(task: string) => {
-                  const [type, index] = task.split("_");
-
-                  toggleTask(type as "daily" | "general", parseInt(index));
-                }}
               />
             </div>
           </div>

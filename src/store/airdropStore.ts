@@ -1,34 +1,9 @@
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { create } from "zustand";
 
-import { Airdrop } from "@/constants/airdrop.table";
 import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
-
-interface TaskStatus {
-  id: string;
-  completed: boolean;
-}
-
-interface UserAirdropData {
-  favorite: boolean;
-  daily_tasks: TaskStatus[];
-  general_tasks: TaskStatus[];
-}
-
-interface AirdropState {
-  airdrops: Airdrop[];
-  favorites: Set<string>;
-  userAirdropData: Map<string, UserAirdropData>;
-  updatingFavorites: Set<string>;
-  error: string | null;
-  loading: boolean;
-  fetchAirdrops: () => () => void;
-  fetchFavorites: (uid: string) => () => void;
-  deleteAirdrop: (id: string) => Promise<void>;
-  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
-  updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
-}
+import { Airdrop, AirdropState, UserAirdropData } from "@/types";
 
 export const useAirdropStore = create<AirdropState>((set) => ({
   airdrops: [],

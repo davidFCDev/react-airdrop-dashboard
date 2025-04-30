@@ -1,3 +1,5 @@
+import { Airdrop, AirdropType, Cost, Stage, Status, Tier } from "@/types";
+
 export const statusColorMap: Record<Status, "success" | "warning" | "danger"> =
   {
     Confirmed: "success",
@@ -74,64 +76,3 @@ export const columns: Column[] = [
   { name: "Favorite", uid: "favorite", sortable: false },
   { name: "Actions", uid: "actions", sortable: false },
 ];
-
-// Definición de tipos
-export const types = [
-  "Play-to-Earn",
-  "Testnet",
-  "Farm tx",
-  "Trading",
-  "Points System",
-] as const;
-export const tiers = ["S", "A", "B", "C"] as const;
-export const stages = [
-  "Testnet",
-  "Mainnet",
-  "Beta",
-  "Alpha",
-  "Closed",
-  "Open",
-  "Private",
-  "Public",
-] as const;
-export const status = [
-  "Confirmed",
-  "Not Confirmed",
-  "Posible",
-  "Ended",
-] as const;
-export const cost = ["FREE", "Low Cost", "Gas Fees", "Liquidity"] as const;
-
-export type AirdropType = (typeof types)[number];
-export type Tier = (typeof tiers)[number];
-export type Stage = (typeof stages)[number];
-export type Status = (typeof status)[number];
-export type Cost = (typeof cost)[number];
-
-export interface Airdrop {
-  id: string;
-  name: string;
-  description: { en: string; es: string };
-  type: AirdropType;
-  tier: Tier;
-  stage: Stage;
-  funding: string;
-  cost: Cost;
-  chain: string;
-  tags: string[];
-  created_at: string;
-  last_edited: string;
-  image: string;
-  backdrop: string;
-  url: string;
-  discord: string;
-  twitter: string;
-  telegram: string;
-  status: Status;
-  important_links: { key: string; value: string }[];
-  user: {
-    daily_tasks: { en: string; es: string }[];
-    general_tasks: { en: string; es: string }[];
-    notes: { id: string; text: string; created_at: string }[];
-  };
-}

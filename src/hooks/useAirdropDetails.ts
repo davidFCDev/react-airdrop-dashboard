@@ -2,8 +2,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import { Airdrop } from "@/constants/airdrop.table";
 import { airdropService } from "@/service/airdrop.service";
+import { Airdrop, Note } from "@/types";
 
 export const useAirdropDetails = () => {
   const { id } = useParams();
@@ -26,7 +26,9 @@ export const useAirdropDetails = () => {
 
         if (foundAirdrop) {
           setAirdrop(foundAirdrop);
-          setNotes(foundAirdrop.user?.notes.map((note) => note.text) || []);
+          setNotes(
+            foundAirdrop.user?.notes.map((note: Note) => note.text) || [],
+          );
         }
       } catch (error) {
         console.error("Error fetching airdrop:", error);

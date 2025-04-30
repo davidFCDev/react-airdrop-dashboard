@@ -1,17 +1,7 @@
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
-
-export interface Post {
-  id: string;
-  image: string;
-  title: { en: string; es: string };
-  subtitle: { en: string; es: string };
-  description: { en: string; es: string };
-  links: { key: string; value: string }[];
-  created_at: string;
-  last_edited: string;
-}
+import { Post } from "@/types";
 
 export class PostService {
   async createPost(

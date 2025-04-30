@@ -1,25 +1,11 @@
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
 import { Input } from "@heroui/input";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-interface Note {
-  id: string;
-  content: string;
-  created_at: string;
-}
+import { DeleteIcon } from "../icons";
 
-interface Props {
-  handleAddNote: () => void;
-  newNote: string;
-  notes: Note[];
-  removeNote: (id: string) => void;
-  setNewNote: (value: string) => void;
-  invested: number;
-  received: number;
-  updateInvestment: (invested: number, received: number) => void;
-}
+import { AirdropNotesProps } from "@/types";
 
 const AirdropNotes = ({
   handleAddNote,
@@ -27,66 +13,51 @@ const AirdropNotes = ({
   notes,
   removeNote,
   setNewNote,
-  invested,
-  received,
-  updateInvestment,
-}: Props) => {
+}: AirdropNotesProps) => {
   const { t } = useTranslation();
-  const [investedInput, setInvestedInput] = useState(invested.toString());
-  const [receivedInput, setReceivedInput] = useState(received.toString());
-
-  const handleInvestmentChange = () => {
-    const newInvested = parseFloat(investedInput) || 0;
-    const newReceived = parseFloat(receivedInput) || 0;
-
-    updateInvestment(newInvested, newReceived);
-  };
 
   return (
-    <Card className="w-80 bg-default-100">
-      <CardBody className="flex flex-col gap-4">
+    <Card
+      className="flex flex-col gap-4 bg-default-100 border border-default-200 p-6 w-full md:w-1/3"
+      radius="none"
+      shadow="none"
+    >
+      <CardBody className="flex flex-col gap-4 p-0">
         <h3 className="text-lg font-bold">{t("airdrop.notes")}</h3>
         <div className="flex gap-2">
           <Input
             placeholder={t("airdrop.add_note")}
             value={newNote}
+            variant="underlined"
             onChange={(e) => setNewNote(e.target.value)}
           />
-          <Button color="primary" onPress={handleAddNote}>
+          <Button
+            isIconOnly
+            color="primary"
+            variant="faded"
+            onPress={handleAddNote}
+          >
             {t("airdrop.add")}
           </Button>
         </div>
-        <div className="flex flex-col gap-2">
+        <ul className="list-disc pl-5">
           {notes.map((note) => (
-            <div key={note.id} className="flex justify-between items-center">
-              <p className="text-sm">{note.content}</p>
-              <Button
-                color="danger"
-                size="sm"
-                onPress={() => removeNote(note.id)}
-              >
-                {t("airdrop.delete")}
-              </Button>
-            </div>
+            <li key={note.id} className="mb-2">
+              <div className="flex justify-between items-center">
+                <p>{note.text}</p>
+                <Button
+                  isIconOnly
+                  color="danger"
+                  size="sm"
+                  variant="light"
+                  onPress={() => removeNote(note.id)}
+                >
+                  <DeleteIcon className="w-4 h-4" />
+                </Button>
+              </div>
+            </li>
           ))}
-        </div>
-        <h3 className="text-lg font-bold">{t("airdrop.investment")}</h3>
-        <div className="flex flex-col gap-2">
-          <Input
-            label={t("airdrop.invested")}
-            type="number"
-            value={investedInput}
-            onBlur={handleInvestmentChange}
-            onChange={(e) => setInvestedInput(e.target.value)}
-          />
-          <Input
-            label={t("airdrop.received")}
-            type="number"
-            value={receivedInput}
-            onBlur={handleInvestmentChange}
-            onChange={(e) => setReceivedInput(e.target.value)}
-          />
-        </div>
+        </ul>
       </CardBody>
     </Card>
   );

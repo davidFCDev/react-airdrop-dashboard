@@ -4,16 +4,9 @@ import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { useNavigate } from "react-router-dom";
 
-import {
-  Airdrop,
-  cost,
-  stages,
-  status,
-  tiers,
-  types,
-} from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropForm } from "@/hooks/useAirdropForm";
+import { Airdrop, cost, stages, status, tiers, types } from "@/types/index";
 
 interface Props {
   onSubmit: () => void;

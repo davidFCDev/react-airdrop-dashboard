@@ -34,7 +34,7 @@ import { siteConfig } from "@/config/site";
 import { avatar1 } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 import { auth, db } from "@/lib/firebase";
-import { Post } from "@/service/post.service";
+import { Post } from "@/types";
 
 interface UserData {
   avatar?: string;

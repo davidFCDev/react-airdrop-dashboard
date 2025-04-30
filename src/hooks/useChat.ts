@@ -40,7 +40,7 @@ export const useChat = () => {
       setNewMessage("");
       setError(null);
       setStoreError(null);
-    } catch (err) {
+    } catch {
       setError({ message: t("chat.error_sending"), type: "send" });
       setStoreError(t("chat.error_sending"));
     }
@@ -51,7 +51,7 @@ export const useChat = () => {
       await chatService.deleteMessage(messageId, user);
       setError(null);
       setStoreError(null);
-    } catch (err) {
+    } catch {
       setError({ message: t("chat.error_deleting"), type: "delete" });
       setStoreError(t("chat.error_deleting"));
     }
@@ -65,7 +65,7 @@ export const useChat = () => {
       setEditText("");
       setError(null);
       setStoreError(null);
-    } catch (err) {
+    } catch {
       setError({ message: t("chat.error_updating"), type: "edit" });
       setStoreError(t("chat.error_updating"));
     }
@@ -76,7 +76,7 @@ export const useChat = () => {
       await chatService.pinMessage(messageId, user, pinned);
       setError(null);
       setStoreError(null);
-    } catch (err) {
+    } catch {
       setError({ message: t("chat.error_pinning"), type: "pin" });
       setStoreError(t("chat.error_pinning"));
     }

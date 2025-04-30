@@ -2,9 +2,9 @@ import { useCallback, useState } from "react";
 
 import { useImageUpload } from "./useImageUpload";
 
-import { Airdrop } from "@/constants/airdrop.table";
 import { airdropService } from "@/service/airdrop.service";
 import { useAirdropStore } from "@/store/airdropStore";
+import { Airdrop } from "@/types";
 
 interface Props {
   onSubmit: () => void;

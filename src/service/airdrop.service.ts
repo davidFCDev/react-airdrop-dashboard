@@ -12,8 +12,8 @@ import {
   where,
 } from "firebase/firestore";
 
-import { Airdrop } from "@/constants/airdrop.table";
 import { auth, db } from "@/lib/firebase";
+import { Airdrop } from "@/types";
 
 interface UserAirdropData {
   favorite: boolean;

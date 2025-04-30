@@ -1,30 +1,10 @@
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-import { Airdrop } from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
 import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
-
-interface TaskStatus {
-  id: string;
-  completed: boolean;
-}
-
-interface Note {
-  id: string;
-  content: string;
-  created_at: string;
-}
-
-interface UserAirdropData {
-  favorite: boolean;
-  daily_tasks: TaskStatus[];
-  general_tasks: TaskStatus[];
-  notes: Note[];
-  invested: number;
-  received: number;
-}
+import { Airdrop, Note, UserAirdropData } from "@/types";
 
 export const useUserAirdrop = (airdropId: string) => {
   const { user } = useUserAuth();
@@ -157,12 +137,12 @@ export const useUserAirdrop = (airdropId: string) => {
     }
   };
 
-  const addNote = async (content: string) => {
+  const addNote = async (text: string) => {
     if (!userAirdropData || !user?.uid) return;
 
     const newNote: Note = {
       id: new Date().toISOString(),
-      content,
+      text,
       created_at: new Date().toISOString(),
     };
     const newNotes = [...userAirdropData.notes, newNote];

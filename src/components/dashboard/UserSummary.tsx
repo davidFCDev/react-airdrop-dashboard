@@ -15,8 +15,9 @@ import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import AvatarModal from "./dashboard/AvatarModal";
-import { EditIcon } from "./icons";
+import { EditIcon } from "../icons";
+
+import AvatarModal from "./AvatarModal";
 
 import {
   avatar1,
@@ -29,7 +30,7 @@ import {
   avatar8,
 } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
-import { useFavoriteAirdropSummaries } from "@/hooks/useDashboard";
+import { useFavoriteAirdropSummaries } from "@/hooks/useFavoriteAirdropSummaries";
 import { db } from "@/lib/firebase";
 import { useAirdropStore } from "@/store/airdropStore";
 
@@ -206,7 +207,7 @@ const UserSummary = () => {
         <div className="flex flex-col gap-2 border border-default-300 bg-default-50 p-4">
           <div className="flex justify-between items-center">
             <p className="font-semibold">{t("tracker.invested")}</p>
-            <p className="text-success">{totalInvested.toFixed(2)}$</p>
+            <p className="text-danger">-{totalInvested.toFixed(2)}$</p>
           </div>
           <div className="flex justify-between items-center">
             <p className="font-semibold">{t("tracker.received")}</p>
