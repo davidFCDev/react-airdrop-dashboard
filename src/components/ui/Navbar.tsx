@@ -334,7 +334,7 @@ export const Navbar = () => {
           <Link isExternal href={siteConfig.links.twitter} title="Twitter">
             <TwitterIcon className="text-default-700" />
           </Link>
-          <Link isExternal href={siteConfig.links.discord} title="Discord">
+          <Link isExternal href={siteConfig.links.telegram} title="Telegram">
             <TelegramIcon className="text-default-700" />
           </Link>
           <ThemeSwitch />
@@ -369,7 +369,7 @@ export const Navbar = () => {
         <Link isExternal href={siteConfig.links.twitter} title="Twitter">
           <TwitterIcon className="text-default-700" />
         </Link>
-        <Link isExternal href={siteConfig.links.discord} title="Discord">
+        <Link isExternal href={siteConfig.links.telegram} title="Telegram">
           <TelegramIcon className="text-default-700" />
         </Link>
         <LanguageSelector />

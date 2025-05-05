@@ -89,5 +89,6 @@ export const siteConfig = {
     docs: "",
     discord: "",
     sponsor: "",
+    telegram: "https://t.me/chukinice",
   },
 };

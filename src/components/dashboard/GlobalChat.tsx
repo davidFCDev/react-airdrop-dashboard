@@ -1,4 +1,3 @@
-import { Alert } from "@heroui/alert";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
@@ -6,14 +5,16 @@ import { Input } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 import { DeleteIcon, EditIcon, PinIcon } from "@/components/icons";
+import { useUserAuth } from "@/context/AuthContext";
 import { useChat } from "@/hooks/useChat";
 
 const GlobalChat = () => {
   const { t } = useTranslation();
+  const { user, role } = useUserAuth();
   const {
-    user,
     messages,
     newMessage,
     setNewMessage,
@@ -49,6 +50,19 @@ const GlobalChat = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message, {
+        duration: 5000,
+        style: {
+          background: "#fee2e2",
+          color: "#dc2626",
+          border: "1px solid #dc2626",
+        },
+      });
+    }
+  }, [error]);
+
   const pinnedMessages = messages
     .filter((msg) => msg.pinned)
     .sort(
@@ -74,13 +88,26 @@ const GlobalChat = () => {
     }
   };
 
+  // Determinar si un mensaje es consecutivo
+  const isConsecutiveMessage = (index: number) => {
+    if (index === 0) return false;
+    const currentMessage = messages[index];
+    const previousMessage = messages[index - 1];
+
+    return currentMessage.userId === previousMessage.userId;
+  };
+
+  // Determinar si el siguiente mensaje es consecutivo
+  const isNextConsecutive = (index: number) => {
+    if (index >= messages.length - 1) return false;
+    const currentMessage = messages[index];
+    const nextMessage = messages[index + 1];
+
+    return currentMessage.userId === nextMessage.userId;
+  };
+
   return (
     <section className="flex flex-col gap-4 py-4 h-full">
-      {error && (
-        <Alert className="mb-4" color="danger">
-          {error.message}
-        </Alert>
-      )}
       <Card
         className="bg-default-50 border border-default-200 h-[37rem]"
         radius="none"
@@ -108,15 +135,18 @@ const GlobalChat = () => {
           </div>
         )}
         <ScrollShadow className="flex flex-col gap-2 h-full overflow-y-auto overflow-x-hidden">
-          <CardBody className="flex flex-col gap-2">
+          <CardBody className="flex flex-col bg-default-100">
             {messages.length === 0 ? (
               <p className="text-sm text-default-500">
                 {t("chat.no_messages")}
               </p>
             ) : (
-              messages.map((message) => {
+              messages.map((message, index) => {
                 const isOwnMessage = user?.uid === message.userId;
                 const isAdmin = message.role === "admin";
+                const isConsecutive = isConsecutiveMessage(index);
+                const isUserAdmin = role === "admin";
+                const nextIsConsecutive = isNextConsecutive(index);
 
                 return (
                   <div
@@ -124,59 +154,70 @@ const GlobalChat = () => {
                     ref={(el) => {
                       if (el) messageRefs.current.set(message.id, el);
                     }}
-                    className={`flex ${
+                    className={`flex min-w-[60%] max-w-[90%] ${
                       isOwnMessage
                         ? "justify-start mr-auto"
                         : "justify-end ml-auto"
-                    } items-start w-[80%] group`}
+                    } items-start ${nextIsConsecutive ? "mb-1" : "mb-2"} group`}
                     role="listitem"
                   >
                     <div
-                      className={`relative flex ${
+                      className={`relative flex items-center ${
                         isOwnMessage ? "flex-row" : "flex-row-reverse"
-                      } gap-2 p-2 rounded-lg border ${
-                        isAdmin ? "border-danger" : "border-default-200"
-                      } ${isOwnMessage ? "bg-default-50" : "bg-default-100"} w-full min-h-[4rem] overflow-x-hidden`}
+                      } gap-2 p-1 rounded-lg ${
+                        message.pinned ? "border border-danger" : ""
+                      } ${isOwnMessage ? "bg-default-50" : "bg-neutral-800"} w-full min-h-[2rem] overflow-x-hidden`}
                     >
                       <div className="self-start p-2">
                         <Avatar
                           isBordered
                           color="primary"
                           name={message.userName}
-                          radius="lg"
-                          size="lg"
+                          radius="md"
+                          size="md"
                           src={message.avatar ?? undefined}
                         />
                       </div>
                       <div
                         className={`flex-1 ${isOwnMessage ? "text-left" : "text-right"}`}
                       >
-                        <div
-                          className={`flex items-center gap-2 ${
-                            isOwnMessage ? "justify-start" : "justify-end"
-                          }`}
-                        >
-                          {!isOwnMessage && isNewMessage(message.createdAt) && (
-                            <span className="text-xs text-success">
-                              {t("chat.new")}
-                            </span>
-                          )}
-                          <span
-                            className={`text-lg font-semibold ${
-                              isAdmin
-                                ? "text-danger"
-                                : isOwnMessage
-                                  ? "text-primary"
-                                  : "text-white"
-                            }`}
-                          >
-                            {message.userName}
-                            {isAdmin && " (admin)"}
-                          </span>
-                        </div>
-                        <span className="text-xs text-default-500 block">
-                          {new Date(message.createdAt).toLocaleString()}
-                        </span>
+                        {!isConsecutive && (
+                          <>
+                            <div
+                              className={`flex items-center gap-4 ${
+                                isOwnMessage ? "justify-start" : "justify-end"
+                              } ${isOwnMessage ? "flex-row" : "flex-row"}`}
+                            >
+                              {!isOwnMessage &&
+                                isNewMessage(message.createdAt) && (
+                                  <span className="text-xs text-success bg-success-50 rounded-full px-2">
+                                    {t("chat.new")}
+                                  </span>
+                                )}
+                              <div
+                                className={`${isOwnMessage ? "flex-row" : "flex-row-reverse"} flex items-center gap-2`}
+                              >
+                                <span
+                                  className={`text-lg font-semibold ${
+                                    isAdmin ? "text-danger" : "text-primary"
+                                  }`}
+                                >
+                                  {message.userName}
+                                  {isAdmin && " (admin)"}
+                                </span>
+                                <span className="text-[0.6rem] text-default-500">
+                                  {new Date(message.createdAt).toLocaleString(
+                                    undefined,
+                                    {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                          </>
+                        )}
                         {editingMessageId === message.id ? (
                           <div className="mt-2 flex gap-2">
                             <Input
@@ -185,7 +226,7 @@ const GlobalChat = () => {
                               onChange={(e) => setEditText(e.target.value)}
                             />
                             <Button
-                              color="primary"
+                              color="secondary"
                               size="sm"
                               variant="flat"
                               onPress={() => handleEditMessage(message.id)}
@@ -243,13 +284,15 @@ const GlobalChat = () => {
                             </Button>
                           </div>
                         )}
-                      {isAdmin && (
+                      {isAdmin && isUserAdmin && (
                         <Button
                           isIconOnly
                           aria-label={
                             message.pinned ? t("chat.unpin") : t("chat.pin")
                           }
-                          className={`absolute top-1 right-1 flex items-center justify-center ${
+                          className={`absolute top-1 ${
+                            isUserAdmin ? "right-1" : "left-1"
+                          } flex items-center justify-center ${
                             message.pinned
                               ? "block"
                               : "hidden group-hover:block"
@@ -263,6 +306,14 @@ const GlobalChat = () => {
                         >
                           <PinIcon size={18} />
                         </Button>
+                      )}
+                      {isAdmin && !isUserAdmin && message.pinned && (
+                        <span
+                          aria-label={t("chat.pinned")}
+                          className="absolute top-1 left-1 flex items-center justify-center text-danger"
+                        >
+                          <PinIcon size={18} />
+                        </span>
                       )}
                     </div>
                   </div>
