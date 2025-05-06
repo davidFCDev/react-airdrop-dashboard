@@ -288,16 +288,15 @@ export const Navbar = () => {
         className="basis-1/5 sm:basis-full flex gap-0"
         justify="start"
       >
-        <NavbarBrand className="max-w-fit border-r border-default-200 h-full pr-6">
+        <NavbarBrand className="max-w-fit border-r border-default-200 h-full pr-10">
           <Link
-            className="flex justify-start items-center gap-1"
+            className="flex justify-start items-center gap-2"
             color="foreground"
             href="/"
           >
-            <Logo className="text-secondary-600" />
-            <p className="font-bold text-inherit">
-              AIRDROP <span className="text-secondary-600">HUB</span>
-            </p>
+            <Logo className="text-primary" />
+
+            <p className="font-semibold leading-none text-2xl">Airdrop.hub</p>
           </Link>
         </NavbarBrand>
         <div className="hidden lg:flex justify-start h-full">

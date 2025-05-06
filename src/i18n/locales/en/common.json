@@ -6,8 +6,35 @@
     "subtitle": "Want to start hunting airdrops now?",
     "contact": "Get an account",
     "login": "Start hunting",
-    "button_git_hub": "GitHub",
-    "snippet_text": "Get started by editing"
+    "stats": {
+      "market_coverage": "Market Coverage",
+      "total_volume": "Total Volume",
+      "liquidity_sources": "Liquidity Sources",
+      "networks": "Networks"
+    },
+    "slogan": {
+      "search": "Search.",
+      "manage": "Manage.",
+      "track": "Track.",
+      "subtitle": "Manage your favorite airdrops, track your investments, and explore new opportunities."
+    },
+    "coverage": {
+      "title": "We've Got You Covered",
+      "new_airdrops": {
+        "title": "New Airdrops Every Day",
+        "desc1": "Access the most comprehensive guides for the latest airdrops, always up to date.",
+        "desc2": "Track your tasks in one place and never miss an opportunity."
+      },
+      "live_chat": {
+        "title": "Live Chat with Our Community",
+        "desc1": "Get real-time support, ask questions, and share tips with our community."
+      },
+      "track_profits": {
+        "title": "Track Your Profits and Losses",
+        "desc1": "Monitor your investments and airdrops in one place.",
+        "desc2": "Receive notifications when your airdrops are ready to claim."
+      }
+    }
   },
   "navbar": {
     "login": "Login",

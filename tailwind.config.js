@@ -11,6 +11,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "480px",
+        sm: "640px",
+      },
       colors: {
         content: "#0E0E0E",
       },
