@@ -14,6 +14,10 @@ export default {
       screens: {
         xs: "480px",
         sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1920px",
       },
       colors: {
         content: "#0E0E0E",
@@ -26,10 +30,9 @@ export default {
       themes: {
         light: {
           colors: {
-            background: "#FFFFFF", // or DEFAULT
-            foreground: "#0E0E0E", // or 50 to 900 DEFAULT
+            background: "#FFFFFF",
+            foreground: "#0E0E0E",
             primary: {
-              //... 50 to 900
               foreground: "#FFFFFF",
               DEFAULT: "#9F71FF",
             },
@@ -38,8 +41,8 @@ export default {
         },
         dark: {
           colors: {
-            background: "#1A1A1A", // or DEFAULT
-            foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+            background: "#1A1A1A",
+            foreground: "#ECEDEE",
             primary: {
               foreground: "#FFFFFF",
               DEFAULT: "#9F71FF",

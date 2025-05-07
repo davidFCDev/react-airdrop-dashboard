@@ -19,7 +19,7 @@
       "subtitle": "Manage your favorite airdrops, track your investments, and explore new opportunities."
     },
     "coverage": {
-      "title": "We've Got You Covered",
+      "title": "We've Got You Full Covered",
       "new_airdrops": {
         "title": "New Airdrops Every Day",
         "desc1": "Access the most comprehensive guides for the latest airdrops, always up to date.",
@@ -30,12 +30,34 @@
         "desc1": "Get real-time support, ask questions, and share tips with our community."
       },
       "track_profits": {
-        "title": "Track Your Profits and Losses",
+        "title": "Track Your Profits & Losses",
         "desc1": "Monitor your investments and airdrops in one place.",
         "desc2": "Receive notifications when your airdrops are ready to claim."
       }
+    },
+    "prices": {
+      "title": "Choose Your Plan",
+      "subtitle": "Flexible pricing for your needs",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "annual": "Annual",
+      "choose": "Choose Plan"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "What are airdrops?",
+      "a1": "Airdrops are free token distributions by blockchain projects to promote their platforms or reward users.",
+      "q2": "Do I need to invest to get an airdrop?",
+      "a2": "Most airdrops are free, but some may require a small investment or task completion.",
+      "q3": "Are airdrops safe?",
+      "a3": "We ensure that all airdrops listed on our platform are from reputable projects. However, always do your own research.",
+      "q4": "What benefits does your platform offer?",
+      "a4": "Our platform provides curated airdrop guides, investment tracking, and a community for real-time support.",
+      "q5": "How often are new airdrops added?",
+      "a5": "We update our airdrop listings daily to ensure you have access to the latest opportunities."
     }
   },
+
   "navbar": {
     "login": "Login",
     "register": "Register",
