@@ -10,10 +10,11 @@ export default function FavoritesPage() {
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center justify-center py-4">
-          <h2 className="text-4xl text-neutral-100 font-bold">
+          <h2 className="text-6xl text-neutral-100 font-bold">
+            <span className="text-primary">{t("favorites.t")}</span>
             {t("favorites.title")}
           </h2>
-          <p className="text-neutral-400 text-lg mt-2">
+          <p className="text-neutral-300 text-lg mt-2">
             {t("favorites.subtitle")}
           </p>
         </div>

@@ -2,12 +2,62 @@
   "home": {
     "title_part_1": "Gestiona tus",
     "title_part_2": "Airdrops",
-    "title_part_3": "rápido & fácil",
+    "title_part_3": "fácil y rápido",
     "subtitle": "¿Quieres empezar a cazar airdrops ahora?",
-    "contact": "Contacto",
-    "login": "Iniciar sesión",
-    "button_git_hub": "GitHub",
-    "snippet_text": "Empieza editando"
+    "contact": "Crear una cuenta",
+    "title": "¿Listo para unirte a la comunidad de airdrops?",
+    "join": "Únete ahora",
+    "login": "Empezar a cazar",
+    "stats": {
+      "market_coverage": "Cobertura",
+      "total_volume": "Volumen total",
+      "liquidity_sources": "Liquidez",
+      "networks": "Redes"
+    },
+    "slogan": {
+      "search": "Busca.",
+      "manage": "Gestiona.",
+      "track": "Trackea.",
+      "subtitle": "Encuentra tus airdrops favoritos, controla tus inversiones y explora nuevas oportunidades."
+    },
+    "coverage": {
+      "title": "Cobertura Total",
+      "new_airdrops": {
+        "title": "Nuevos airdrops cada día",
+        "desc1": "Accede a las guías más completas para los últimos airdrops, siempre actualizadas.",
+        "desc2": "Sigue tus tareas en un solo lugar y no pierdas ninguna oportunidad."
+      },
+      "live_chat": {
+        "title": "Chat en vivo con la comunidad",
+        "desc1": "Obtén soporte en tiempo real, haz preguntas y comparte consejos con nuestra comunidad."
+      },
+      "track_profits": {
+        "title": "Trackea tus profits",
+        "desc1": "Monitorea tus inversiones y airdrops en un solo lugar.",
+        "desc2": "Recibe notificaciones cuando tus airdrops estén listos para reclamar."
+      }
+    },
+    "prices": {
+      "title": "Elige tu plan",
+      "subtitle": "Selecciona el plan que mejor se adapte a ti",
+      "monthly": "Mensual",
+      "quarterly": "Trimestral",
+      "annual": "Anual",
+      "choose": "Elegir plan"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "q1": "¿Qué son los airdrops?",
+      "a1": "Los airdrops son distribuciones gratuitas de tokens por parte de proyectos blockchain para promocionar sus plataformas o recompensar a los usuarios.",
+      "q2": "¿Necesito invertir para obtener un airdrop?",
+      "a2": "La mayoría de los airdrops son gratuitos, pero algunos pueden requerir una pequeña inversión o completar tareas.",
+      "q3": "¿Son seguros los airdrops?",
+      "a3": "Nos aseguramos de que todos los airdrops listados en nuestra plataforma provengan de proyectos reputados. Sin embargo, siempre haz tu propia investigación.",
+      "q4": "¿Qué beneficios ofrece vuestra plataforma?",
+      "a4": "Nuestra plataforma ofrece guías seleccionadas de airdrops, seguimiento de inversiones y una comunidad para soporte en tiempo real.",
+      "q5": "¿Con qué frecuencia se añaden nuevos airdrops?",
+      "a5": "Actualizamos nuestra lista de airdrops diariamente para asegurarte acceso a las últimas oportunidades."
+    }
   },
   "navbar": {
     "login": "Iniciar sesión",
@@ -103,10 +153,13 @@
   "favorites": {
     "title": "Favoritos",
     "subtitle": "Airdrops que has añadido a favoritos",
-    "error_favorites": "Error cargando favoritos",
     "loading": "Cargando favoritos...",
-    "no_favorites": "No se han añadido favoritos aún",
-    "view_details": "Ver detalles"
+    "view_details": "Ver detalles",
+    "no_favorites": "Aún no has añadido ningún airdrop favorito.",
+    "error_favorites": "No se pudieron cargar los airdrops favoritos",
+    "error": "Ocurrió un error",
+    "retry": "Intentar de nuevo",
+    "explore_airdrops": "Explorar Airdrops"
   },
   "unauthorized": {
     "title": "Acceso No Autorizado",
@@ -174,13 +227,17 @@
     "view_pinned": "Mensajes fijados"
   },
   "tracker": {
-    "title": "Seguimiento de Beneficios",
-    "total_profit": "Beneficio Total",
+    "title": "Seguimiento de Inversiones",
+    "subtitle": "Monitorea tus inversiones y beneficios",
+    "total_profit": "Beneficio/Pérdida",
     "airdrop": "Airdrop",
     "invested": "Invertido",
     "received": "Recibido",
     "profit": "Beneficio",
-    "roi": "ROI"
+    "roi": "ROI",
+    "no_investments": "Aún no has invertido en ningún airdrop.",
+    "explore_airdrops": "Explorar Airdrops",
+    "error": "Ocurrió un error"
   },
   "user": {
     "guest": "Invitado",

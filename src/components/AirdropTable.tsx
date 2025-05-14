@@ -32,7 +32,6 @@ import {
   WebsiteIcon,
 } from "@/components/icons";
 import {
-  Airdrop,
   columns,
   costColorMap,
   stageColorMap,
@@ -43,6 +42,7 @@ import {
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropTable } from "@/hooks/useAirdropTable";
 import { useAirdropStore } from "@/store/airdropStore";
+import { Airdrop } from "@/types";
 
 const AirdropTable = () => {
   const { t, i18n } = useTranslation();
@@ -276,6 +276,7 @@ const AirdropTable = () => {
         placeholder={t("airdrop.search_placeholder")}
         startContent={<SearchIcon />}
         value={filterValue}
+        variant="bordered"
         onClear={onClear}
         onValueChange={onSearchChange}
       />
@@ -283,7 +284,7 @@ const AirdropTable = () => {
         <DropdownTrigger>
           <Button
             endContent={<ChevronDownIcon className="text-small" />}
-            variant="flat"
+            variant="solid"
           >
             {t("airdrop.columns")}
           </Button>
@@ -307,7 +308,7 @@ const AirdropTable = () => {
       </Dropdown>
       <Button
         color={showFavorites ? "primary" : "default"}
-        variant="flat"
+        variant="solid"
         onPress={toggleFavorites}
       >
         {showFavorites ? t("airdrop.show_all") : t("airdrop.show_favorites")}
@@ -328,6 +329,9 @@ const AirdropTable = () => {
       }}
       classNames={{
         wrapper: "max-h-[600px] overflow-auto",
+        th: "border-b border-default-200 bg-default-100",
+        tbody: "bg-default-50",
+        table: "bg-default-50 border border-default-200",
         td: "border-b border-default-200",
         tr: "hover:bg-default-100 cursor-pointer transition-colors",
       }}

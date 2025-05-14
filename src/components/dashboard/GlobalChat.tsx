@@ -32,11 +32,14 @@ const GlobalChat = () => {
     canEditOrDelete,
   } = useChat();
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null); // Nuevo ref para ScrollShadow
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [pinnedMessageIndex, setPinnedMessageIndex] = useState(0);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatEndRef.current && scrollRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -109,7 +112,7 @@ const GlobalChat = () => {
   return (
     <section className="flex flex-col gap-4 py-4 h-full">
       <Card
-        className="bg-default-50 border border-default-200 h-[37rem]"
+        className="bg-default-50 border border-default-200 h-[37rem] relative"
         radius="none"
         shadow="none"
       >
@@ -134,7 +137,10 @@ const GlobalChat = () => {
             </Button>
           </div>
         )}
-        <ScrollShadow className="flex flex-col gap-2 h-full overflow-y-auto overflow-x-hidden">
+        <ScrollShadow
+          ref={scrollRef}
+          className="flex flex-col gap-2 h-full overflow-y-auto overflow-x-hidden"
+        >
           <CardBody className="flex flex-col bg-default-100">
             {messages.length === 0 ? (
               <p className="text-sm text-default-500">

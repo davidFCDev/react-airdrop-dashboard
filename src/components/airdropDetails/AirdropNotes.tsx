@@ -18,7 +18,7 @@ const AirdropNotes = ({
 
   return (
     <Card
-      className="flex flex-col gap-4 bg-default-100 border border-default-200 p-6 w-full md:w-1/3"
+      className="flex flex-col gap-4 bg-default-50 border border-default-200 p-6 w-full md:w-1/3"
       radius="none"
       shadow="none"
     >

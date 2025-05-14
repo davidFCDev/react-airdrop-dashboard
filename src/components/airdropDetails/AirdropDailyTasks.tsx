@@ -8,6 +8,7 @@ interface AirdropDailyTasksProps {
   completedTasks: Set<string>;
   handleTaskToggle: (task: string) => void;
   getTaskText: (task: { en: string; es: string }) => string;
+  isUpdating: boolean;
 }
 
 const AirdropDailyTasks = ({
@@ -15,11 +16,12 @@ const AirdropDailyTasks = ({
   completedTasks,
   handleTaskToggle,
   getTaskText,
+  isUpdating,
 }: AirdropDailyTasksProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col bg-default-100 border border-default-200 p-6 w-full">
+    <div className="flex flex-col bg-default-50 border border-default-200 p-6 w-full">
       {airdrop.user.daily_tasks.length > 0 && (
         <>
           <h3 className="text-xl font-semibold mb-2">
@@ -29,6 +31,7 @@ const AirdropDailyTasks = ({
             {airdrop.user.daily_tasks.map((task, index) => (
               <li key={index} className="flex items-center gap-2">
                 <Checkbox
+                  isDisabled={isUpdating}
                   isSelected={completedTasks.has(`daily_${index}`)}
                   onChange={() => handleTaskToggle(`daily_${index}`)}
                 />

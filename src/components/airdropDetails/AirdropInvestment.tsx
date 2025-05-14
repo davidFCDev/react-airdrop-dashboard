@@ -27,7 +27,7 @@ const AirdropInvestment = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-default-100 border border-default-200 p-6 w-full">
+    <div className="flex flex-col gap-4 bg-default-50 border border-default-200 p-6 w-full">
       <h3 className="text-xl font-bold flex items-center">
         <DollarIcon className="inline-block mr-2 text-primary" />
         {t("airdrop.investment")}

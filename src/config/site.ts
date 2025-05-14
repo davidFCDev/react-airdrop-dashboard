@@ -84,7 +84,7 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "",
+    github: "https://github.com/davidFCDev",
     twitter: "",
     docs: "",
     discord: "",

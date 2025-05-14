@@ -35,7 +35,7 @@ const StartNow = () => {
             title="Login"
           >
             <Button
-              className="w-full font-semibold text-default-50 sm:w-auto"
+              className="w-full font-semibold text-white sm:w-auto"
               color="primary"
               radius="lg"
               size="lg"

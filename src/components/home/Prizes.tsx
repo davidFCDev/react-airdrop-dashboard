@@ -17,7 +17,7 @@ const pricingPlans = [
 const Prizes = () => {
   const { t } = useTranslation();
   const pricesRef = useRef(null);
-  const isPricesInView = useInView(pricesRef, { once: true, amount: 0.3 });
+  const isPricesInView = useInView(pricesRef, { once: true, amount: 0.5 });
 
   return (
     <section
@@ -29,7 +29,7 @@ const Prizes = () => {
           {t("home.prices.title")}
         </h4>
       </div>
-      <div className="flex flex-col items-start gap-10 px-1 py-2 xs:px-1 xs:py-2 sm:px-2 sm:py-4 md:px-20 md:py-16 w-full max-w-4xl 2xl:max-w-6xl">
+      <div className="flex items-center gap-2 px-1 py-2 xs:px-1 xs:py-2 sm:px-2 sm:py-4 md:px-20 md:py-16 w-full max-w-4xl 2xl:max-w-6xl">
         <h3 className="text-2xl xs:text-2xl sm:text-4xl md:text-5xl font-light">
           {t("home.prices.subtitle")}
         </h3>
@@ -42,13 +42,17 @@ const Prizes = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="relative bg-default-900 border-8 border-secondary-700 h-[30rem] w-[300px] flex flex-col items-center text-default-50 gap-6 p-4 xs:p-4 sm:p-6 md:p-8 lg:p-10 text-center shadow-none">
+            <Card
+              className="relative bg-default-900 border-8 border-secondary-600 h-[29rem] w-[300px] flex flex-col items-center text-default-50 gap-6 p-4 xs:p-4 sm:p-6 md:p-8 lg:p-10 text-center shadow-2xl hover:shadow-3xl transition-all duration-300 ease-in-out"
+              radius="none"
+              shadow="lg"
+            >
               <div className="flex flex-col items-center gap-2 z-10">
-                <h3 className="text-2xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-100">
+                <h3 className="text-2xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-default-100 bg-secondary-600 rounded-lg px-6 py-2">
                   {t(plan.title)}
                 </h3>
               </div>
-              <p className="text-2xl sm:text-4xl md:text-7xl font-bold">
+              <p className="text-2xl sm:text-4xl md:text-7xl font-bold text-default-100">
                 {plan.price}
               </p>
 

@@ -29,7 +29,11 @@ export const useAirdropStore = create<AirdropState>((set) => ({
             : new Date().toISOString(),
         })) as Airdrop[];
 
-        set({ airdrops: airdropData, loading: false });
+        set((state) => ({
+          airdrops: airdropData,
+          loading:
+            state.userAirdropData.size === 0 && state.favorites.size === 0,
+        }));
       },
       (err) => {
         set({
@@ -43,6 +47,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
   },
 
   fetchFavorites: (uid: string) => {
+    console.log("fetchFavorites started for UID:", uid);
     const userAirdropsRef = collection(db, "user_airdrops", uid, "airdrops");
     const unsubscribeFavorites = onSnapshot(
       userAirdropsRef,
@@ -53,15 +58,26 @@ export const useAirdropStore = create<AirdropState>((set) => ({
         snapshot.docs.forEach((doc) => {
           const data = doc.data() as UserAirdropData;
 
+          console.log(`fetchFavorites: Airdrop ${doc.id}:`, {
+            invested: data.invested,
+            favorite: data.favorite,
+          });
           userData.set(doc.id, data);
           if (data.favorite) {
             favoriteIds.add(doc.id);
           }
         });
-        set({ favorites: favoriteIds, userAirdropData: userData });
+        set((state) => ({
+          favorites: favoriteIds,
+          userAirdropData: userData,
+          loading: state.airdrops.length === 0,
+        }));
       },
       (err) => {
-        set({ error: `Error fetching favorites: ${err.message}` });
+        set({
+          error: `Error fetching favorites: ${err.message}`,
+          loading: false,
+        });
       },
     );
 
@@ -76,9 +92,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
       }));
     } catch (err) {
       set({
-        error: `Error deleting airdrop: ${
-          err instanceof Error ? err.message : "Unknown"
-        }`,
+        error: `Error deleting airdrop: ${err instanceof Error ? err.message : "Unknown"}`,
       });
     }
   },
@@ -109,9 +123,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
       });
     } catch (err) {
       set({
-        error: `Error toggling favorite: ${
-          err instanceof Error ? err.message : "Unknown"
-        }`,
+        error: `Error toggling favorite: ${err instanceof Error ? err.message : "Unknown"}`,
       });
     } finally {
       set((state) => {
@@ -134,9 +146,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
       }));
     } catch (err) {
       set({
-        error: `Error updating airdrop: ${
-          err instanceof Error ? err.message : "Unknown"
-        }`,
+        error: `Error updating airdrop: ${err instanceof Error ? err.message : "Unknown"}`,
       });
     }
   },

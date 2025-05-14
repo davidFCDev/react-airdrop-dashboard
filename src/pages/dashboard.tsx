@@ -50,7 +50,7 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row min-h-screen p-4 gap-4 bg-default-100">
+      <section className="flex flex-col md:flex-row min-h-screen p-4 gap-4 bg-default-100 overflow-hidden">
         <UserSummary />
         <div className="w-full flex flex-col gap-4 bg-default-100">
           <div className="flex flex-col md:flex-row h-full gap-4">
@@ -63,7 +63,6 @@ const DashboardPage = () => {
             </div>
             <div className="w-full md:w-1/2 min-h-[28rem]">
               <DashboardTitle icon={ChatIcon} text={t("dashboard.chat")} />
-
               <GlobalChat />
             </div>
           </div>

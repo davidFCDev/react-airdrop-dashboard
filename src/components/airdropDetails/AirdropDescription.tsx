@@ -14,7 +14,7 @@ const AirdropDescription = ({ airdrop }: Props) => {
     i18n.language === "es" ? airdrop.description.es : airdrop.description.en;
 
   return (
-    <div className="flex flex-col gap-4 bg-default-100 border border-default-200 p-6 w-full">
+    <div className="flex flex-col gap-4 bg-default-50 border border-default-200 p-6 w-full">
       <h3 className="text-xl font-semibold flex items-center gap-1">
         <InfoIcon className="inline-block mr-1 text-primary" />
         {t("airdrop.description")}

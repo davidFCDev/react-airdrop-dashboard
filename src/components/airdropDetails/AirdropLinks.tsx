@@ -11,7 +11,7 @@ const AirdropLinks = ({ airdrop }: AirdropLinksProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col bg-default-100 border border-default-200 p-6 w-full">
+    <div className="flex flex-col bg-default-50 border border-default-200 p-6 w-full">
       <h2 className="text-xl font-semibold mb-2">
         {t("airdrop.important_links")}
       </h2>

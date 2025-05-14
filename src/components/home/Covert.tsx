@@ -53,7 +53,7 @@ const Covert = () => {
   return (
     <section
       ref={coverageRef}
-      className="relative bg-default-100 text-left p-1 xs:p-2 sm:p-4 w-full min-h-[600px]"
+      className="relative bg-secondary-100 text-left p-1 xs:p-2 sm:p-4 w-full min-h-[600px]"
     >
       <div className="relative z-15">
         <h4 className="text-[5rem] xs:text-[5rem] sm:text-[7rem] md:text-[10rem] 2xl:text-[12rem] font-bold leading-none">

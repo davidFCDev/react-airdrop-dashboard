@@ -1,4 +1,5 @@
 import About from "@/components/home/About";
+import Contact from "@/components/home/Contact";
 import Covert from "@/components/home/Covert";
 import Faq from "@/components/home/Faq";
 import Hero from "@/components/home/Hero";
@@ -31,6 +32,9 @@ export default function IndexPage() {
 
         {/* Sección Preguntas Frecuentes */}
         <Faq />
+
+        {/* Sección Contacto */}
+        <Contact />
       </div>
     </DefaultLayout>
   );

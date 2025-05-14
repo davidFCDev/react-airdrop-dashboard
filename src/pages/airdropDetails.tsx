@@ -27,6 +27,7 @@ const AirdropDetailsPage = () => {
     addNote,
     removeNote,
     updateInvestment,
+    isUpdating,
   } = useUserAirdrop(id || "");
   const [newNote, setNewNote] = useState("");
 
@@ -51,7 +52,7 @@ const AirdropDetailsPage = () => {
     return (
       <DefaultLayout>
         <section className="flex flex-col items-center justify-center p-10">
-          <p className=" font-light">{error || t("airdrop.invalid_id")}</p>
+          <p className="font-light">{error || t("airdrop.invalid_id")}</p>
         </section>
       </DefaultLayout>
     );
@@ -61,7 +62,7 @@ const AirdropDetailsPage = () => {
     return (
       <DefaultLayout>
         <section className="flex flex-col items-center justify-center p-10">
-          <p className=" font-light">{t("airdrop.not_found")}</p>
+          <p className="font-light">{t("airdrop.not_found")}</p>
         </section>
       </DefaultLayout>
     );
@@ -84,7 +85,7 @@ const AirdropDetailsPage = () => {
           <div className="w-full flex flex-col gap-4">
             <AirdropDescription airdrop={airdrop} />
             <div className="flex w-full gap-4 flex-col md:flex-row">
-              <div className="flex flex-col gap-4 w-full ">
+              <div className="flex flex-col gap-4 w-full">
                 {airdrop.important_links.length > 0 && (
                   <AirdropLinks airdrop={airdrop} />
                 )}
@@ -96,6 +97,7 @@ const AirdropDetailsPage = () => {
 
                     toggleTask(type as "daily" | "general", parseInt(index));
                   }}
+                  isUpdating={isUpdating}
                 />
               </div>
 

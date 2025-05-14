@@ -1,18 +1,25 @@
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useUserAuth } from "@/context/AuthContext";
 import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
+import { useAirdropStore } from "@/store/airdropStore";
 import { Airdrop, Note, UserAirdropData } from "@/types";
 
 export const useUserAirdrop = (airdropId: string) => {
   const { user } = useUserAuth();
+  const { userAirdropData: storeUserAirdropData } = useAirdropStore();
   const [airdrop, setAirdrop] = useState<Airdrop | null>(null);
-  const [userAirdropData, setUserAirdropData] =
+  const [localUserAirdropData, setLocalUserAirdropData] =
     useState<UserAirdropData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Usar datos del store si están disponibles, sino del estado local
+  const userAirdropData =
+    localUserAirdropData || storeUserAirdropData.get(airdropId) || null;
 
   useEffect(() => {
     if (!airdropId) {
@@ -43,7 +50,7 @@ export const useUserAirdrop = (airdropId: string) => {
     fetchAirdrop();
 
     if (!user?.uid) {
-      setUserAirdropData(null);
+      setLocalUserAirdropData(null);
       setLoading(false);
 
       return;
@@ -60,10 +67,10 @@ export const useUserAirdrop = (airdropId: string) => {
       userAirdropRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          setUserAirdropData(docSnap.data() as UserAirdropData);
+          setLocalUserAirdropData(docSnap.data() as UserAirdropData);
         } else {
           airdropService.initializeUserAirdrop(airdropId).then(() => {
-            setUserAirdropData({
+            setLocalUserAirdropData({
               favorite: false,
               daily_tasks: [],
               general_tasks: [],
@@ -84,28 +91,38 @@ export const useUserAirdrop = (airdropId: string) => {
     return () => unsubscribe();
   }, [airdropId, user]);
 
-  const completedTasks = new Set<string>();
+  const completedTasks = useMemo(() => {
+    const tasks = new Set<string>();
 
-  userAirdropData?.daily_tasks.forEach((task, index) => {
-    if (task.completed) completedTasks.add(`daily_${index}`);
-  });
-  userAirdropData?.general_tasks.forEach((task, index) => {
-    if (task.completed) completedTasks.add(`general_${index}`);
-  });
+    userAirdropData?.daily_tasks.forEach((task, index) => {
+      if (task.completed) tasks.add(`daily_${index}`);
+    });
+    userAirdropData?.general_tasks.forEach((task, index) => {
+      if (task.completed) tasks.add(`general_${index}`);
+    });
 
-  const progress =
-    airdrop && userAirdropData
-      ? Math.round(
-          (completedTasks.size /
-            (airdrop.user.daily_tasks.length +
-              airdrop.user.general_tasks.length)) *
-            100,
-        )
-      : 0;
+    return tasks;
+  }, [userAirdropData]);
+
+  const progress = useMemo(
+    () =>
+      airdrop && userAirdropData
+        ? Math.round(
+            (completedTasks.size /
+              (airdrop.user.daily_tasks.length +
+                airdrop.user.general_tasks.length)) *
+              100,
+          )
+        : 0,
+    [airdrop, userAirdropData, completedTasks],
+  );
 
   const toggleTask = async (type: "daily" | "general", index: number) => {
-    if (!userAirdropData || !airdrop || !user?.uid) return;
+    if (!userAirdropData || !airdrop || !user?.uid || isUpdating) return;
 
+    setIsUpdating(true);
+
+    // Actualización optimista
     const tasks =
       type === "daily"
         ? userAirdropData.daily_tasks
@@ -116,6 +133,14 @@ export const useUserAirdrop = (airdropId: string) => {
       ...newTasks[index],
       completed: !newTasks[index].completed,
     };
+
+    const updatedData = {
+      ...userAirdropData,
+      [`${type}_tasks`]: newTasks,
+      favorite: true,
+    };
+
+    setLocalUserAirdropData(updatedData);
 
     try {
       const userAirdropRef = doc(
@@ -134,11 +159,17 @@ export const useUserAirdrop = (airdropId: string) => {
       setError(
         `Error updating task: ${err instanceof Error ? err.message : "Unknown"}`,
       );
+      // Revertir si falla
+      setLocalUserAirdropData(userAirdropData);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const addNote = async (text: string) => {
-    if (!userAirdropData || !user?.uid) return;
+    if (!userAirdropData || !user?.uid || isUpdating) return;
+
+    setIsUpdating(true);
 
     const newNote: Note = {
       id: new Date().toISOString(),
@@ -146,6 +177,8 @@ export const useUserAirdrop = (airdropId: string) => {
       created_at: new Date().toISOString(),
     };
     const newNotes = [...userAirdropData.notes, newNote];
+
+    setLocalUserAirdropData({ ...userAirdropData, notes: newNotes });
 
     try {
       const userAirdropRef = doc(
@@ -161,13 +194,20 @@ export const useUserAirdrop = (airdropId: string) => {
       setError(
         `Error adding note: ${err instanceof Error ? err.message : "Unknown"}`,
       );
+      setLocalUserAirdropData(userAirdropData);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const removeNote = async (noteId: string) => {
-    if (!userAirdropData || !user?.uid) return;
+    if (!userAirdropData || !user?.uid || isUpdating) return;
+
+    setIsUpdating(true);
 
     const newNotes = userAirdropData.notes.filter((note) => note.id !== noteId);
+
+    setLocalUserAirdropData({ ...userAirdropData, notes: newNotes });
 
     try {
       const userAirdropRef = doc(
@@ -183,11 +223,18 @@ export const useUserAirdrop = (airdropId: string) => {
       setError(
         `Error removing note: ${err instanceof Error ? err.message : "Unknown"}`,
       );
+      setLocalUserAirdropData(userAirdropData);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const updateInvestment = async (invested: number, received: number) => {
-    if (!userAirdropData || !user?.uid) return;
+    if (!userAirdropData || !user?.uid || isUpdating) return;
+
+    setIsUpdating(true);
+
+    setLocalUserAirdropData({ ...userAirdropData, invested, received });
 
     try {
       const userAirdropRef = doc(
@@ -203,6 +250,9 @@ export const useUserAirdrop = (airdropId: string) => {
       setError(
         `Error updating investment: ${err instanceof Error ? err.message : "Unknown"}`,
       );
+      setLocalUserAirdropData(userAirdropData);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -218,5 +268,6 @@ export const useUserAirdrop = (airdropId: string) => {
     addNote,
     removeNote,
     updateInvestment,
+    isUpdating,
   };
 };

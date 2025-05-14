@@ -12,11 +12,11 @@ import {
   WebsiteIcon,
 } from "@/components/icons";
 import {
-  Airdrop,
   costColorMap,
   statusColorMap,
   tierColorMap,
 } from "@/constants/airdrop.table";
+import { Airdrop } from "@/types";
 
 interface Props {
   airdrop: Airdrop;

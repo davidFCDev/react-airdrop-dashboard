@@ -10,7 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUserAuth } from "@/context/AuthContext";
 import DefaultLayout from "@/layouts/default";
 import { db } from "@/lib/firebase";
-import { Post, postService } from "@/service/post.service";
+import { postService } from "@/service/post.service";
+import { Post } from "@/types";
 
 const PostDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -65,7 +66,7 @@ const PostDetailsPage = () => {
   if (loading) {
     return (
       <DefaultLayout>
-        <section className="flex flex-col items-center justify-center p-10 min-h-screen">
+        <section className="flex flex-col items-center justify-center py-12 min-h-screen">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </section>
       </DefaultLayout>
@@ -75,7 +76,7 @@ const PostDetailsPage = () => {
   if (error || !post) {
     return (
       <DefaultLayout>
-        <section className="flex flex-col items-start justify-start p-10">
+        <section className="flex flex-col items-start justify-start py-12 min-h-screen">
           <h1 className="text-2xl font-bold">{error || t("post.not_found")}</h1>
         </section>
       </DefaultLayout>
@@ -89,10 +90,14 @@ const PostDetailsPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center p-4">
-        <Card className="w-full max-w-3xl">
+      <section className="flex flex-col items-center justify-center py-12">
+        <Card
+          className="w-full max-w-3xl bg-default-50 p-4 border border-default-200"
+          radius="none"
+          shadow="none"
+        >
           <CardHeader>
-            <h1 className="text-3xl font-bold">{title}</h1>
+            <h1 className="text-4xl font-bold">{title}</h1>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
             <Image
@@ -100,11 +105,10 @@ const PostDetailsPage = () => {
               className="w-full h-64 object-cover"
               src={post.image}
             />
-            <h2 className="text-xl font-semibold">{subtitle}</h2>
-            <p className="text-default-600">{description}</p>
+            <h2 className="text-xl font-semibold text-primary">{subtitle}</h2>
+            <p className="text-neutral-300">{description}</p>
             {post.links.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <h3 className="font-semibold">{t("post.links")}</h3>
+              <div className="flex flex-col gap-2 underline text-primary">
                 {post.links.map((link, index) => (
                   <Link
                     key={index}
@@ -119,7 +123,6 @@ const PostDetailsPage = () => {
             )}
             <div className="flex items-center gap-2">
               <p className="text-sm text-default-500">
-                {t("post.created_at")}:{" "}
                 {new Date(post.created_at).toLocaleDateString()}
               </p>
               {role === "admin" && (

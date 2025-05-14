@@ -19,7 +19,7 @@ const AirdropInfo = ({ airdrop, progress }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full flex flex-col gap-4 bg-default-100 border border-default-200 p-6">
+    <div className="w-full flex flex-col gap-4 bg-default-50 border border-default-200 p-6">
       <div className="flex items-center gap-4 mb-2">
         <h1 className="text-[2.7rem] font-bold">{airdrop.name}</h1>
       </div>

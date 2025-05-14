@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 
+import { useUserAuth } from "./context/AuthContext";
 import AirdropDetailsPage from "./pages/airdropDetails";
 import CreatePage from "./pages/create";
 import CreatePostPage from "./pages/createPost";
@@ -14,6 +16,7 @@ import ProfilePage from "./pages/profile";
 import RegisterPage from "./pages/register";
 import TrackerPage from "./pages/tracker";
 import UnauthorizedPage from "./pages/unauthorized";
+import { useAirdropStore } from "./store/airdropStore";
 
 import { RouteGuard } from "@/hoc/RouteGuard";
 import AirdropsPage from "@/pages/airdrops";
@@ -21,6 +24,23 @@ import HelpFeedbackPage from "@/pages/help";
 import IndexPage from "@/pages/index";
 
 function App() {
+  const { user } = useUserAuth();
+  const { fetchAirdrops, fetchFavorites } = useAirdropStore();
+
+  useEffect(() => {
+    const unsubscribeAirdrops = fetchAirdrops();
+    let unsubscribeFavorites: (() => void) | undefined;
+
+    if (user?.uid) {
+      unsubscribeFavorites = fetchFavorites(user.uid);
+    }
+
+    return () => {
+      unsubscribeAirdrops();
+      unsubscribeFavorites?.();
+    };
+  }, [user, fetchAirdrops, fetchFavorites]);
+
   return (
     <>
       <Toaster richColors position="bottom-right" />

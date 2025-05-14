@@ -5,6 +5,8 @@
     "title_part_3": "quickly & easily",
     "subtitle": "Want to start hunting airdrops now?",
     "contact": "Get an account",
+    "contactTitle": "Have any questions? We're here to help!",
+    "contactJoin": "Contact",
     "login": "Start hunting",
     "stats": {
       "market_coverage": "Market Coverage",
@@ -37,7 +39,7 @@
     },
     "prices": {
       "title": "Choose Your Plan",
-      "subtitle": "Flexible pricing for your needs",
+      "subtitle": "Set the plan that suits you best",
       "monthly": "Monthly",
       "quarterly": "Quarterly",
       "annual": "Annual",
@@ -109,12 +111,13 @@
     }
   },
   "airdrop": {
-    "title": "Airdrop list",
-    "subtitle": "Search and manage your airdrops",
+    "t": "Hopium",
+    "title": " Zone",
+    "subtitle": "Where hopes are launched, and sometimes crash.",
     "description": "What's",
     "search_placeholder": "Search by name...",
     "columns": "Columns",
-    "no_airdrops": "No airdrops found",
+    "no_airdrops": "No airdrops in sight. Is it the bear market... or just you?",
     "invalid_id": "Invalid Airdrop ID",
     "not_found": "Airdrop not found",
     "name": "Project Name",
@@ -150,11 +153,15 @@
     "investment": "Your investment"
   },
   "favorites": {
-    "title": "Favorites",
-    "subtitle": "Airdrops you have marked as favorites",
-    "error_favorites": "Error loading favorites",
-    "loading": "Loading favorites...",
-    "no_favorites": "No favorites added yet",
+    "t": "The",
+    "title": " Watchlist",
+    "subtitle": "Where hopium lives.",
+    "error_favorites": "We lost your bags... temporarily.",
+    "loading": "Scouting for moonshots...",
+    "no_favorites": "No airdrops saved yet. Are you even trying to make it?",
+    "error": "An error occurred",
+    "retry": "Try Again",
+    "explore_airdrops": "Explore Airdrops",
     "view_details": "View details"
   },
   "unauthorized": {
@@ -197,22 +204,27 @@
     "delete_error": "Error deleting post"
   },
   "tracker": {
-    "title": "Profit Tracker",
-    "total_profit": "Total Profit",
+    "t": "Moon",
+    "title": " or Dust?",
+    "subtitle": "From zero to hero and back again.",
+    "total_profit": "Total Gains",
     "airdrop": "Airdrop",
     "invested": "Invested",
     "received": "Received",
     "profit": "Profit",
-    "roi": "ROI"
+    "roi": "ROI",
+    "no_investments": "No tracked airdrops yet. You either missed them or you're early. Copium?",
+    "explore_airdrops": "Explore Airdrops",
+    "error": "Something broke. Unlike your portfolio, this can be fixed."
   },
   "dashboard": {
-    "latest_airdrops": "Latest Airdrops",
-    "no_airdrops": "No airdrops found",
-    "important_news": "News",
+    "latest_airdrops": "Fresh Drops",
+    "no_airdrops": "No airdrops right now. Manifest harder.",
+    "important_news": "Alpha Feed",
     "no_posts": "No posts found",
     "add": "Add",
     "delete": "Delete",
-    "chat": "Chat"
+    "chat": "Chads Talk"
   },
   "chat": {
     "send_message": "Type a message",
