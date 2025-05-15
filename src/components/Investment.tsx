@@ -7,139 +7,37 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { DownArrowIcon } from "./icons";
 
-import { useUserAuth } from "@/context/AuthContext";
-import { useAirdropStore } from "@/store/airdropStore";
-
-interface UserAirdropData {
-  favorite: boolean;
-  daily_tasks: { id: string; completed: boolean }[];
-  general_tasks: { id: string; completed: boolean }[];
-  notes: { id: string; content: string; created_at: string }[];
-  invested: number;
-  received: number;
-}
+import { useInvestmentData } from "@/hooks/useInvestmentData";
 
 const Investment = () => {
   const { t } = useTranslation();
-  const { user } = useUserAuth();
   const {
-    airdrops,
-    favorites,
-    userAirdropData,
-    loading: storeLoading,
-    error: storeError,
-  } = useAirdropStore();
-  const [localLoading, setLocalLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user?.uid || storeLoading) {
-      setLocalLoading(true);
-
-      return;
-    }
-
-    const favoriteAirdropIds = airdrops
-      .filter((airdrop) => favorites.has(airdrop.id))
-      .map((airdrop) => airdrop.id);
-
-    // Verificar si todos los favoriteAirdropIds tienen datos
-    const allDataLoaded =
-      favoriteAirdropIds.length === 0 ||
-      favoriteAirdropIds.every((id) => userAirdropData.has(id));
-
-    setLocalLoading(!allDataLoaded);
-
-    // Timeout de respaldo
-    const timeout = setTimeout(() => setLocalLoading(false), 5000);
-
-    return () => clearTimeout(timeout);
-  }, [user, airdrops, favorites, userAirdropData, storeLoading]);
-
-  // Calcular favoriteAirdrops, totalProfit y totalInvested
-  const favoriteAirdrops = useMemo(
-    () => airdrops.filter((airdrop) => favorites.has(airdrop.id)),
-    [airdrops, favorites],
-  );
-
-  const totalProfit = useMemo(() => {
-    const profit = favoriteAirdrops.reduce((sum, airdrop) => {
-      const data = userAirdropData.get(airdrop.id);
-
-      if (!data) return sum;
-      const invested =
-        typeof data.invested === "number" && !isNaN(data.invested)
-          ? data.invested
-          : 0;
-      const received =
-        typeof data.received === "number" && !isNaN(data.received)
-          ? data.received
-          : 0;
-
-      return sum + (received - invested);
-    }, 0);
-
-    return isNaN(profit) ? 0 : profit;
-  }, [favoriteAirdrops, userAirdropData]);
-
-  const totalInvested = useMemo(() => {
-    const invested = favoriteAirdrops.reduce((sum, airdrop) => {
-      const data = userAirdropData.get(airdrop.id);
-
-      if (!data) return sum;
-      const invested =
-        typeof data.invested === "number" && !isNaN(data.invested)
-          ? data.invested
-          : 0;
-
-      return sum + invested;
-    }, 0);
-
-    return isNaN(invested) ? 0 : invested;
-  }, [favoriteAirdrops, userAirdropData]);
-
-  // Verificar si hay airdrops con inversión
-  const hasInvestments = useMemo(() => {
-    const result = favoriteAirdrops.some((airdrop) => {
-      const data = userAirdropData.get(airdrop.id);
-
-      return (
-        data &&
-        typeof data.invested === "number" &&
-        !isNaN(data.invested) &&
-        data.invested > 0
-      );
-    });
-
-    return result;
-  }, [favoriteAirdrops, userAirdropData]);
-
-  // Determinar la imagen según totalProfit y totalInvested
-  const profitImage = useMemo(() => {
-    if (totalProfit < 0) return "/images/bad.png";
-    if (totalProfit <= 2 * totalInvested) return "/images/decent.png";
-
-    return "/images/good.png";
-  }, [totalProfit, totalInvested]);
+    favoriteAirdrops,
+    totalProfit,
+    hasInvestments,
+    profitImage,
+    loading,
+    error,
+  } = useInvestmentData();
 
   // Manejo de errores
-  if (storeError) {
+  if (error) {
     return (
       <section className="flex flex-col items-center justify-center min-h-screen">
         <p className="text-danger text-xl">
-          {t("tracker.error")}: {storeError}
+          {t("tracker.error")}: {error}
         </p>
       </section>
     );
   }
 
   // Mostrar spinner durante carga
-  if (localLoading || storeLoading) {
+  if (loading) {
     return (
       <section className="flex flex-col items-center justify-center min-h-screen">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -173,7 +71,7 @@ const Investment = () => {
               }}
               classNames={{
                 wrapper: "max-h-[600px] overflow-auto",
-                th: "border-b border-default-200 bg-default-100",
+                th: "border-b border-default-200 bg-default-100 text-xl",
                 tbody: "bg-default-50",
                 table: "bg-default-50 border border-default-200",
                 td: "border-b border-default-200",
@@ -189,27 +87,17 @@ const Investment = () => {
               </TableHeader>
               <TableBody>
                 {favoriteAirdrops.map((airdrop) => {
-                  const data = userAirdropData.get(airdrop.id);
-                  const invested =
-                    data &&
-                    typeof data.invested === "number" &&
-                    !isNaN(data.invested)
-                      ? data.invested
+                  const profit = airdrop.received - airdrop.invested;
+                  const roi =
+                    airdrop.invested > 0
+                      ? (profit / airdrop.invested) * 100
                       : 0;
-                  const received =
-                    data &&
-                    typeof data.received === "number" &&
-                    !isNaN(data.received)
-                      ? data.received
-                      : 0;
-                  const profit = received - invested;
-                  const roi = invested > 0 ? (profit / invested) * 100 : 0;
 
                   return (
                     <TableRow key={airdrop.id}>
                       <TableCell className="text-lg">{airdrop.name}</TableCell>
-                      <TableCell>{invested.toFixed(2)} $</TableCell>
-                      <TableCell>{received.toFixed(2)} $</TableCell>
+                      <TableCell>{airdrop.invested.toFixed(2)} $</TableCell>
+                      <TableCell>{airdrop.received.toFixed(2)} $</TableCell>
                       <TableCell
                         className={profit >= 0 ? "text-success" : "text-danger"}
                       >

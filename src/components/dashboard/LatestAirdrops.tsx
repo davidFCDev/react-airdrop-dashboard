@@ -17,7 +17,7 @@ const LatestAirdrops = ({ latestAirdrops }: LatestAirdropsProps) => {
       ) : (
         latestAirdrops.map((airdrop) => (
           <div key={airdrop.id}>
-            <AirdropCard airdrop={airdrop} />
+            <AirdropCard airdrop={airdrop} star={true} />
           </div>
         ))
       )}

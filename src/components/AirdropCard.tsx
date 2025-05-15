@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import {
   DiscordIcon,
+  StarFilledIcon,
   TelegramIcon,
   TwitterIcon,
   WebsiteIcon,
@@ -16,29 +17,57 @@ import {
   statusColorMap,
   tierColorMap,
 } from "@/constants/airdrop.table";
+import { useAirdropStore } from "@/store/airdropStore";
 import { Airdrop } from "@/types";
 
 interface Props {
   airdrop: Airdrop;
+  star?: boolean;
 }
 
-const AirdropCard = ({ airdrop }: Props) => {
+const AirdropCard = ({ airdrop, star }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { favorites, userAirdropData } = useAirdropStore();
 
   const handleCardClick = () => {
     navigate(`/airdrops/${airdrop.id}`, { state: { airdrop } });
   };
 
+  // Verificar si el airdrop es favorito o tiene tareas iniciadas
+  const showStar =
+    star &&
+    (() => {
+      const data = userAirdropData.get(airdrop.id);
+      const isFavorite = favorites.has(airdrop.id);
+      const hasStartedTasks =
+        data &&
+        (data.daily_tasks.some((task) => task.completed) ||
+          data.general_tasks.some((task) => task.completed));
+
+      return isFavorite || hasStartedTasks;
+    })();
+
+  // Verificar si hay tareas pendientes
+  const hasPendingTasks = (() => {
+    const data = userAirdropData.get(airdrop.id);
+
+    return (
+      data &&
+      (data.daily_tasks.some((task) => !task.completed) ||
+        data.general_tasks.some((task) => !task.completed))
+    );
+  })();
+
   return (
     <Card
       isPressable
-      className="w-full h-40 bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200 flex flex-col"
+      className={`${star ? "h-40 min-w-60" : "h-40 min-w-64"} w-full bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200 flex flex-col relative`}
       radius="none"
-      shadow="sm"
+      shadow="none"
       onPress={handleCardClick}
     >
-      <CardHeader className="flex flex-col gap-3 flex-grow">
+      <CardHeader className="flex flex-col gap-3 flex-grow pb-0">
         <div className="flex justify-between items-center w-full">
           <div className="flex gap-3 items-center">
             <Image
@@ -55,7 +84,7 @@ const AirdropCard = ({ airdrop }: Props) => {
           </div>
         </div>
 
-        <div className="flex gap-2 flex-wrap w-full min-h-[2.5rem]">
+        <div className="flex gap-2 items-center flex-wrap w-full min-h-[2.5rem]">
           <Chip
             className="capitalize"
             color={statusColorMap[airdrop.status]}
@@ -127,6 +156,11 @@ const AirdropCard = ({ airdrop }: Props) => {
           )}
         </div>
       </CardFooter>
+
+      {/* Icono de estrella */}
+      {showStar && (
+        <StarFilledIcon className="absolute top-2 right-2 w-5 h-5 text-warning" />
+      )}
     </Card>
   );
 };

@@ -24,9 +24,9 @@ import {
   DeleteIcon,
   DiscordIcon,
   EditIcon,
-  HeartFilledIcon,
-  HeartIcon,
   SearchIcon,
+  StarFilledIcon,
+  StarIcon,
   TelegramIcon,
   TwitterIcon,
   WebsiteIcon,
@@ -229,9 +229,9 @@ const AirdropTable = () => {
             }}
           >
             {isFavorite ? (
-              <HeartFilledIcon className="w-5 h-5" />
+              <StarFilledIcon className="w-5 h-5" />
             ) : (
-              <HeartIcon className="w-5 h-5" />
+              <StarIcon className="w-5 h-5" />
             )}
           </Button>
         );
@@ -283,6 +283,7 @@ const AirdropTable = () => {
       <Dropdown>
         <DropdownTrigger>
           <Button
+            className="bg-default-50 border border-default-300 text-default-900 hover:bg-default-100"
             endContent={<ChevronDownIcon className="text-small" />}
             variant="solid"
           >

@@ -17,11 +17,11 @@ export const useFavoriteAirdropSummaries = (): AirdropSummary => {
 
         if (!data) return acc;
 
-        const totalDailyTasks = airdrop.user.daily_tasks.length;
+        const totalDailyTasks = data.daily_tasks.length;
         const completedDailyTasks = data.daily_tasks.filter(
           (t) => t.completed,
         ).length;
-        const totalGeneralTasks = airdrop.user.general_tasks.length;
+        const totalGeneralTasks = data.general_tasks.length;
         const completedGeneralTasks = data.general_tasks.filter(
           (t) => t.completed,
         ).length;

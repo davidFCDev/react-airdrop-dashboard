@@ -59,12 +59,11 @@
       "a5": "We update our airdrop listings daily to ensure you have access to the latest opportunities."
     }
   },
-
   "navbar": {
     "login": "Login",
     "register": "Register",
     "airdrops": "Airdrops",
-    "favorites": "Favorites",
+    "watchlist": "Watchlist",
     "help_and_feedback": "Help & Feedback",
     "create": "Create",
     "posts": "New Post",
@@ -140,6 +139,7 @@
     "add": "Add",
     "daily_tasks": "Daily Tasks",
     "general_tasks": "General Tasks",
+    "pending_tasks": "You have pending tasks",
     "no_notes": "No notes added yet",
     "favorite": "Favorite",
     "actions": "Actions",
@@ -208,10 +208,10 @@
     "title": " or Dust?",
     "subtitle": "From zero to hero and back again.",
     "total_profit": "Total Gains",
-    "airdrop": "Airdrop",
+    "airdrop": "Project",
     "invested": "Invested",
     "received": "Received",
-    "profit": "Profit",
+    "profit": "Profit/Loss",
     "roi": "ROI",
     "no_investments": "No tracked airdrops yet. You either missed them or you're early. Copium?",
     "explore_airdrops": "Explore Airdrops",
@@ -259,6 +259,45 @@
     "avatar": "User avatar",
     "daily_tasks_progress": "Daily tasks progress",
     "general_tasks_progress": "General tasks progress"
+  },
+  "help": {
+    "t": "Help",
+    "title": " & Feedback",
+    "subtitle": "Find answers, get support, and share your feedback.",
+    "airdrops": {
+      "title": "About Airdrops",
+      "description": "Airdrops come in various forms, such as token distributions, NFT drops, or community rewards. While they offer opportunities, no airdrop is guaranteed to be safe or profitable. Always conduct your own research (DYOR) before participating. Our platform provides information, not investment advice."
+    },
+    "contact": {
+      "title": "Contact & Account Creation",
+      "description": "Need help or want to create an account? Reach out directly via our Telegram channel. Our team will guide you through the process and answer any questions.",
+      "button": "Contact on Telegram"
+    },
+    "subscriptions": {
+      "title": "Subscription Plans",
+      "description": "We offer three subscription plans to suit your needs:",
+      "monthly": "Monthly: Access all features with a flexible monthly payment.",
+      "quarterly": "Quarterly: Save with a three-month plan.",
+      "yearly": "Yearly: Get the best value with a yearly plan.",
+      "save": "Save {percent}%"
+    },
+    "community": {
+      "title": "Join Our Community",
+      "description": "Connect with other users, share tips, and stay updated by joining our Telegram and Discord communities.",
+      "telegram": "Join Telegram",
+      "discord": "Join Discord"
+    },
+    "feedback": {
+      "title": "Share Your Feedback",
+      "description": "Your input helps us improve. Send us your suggestions or report issues via email.",
+      "button": "Send Feedback"
+    },
+    "terms": {
+      "title": "Terms & Privacy",
+      "description": "Review our terms of service and privacy policy to understand our practices.",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy"
+    }
   },
   "common": {
     "cancel": "Cancel",

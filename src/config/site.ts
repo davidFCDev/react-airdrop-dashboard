@@ -21,7 +21,7 @@ export const siteConfig = {
       href: "/airdrops",
     },
     {
-      label: "Favorites",
+      label: "Watchlist",
       href: "/favorites",
     },
     {
@@ -59,7 +59,7 @@ export const siteConfig = {
       href: "/airdrops",
     },
     {
-      label: "Favorites",
+      label: "Watchlist",
       href: "/favorites",
     },
     {

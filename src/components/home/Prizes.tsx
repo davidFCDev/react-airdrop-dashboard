@@ -4,14 +4,27 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import { prices } from "@/constants";
+
 const pricingPlans = [
-  { title: "home.prices.monthly", price: "$19.99", image: "/images/card1.png" },
+  {
+    title: "home.prices.monthly",
+    price: prices[0].price,
+    total_price: prices[0].total_price,
+    image: "/images/card1.png",
+  },
   {
     title: "home.prices.quarterly",
-    price: "$49.99",
+    price: prices[1].price,
+    total_price: prices[1].total_price,
     image: "/images/card2.png",
   },
-  { title: "home.prices.annual", price: "$199.99", image: "/images/card3.png" },
+  {
+    title: "home.prices.annual",
+    price: prices[2].price,
+    total_price: prices[2].total_price,
+    image: "/images/card3.png",
+  },
 ];
 
 const Prizes = () => {
@@ -43,18 +56,23 @@ const Prizes = () => {
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Card
-              className="relative bg-default-900 border-8 border-secondary-600 h-[29rem] w-[300px] flex flex-col items-center text-default-50 gap-6 p-4 xs:p-4 sm:p-6 md:p-8 lg:p-10 text-center shadow-2xl hover:shadow-3xl transition-all duration-300 ease-in-out"
+              className="relative bg-default-900 border-8 border-secondary-600 h-[30rem] w-[300px] flex flex-col items-center text-default-50 gap-4 p-4 xs:p-4 sm:p-6 md:p-8 lg:p-10 text-center shadow-2xl hover:shadow-3xl transition-all duration-300 ease-in-out"
               radius="none"
               shadow="lg"
             >
               <div className="flex flex-col items-center gap-2 z-10">
-                <h3 className="text-2xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-default-100 bg-secondary-600 rounded-lg px-6 py-2">
+                <h3 className="text-2xl xs:text-2xl sm:text-3xl md:text-3xl font-bold text-default-100 bg-secondary-600 rounded-lg px-6 py-2">
                   {t(plan.title)}
                 </h3>
               </div>
-              <p className="text-2xl sm:text-4xl md:text-7xl font-bold text-default-100">
-                {plan.price}
-              </p>
+              <div className="flex flex-col items-center z-10">
+                <p className="text-2xl sm:text-4xl md:text-6xl font-bold text-default-100">
+                  {plan.total_price}
+                </p>
+                <span className="text-lg font-semibold text-secondary-300 italic">
+                  {plan.price}
+                </span>
+              </div>
 
               <div className="absolute bottom-0 w-full z-5 overflow-hidden">
                 <Image

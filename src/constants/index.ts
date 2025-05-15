@@ -16,3 +16,23 @@ export const avatar8 =
   "https://img-cdn.magiceden.dev/rs:fill:800:0:0/plain/https%3A%2F%2Fimg.reservoir.tools%2Fimages%2Fv2%2Fbase%2FExqYYI6d1hFsAKQ2q85PIWia8rJATHTlwoHdhxsQbOUTlWBc%252FVcSNHcqUYsFpGl8jnwSpZIDJ1Y%252BIdnl4rXQbbdZwYluLbzvSboy4%252FyqxAmbtx60HVjzA2PVCyHU5xyS.png";
 
 export const image_avatar = avatar1; // Default for compatibility
+
+export const prices = [
+  {
+    type: "monthly",
+    price: "",
+    total_price: 14.99,
+  },
+  {
+    id: "quarterly",
+    price: "13.33 / month",
+    total_price: 39.99,
+    save: 5,
+  },
+  {
+    id: "annual",
+    price: "11.67 / month",
+    total_price: 139.99,
+    save: 22,
+  },
+];

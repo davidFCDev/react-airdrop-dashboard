@@ -1,4 +1,4 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, limit, onSnapshot, query } from "firebase/firestore";
 import { create } from "zustand";
 
 import { db } from "@/lib/firebase";
@@ -14,9 +14,10 @@ export const useAirdropStore = create<AirdropState>((set) => ({
   loading: true,
 
   fetchAirdrops: () => {
-    const q = query(collection(db, "airdrops"));
+    const q = query(collection(db, "airdrops"), limit(50));
     const unsubscribe = onSnapshot(
       q,
+      { includeMetadataChanges: true },
       (snapshot) => {
         const airdropData: Airdrop[] = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -32,7 +33,9 @@ export const useAirdropStore = create<AirdropState>((set) => ({
         set((state) => ({
           airdrops: airdropData,
           loading:
-            state.userAirdropData.size === 0 && state.favorites.size === 0,
+            state.userAirdropData.size === 0 &&
+            state.favorites.size === 0 &&
+            airdropData.length === 0,
         }));
       },
       (err) => {
@@ -51,6 +54,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
     const userAirdropsRef = collection(db, "user_airdrops", uid, "airdrops");
     const unsubscribeFavorites = onSnapshot(
       userAirdropsRef,
+      { includeMetadataChanges: true },
       (snapshot) => {
         const favoriteIds = new Set<string>();
         const userData = new Map<string, UserAirdropData>();
@@ -70,7 +74,10 @@ export const useAirdropStore = create<AirdropState>((set) => ({
         set((state) => ({
           favorites: favoriteIds,
           userAirdropData: userData,
-          loading: state.airdrops.length === 0,
+          loading:
+            state.airdrops.length === 0 &&
+            favoriteIds.size === 0 &&
+            userData.size === 0,
         }));
       },
       (err) => {

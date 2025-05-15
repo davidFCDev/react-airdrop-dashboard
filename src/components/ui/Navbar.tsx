@@ -44,7 +44,7 @@ const labelToTranslationKey: Record<string, string> = {
   Login: "login",
   Register: "register",
   Airdrops: "airdrops",
-  Favorites: "favorites",
+  Watchlist: "watchlist",
   "Help & Feedback": "help_and_feedback",
   Create: "create",
   Posts: "posts",
@@ -148,7 +148,6 @@ export const Navbar = () => {
           setError(null);
         },
         (err) => {
-          console.error("Firestore error in Navbar:", err);
           setError(`Error fetching notifications: ${err.message}`);
           setNotifications([]);
         },
@@ -227,7 +226,7 @@ export const Navbar = () => {
       return [
         "Dashboard",
         "Airdrops",
-        "Favorites",
+        "Watchlist",
         "Tracker",
         "Help & Feedback",
       ].includes(item.label);
@@ -237,7 +236,7 @@ export const Navbar = () => {
         "Airdrops",
         "Create",
         "Posts",
-        "Favorites",
+        "Watchlist",
         "Tracker",
         "Help & Feedback",
       ].includes(item.label);
@@ -255,7 +254,7 @@ export const Navbar = () => {
       return [
         "Dashboard",
         "Airdrops",
-        "Favorites",
+        "Watchlist",
         "Tracker",
         "Notifications",
         "Help & Feedback",
@@ -265,7 +264,7 @@ export const Navbar = () => {
       return [
         "Dashboard",
         "Airdrops",
-        "Favorites",
+        "Watchlist",
         "Posts",
         "Tracker",
         "Notifications",
