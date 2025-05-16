@@ -4,6 +4,7 @@ import { Link as HeroUILink } from "@heroui/link";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
+import { siteConfig } from "@/config/site";
 import { prices } from "@/constants";
 
 const HelpContent: FC = () => {
@@ -58,7 +59,7 @@ const HelpContent: FC = () => {
             as={HeroUILink}
             className="mt-4"
             color="primary"
-            href="https://t.me/your_telegram_link"
+            href={siteConfig.links.telegram}
           >
             {t("help.contact.button")}
           </Button>
@@ -162,7 +163,7 @@ const HelpContent: FC = () => {
               as={HeroUILink}
               className="mt-4"
               color="primary"
-              href="https://t.me/your_telegram_community"
+              href={siteConfig.links.telegram}
             >
               {t("help.community.telegram")}
             </Button>
@@ -199,7 +200,7 @@ const HelpContent: FC = () => {
             as={HeroUILink}
             className="mt-4"
             color="primary"
-            href="mailto:support@yourdomain.com"
+            href={siteConfig.links.telegram}
           >
             {t("help.feedback.button")}
           </Button>
@@ -221,24 +222,14 @@ const HelpContent: FC = () => {
           <p className="text-neutral-300 text-base">
             {t("help.terms.description")}
           </p>
-          <div className="flex gap-4 mt-4">
-            <Button
-              as={HeroUILink}
-              className="mt-4"
-              color="primary"
-              href="/terms"
-            >
-              {t("help.terms.terms")}
-            </Button>
-            <Button
-              as={HeroUILink}
-              className="mt-4"
-              color="primary"
-              href="/privacy"
-            >
-              {t("help.terms.privacy")}
-            </Button>
-          </div>
+          <Button
+            as={HeroUILink}
+            className="mt-4"
+            color="primary"
+            href="/terms"
+          >
+            {t("help.terms.terms")}
+          </Button>
         </CardBody>
       </Card>
     </div>

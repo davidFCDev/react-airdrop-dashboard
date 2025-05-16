@@ -81,6 +81,36 @@ export interface Airdrop {
   };
 }
 
+export interface FavoriteAirdrop {
+  id: string;
+  name: string;
+  description: { en: string; es: string };
+  type: string;
+  tier: string;
+  stage: string;
+  funding: string;
+  cost: string;
+  chain: string;
+  tags: string[];
+  created_at: string;
+  last_edited: string;
+  image: string;
+  backdrop: string;
+  url: string;
+  discord: string;
+  twitter: string;
+  telegram: string;
+  status: string;
+  important_links: { key: string; value: string }[];
+  user: {
+    daily_tasks: { en: string; es: string }[];
+    general_tasks: { en: string; es: string }[];
+    notes: { id: string; text: string; created_at: string }[];
+  };
+  daily_tasks: TaskStatus[];
+  general_tasks: TaskStatus[];
+}
+
 export interface AirdropSummary {
   totalDailyTasks: number;
   completedDailyTasks: number;
@@ -88,31 +118,6 @@ export interface AirdropSummary {
   completedGeneralTasks: number;
   totalTasks: number;
   completedTasks: number;
-}
-
-export interface TaskStatus {
-  id: string;
-  completed: boolean;
-}
-
-export interface UserAirdropData {
-  favorite: boolean;
-  daily_tasks: TaskStatus[];
-  general_tasks: TaskStatus[];
-}
-
-export interface AirdropState {
-  airdrops: Airdrop[];
-  favorites: Set<string>;
-  userAirdropData: Map<string, UserAirdropData>;
-  updatingFavorites: Set<string>;
-  error: string | null;
-  loading: boolean;
-  fetchAirdrops: () => () => void;
-  fetchFavorites: (uid: string) => () => void;
-  deleteAirdrop: (id: string) => Promise<void>;
-  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
-  updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
 }
 
 export interface TaskStatus {
@@ -144,4 +149,18 @@ export interface AirdropNotesProps {
   invested: number;
   received: number;
   updateInvestment: (invested: number, received: number) => void;
+}
+
+export interface AirdropState {
+  airdrops: Airdrop[];
+  favorites: Set<string>;
+  userAirdropData: Map<string, UserAirdropData>;
+  updatingFavorites: Set<string>;
+  error: string | null;
+  loading: boolean;
+  fetchAirdrops: () => () => void;
+  fetchFavorites: (uid: string) => () => void;
+  deleteAirdrop: (id: string) => Promise<void>;
+  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
+  updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
 }

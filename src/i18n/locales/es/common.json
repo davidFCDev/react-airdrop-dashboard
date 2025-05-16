@@ -158,11 +158,24 @@
     "subtitle": "Donde vive el hopium.",
     "error_favorites": "Perdimos tus bolsas... temporalmente.",
     "loading": "Buscando oportunidades de moonshot...",
-    "no_favorites": "Aún no has guardado airdrops. ¿De verdad estás intentando hacerla?",
+    "no_favorites": "Tu lista está más vacía que un mercado bajista. ¡Hora de apilar airdrops!",
     "error": "Ocurrió un error",
     "retry": "Intentar de Nuevo",
-    "explore_airdrops": "Explorar Airdrops",
-    "view_details": "Ver detalles"
+    "explore_airdrops": "¡Ve a cazar airdrops!",
+    "view_details": "Ver detalles",
+    "pending_tasks_title": "Tareas Listas para Despegar",
+    "stats": {
+      "title": "Tus Estadísticas de Airdrops",
+      "total_airdrops": "Total de Airdrops Seguidos",
+      "daily_tasks_pending": "Tareas Diarias Pendientes",
+      "general_tasks_pending": "Tareas Generales Pendientes",
+      "time_until_reset": "Tiempo hasta Reinicio Diario",
+      "task_progress": "Progreso de Tareas",
+      "total_invested": "Total Invertido (USD)",
+      "total_received": "Total Recibido (USD)",
+      "priority_airdrop": "Airdrop Prioritario",
+      "no_priority": "Sin airdrop prioritario"
+    }
   },
   "unauthorized": {
     "title": "Acceso No Autorizado",
@@ -261,8 +274,8 @@
     "general_tasks_progress": "Progreso de tareas generales"
   },
   "help": {
-    "t": "A",
-    "title": "yuda y Feedback",
+    "t": "Ayuda",
+    "title": " y Feedback",
     "subtitle": "Encuentra respuestas, obtén soporte y comparte tus comentarios.",
     "airdrops": {
       "title": "Sobre los Airdrops",
@@ -295,8 +308,48 @@
     "terms": {
       "title": "Términos y Privacidad",
       "description": "Revisa nuestros términos de servicio y política de privacidad para entender nuestras prácticas.",
-      "terms": "Términos de Servicio",
-      "privacy": "Política de Privacidad"
+      "terms": "Términos de Servicio"
+    }
+  },
+  "terms_privacy": {
+    "t": "T",
+    "title": "érminos y Privacidad",
+    "subtitle": "Comprende nuestros términos de servicio y prácticas de privacidad.",
+    "terms": {
+      "title": "Términos de Servicio",
+      "description": "Al usar nuestra plataforma, aceptas estos Términos de Servicio. Por favor, léelos cuidadosamente. Esto no es asesoramiento legal; consulta a un abogado para orientación específica.",
+      "acceptance": {
+        "title": "Aceptación de los Términos",
+        "description": "Al acceder o usar nuestra plataforma, aceptas estar sujeto a estos términos. Si no estás de acuerdo, por favor no uses nuestros servicios."
+      },
+      "use": {
+        "title": "Uso de la Plataforma",
+        "description": "Aceptas usar nuestra plataforma solo para fines legales. Eres responsable de tus acciones, incluyendo cualquier contenido que envíes o tareas que completes para airdrops."
+      },
+      "liability": {
+        "title": "Limitación de Responsabilidad",
+        "description": "Nuestra plataforma proporciona información, no consejos financieros. No somos responsables de ninguna pérdida o daño resultante del uso de nuestros servicios o la participación en airdrops."
+      }
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "description": "Estamos comprometidos a proteger tu privacidad. Esta política explica cómo recopilamos, usamos y protegemos tu información personal.",
+      "data_collection": {
+        "title": "Recopilación de Datos",
+        "description": "Recopilamos la información que proporcionas, como tu correo y detalles de cuenta, y datos de uso, como la actividad de navegación, para mejorar nuestros servicios."
+      },
+      "data_use": {
+        "title": "Uso de Datos",
+        "description": "Tu información se usa para proporcionar y mejorar nuestra plataforma, comunicarnos contigo y cumplir con obligaciones legales. No vendemos tus datos."
+      },
+      "user_rights": {
+        "title": "Tus Derechos",
+        "description": "Tienes derecho a acceder, corregir o eliminar tus datos personales. Contáctanos para ejercer estos derechos o saber más sobre nuestras prácticas."
+      }
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "description": "Si tienes preguntas sobre nuestros Términos de Servicio o Política de Privacidad, por favor contacta a nuestro equipo de soporte."
     }
   },
   "common": {

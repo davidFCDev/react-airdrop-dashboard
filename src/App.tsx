@@ -14,6 +14,7 @@ import LoginPage from "./pages/login";
 import PostDetailsPage from "./pages/postDetails";
 import ProfilePage from "./pages/profile";
 import RegisterPage from "./pages/register";
+import TermsPrivacyPage from "./pages/terms";
 import TrackerPage from "./pages/tracker";
 import UnauthorizedPage from "./pages/unauthorized";
 import { useAirdropStore } from "./store/airdropStore";
@@ -51,6 +52,7 @@ function App() {
         <Route element={<RegisterPage />} path="/register" />
         <Route element={<HelpFeedbackPage />} path="/help-feedback" />
         <Route element={<UnauthorizedPage />} path="/unauthorized" />
+        <Route element={<TermsPrivacyPage />} path="/terms" />
         {/* Rutas protegidas para usuarios autenticados */}
         <Route
           element={

@@ -158,11 +158,24 @@
     "subtitle": "Where hopium lives.",
     "error_favorites": "We lost your bags... temporarily.",
     "loading": "Scouting for moonshots...",
-    "no_favorites": "No airdrops saved yet. Are you even trying to make it?",
+    "no_favorites": "Your watchlist is emptier than a bear market. Time to stack some airdrops!",
     "error": "An error occurred",
     "retry": "Try Again",
-    "explore_airdrops": "Explore Airdrops",
-    "view_details": "View details"
+    "explore_airdrops": "Keep working!",
+    "view_details": "View details",
+    "pending_tasks_title": "Airdrops with pending tasks",
+    "stats": {
+      "title": "Airdrop Stats",
+      "total_airdrops": "Total Airdrops Tracked",
+      "daily_tasks_pending": "Daily Tasks Pending",
+      "general_tasks_pending": "General Tasks Pending",
+      "time_until_reset": "Time Until Daily Reset",
+      "task_progress": "Task Progress",
+      "total_invested": "Total Invested (USD)",
+      "total_received": "Total Received (USD)",
+      "priority_airdrop": "Priority Airdrop",
+      "no_priority": "No priority airdrop"
+    }
   },
   "unauthorized": {
     "title": "Unauthorized Access",
@@ -295,8 +308,48 @@
     "terms": {
       "title": "Terms & Privacy",
       "description": "Review our terms of service and privacy policy to understand our practices.",
-      "terms": "Terms of Service",
-      "privacy": "Privacy Policy"
+      "terms": "Terms & Conditions"
+    }
+  },
+  "terms_privacy": {
+    "t": "Terms",
+    "title": " & Privacy",
+    "subtitle": "Understand our terms of service and privacy practices.",
+    "terms": {
+      "title": "Terms of Service",
+      "description": "By using our platform, you agree to these Terms of Service. Please read them carefully. This is not legal advice; consult a lawyer for specific guidance.",
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "description": "By accessing or using our platform, you agree to be bound by these terms. If you do not agree, please do not use our services."
+      },
+      "use": {
+        "title": "Use of the Platform",
+        "description": "You agree to use our platform only for lawful purposes. You are responsible for your actions, including any content you submit or tasks you complete for airdrops."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "description": "Our platform provides information, not financial advice. We are not liable for any losses or damages resulting from your use of our services or participation in airdrops."
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "We are committed to protecting your privacy. This policy explains how we collect, use, and safeguard your personal information.",
+      "data_collection": {
+        "title": "Data Collection",
+        "description": "We collect information you provide, such as your email and account details, and usage data, such as browsing activity, to improve our services."
+      },
+      "data_use": {
+        "title": "Data Use",
+        "description": "Your information is used to provide and enhance our platform, communicate with you, and comply with legal obligations. We do not sell your data."
+      },
+      "user_rights": {
+        "title": "Your Rights",
+        "description": "You have the right to access, correct, or delete your personal data. Contact us to exercise these rights or learn more about our practices."
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have questions about our Terms of Service or Privacy Policy, please reach out to our support team."
     }
   },
   "common": {

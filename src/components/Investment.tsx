@@ -1,4 +1,5 @@
 import { Button } from "@heroui/button";
+import { Spinner } from "@heroui/spinner";
 import {
   Table,
   TableBody,
@@ -28,11 +29,20 @@ const Investment = () => {
   // Manejo de errores
   if (error) {
     return (
-      <section className="flex flex-col items-center justify-center min-h-screen">
-        <p className="text-danger text-xl">
-          {t("tracker.error")}: {error}
-        </p>
-      </section>
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-red-500 text-xl">
+            {t("favorites.error")}: {error}
+          </p>
+          <Button
+            className="mt-4"
+            color="primary"
+            onPress={() => window.location.reload()}
+          >
+            {t("favorites.retry")}
+          </Button>
+        </div>
+      </div>
     );
   }
 
@@ -40,14 +50,14 @@ const Investment = () => {
   if (loading) {
     return (
       <section className="flex flex-col items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <Spinner className="mx-auto" size="lg" />
       </section>
     );
   }
 
   // Renderizado principal
   return (
-    <section className="flex flex-col items-center justify-center w-full">
+    <section className="flex flex-col items-center justify-start w-full">
       {!hasInvestments ? (
         <div className="text-neutral-100 text-xl font-light mt-8 flex flex-col items-center gap-4">
           {t("tracker.no_investments")}

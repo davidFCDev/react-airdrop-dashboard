@@ -2,10 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropStore } from "@/store/airdropStore";
-import { Airdrop } from "@/types";
+import { Airdrop, TaskStatus } from "@/types";
+
+interface FavoriteAirdrop extends Airdrop {
+  daily_tasks: TaskStatus[];
+  general_tasks: TaskStatus[];
+}
 
 interface FavoriteAirdropsData {
-  favoriteAirdrops: Airdrop[];
+  favoriteAirdrops: FavoriteAirdrop[];
   loading: boolean;
   error: string | null;
 }
@@ -34,18 +39,28 @@ export const useFavoriteAirdropsData = (): FavoriteAirdropsData => {
     setLocalLoading(!hasData);
   }, [user, airdrops, favorites, storeLoading]);
 
-  // Filtrar airdrops favoritos con tareas pendientes
+  // Filtrar airdrops favoritos con tareas pendientes y fusionar tareas
   const favoriteAirdrops = useMemo(() => {
-    return airdrops.filter((airdrop) => {
-      if (!favorites.has(airdrop.id)) return false;
-      const data = userAirdropData.get(airdrop.id);
+    return airdrops
+      .filter((airdrop) => {
+        if (!favorites.has(airdrop.id)) return false;
+        const data = userAirdropData.get(airdrop.id);
 
-      return (
-        data &&
-        (data.daily_tasks.some((task) => !task.completed) ||
-          data.general_tasks.some((task) => !task.completed))
-      );
-    });
+        return (
+          data &&
+          (data.daily_tasks.some((task) => !task.completed) ||
+            data.general_tasks.some((task) => !task.completed))
+        );
+      })
+      .map((airdrop) => {
+        const data = userAirdropData.get(airdrop.id);
+
+        return {
+          ...airdrop,
+          daily_tasks: data?.daily_tasks || [],
+          general_tasks: data?.general_tasks || [],
+        };
+      });
   }, [airdrops, favorites, userAirdropData]);
 
   return {

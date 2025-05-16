@@ -5,7 +5,12 @@ import DefaultLayout from "@/layouts/default";
 
 interface PageWrapperProps {
   component: ComponentType;
-  translationKey: "airdrop" | "favorites" | "tracker" | "help";
+  translationKey:
+    | "airdrop"
+    | "favorites"
+    | "tracker"
+    | "help"
+    | "terms_privacy";
 }
 
 const PageWrapper: FC<PageWrapperProps> = ({
