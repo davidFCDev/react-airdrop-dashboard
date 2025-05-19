@@ -3,9 +3,9 @@ import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
+import { addToast } from "@heroui/toast";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 
 import { DeleteIcon, EditIcon, PinIcon } from "@/components/icons";
 import { useUserAuth } from "@/context/AuthContext";
@@ -55,13 +55,10 @@ const GlobalChat = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error.message, {
-        duration: 5000,
-        style: {
-          background: "#fee2e2",
-          color: "#dc2626",
-          border: "1px solid #dc2626",
-        },
+      addToast({
+        title: t("chat.error"),
+        description: t("chat.error_description"),
+        color: "danger",
       });
     }
   }, [error]);

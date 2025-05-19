@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useMemo, useState } from "react";
 
 import { useUserAuth } from "@/context/AuthContext";
@@ -34,8 +35,9 @@ export const useFavoriteAirdropsData = (): FavoriteAirdropsData => {
     }
 
     // Verificar si los datos necesarios están disponibles
-    const hasData = airdrops.length > 0 && favorites.size > 0;
+    const hasData = airdrops.length > 0;
 
+    // Si no hay favoritos, consideramos que los datos están cargados
     setLocalLoading(!hasData);
   }, [user, airdrops, favorites, storeLoading]);
 

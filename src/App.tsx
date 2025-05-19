@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Toaster } from "sonner";
 
 import { useUserAuth } from "./context/AuthContext";
 import AirdropDetailsPage from "./pages/airdropDetails";
@@ -44,7 +43,6 @@ function App() {
 
   return (
     <>
-      <Toaster richColors position="bottom-right" />
       <Routes>
         {/* Rutas públicas (sin autenticación) */}
         <Route element={<IndexPage />} path="/" />

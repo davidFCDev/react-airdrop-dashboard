@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
 import { Image } from "@heroui/image";
@@ -10,7 +11,7 @@ import AirdropCard from "./AirdropCard";
 import SectionHeader from "./ui/SectionHeader";
 
 import { useUserAuth } from "@/context/AuthContext";
-import { useFavoriteAirdropsData } from "@/hooks/useAirdropsData";
+import { useFavoriteAirdropsData } from "@/hooks/useFavoriteAirdropsData";
 import { useFavoriteAirdropSummaries } from "@/hooks/useFavoriteAirdropSummaries";
 import { useAirdropStore } from "@/store/airdropStore";
 import { FavoriteAirdrop, TaskStatus } from "@/types";
@@ -19,8 +20,8 @@ const WatchList: FC = () => {
   const { t } = useTranslation();
   const { user } = useUserAuth();
   const { favoriteAirdrops, loading, error } = useFavoriteAirdropsData();
-  const summary = useFavoriteAirdropSummaries();
   const { airdrops, favorites, userAirdropData } = useAirdropStore();
+  const summary = useFavoriteAirdropSummaries();
 
   // Calcular tiempo restante hasta 00:00 UTC
   const [timeUntilReset, setTimeUntilReset] = useState<string>("");
@@ -51,7 +52,6 @@ const WatchList: FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Calcular estadísticas
   // Filtrar favorites para incluir solo airdrops válidos
   const validFavorites = Array.from(favorites).filter((id) => {
     const airdropExists = airdrops.some((airdrop) => airdrop.id === id);
@@ -97,35 +97,6 @@ const WatchList: FC = () => {
     { pendingCount: 0, name: "" } as FavoriteAirdrop & { pendingCount: number },
   );
 
-  // Depuración detallada
-  if (process.env.NODE_ENV === "development") {
-    console.log("WatchList Debug:", {
-      favoriteAirdrops: {
-        count: favoriteAirdrops.length,
-        ids: favoriteAirdrops.map((a) => a.id),
-      },
-      favorites: {
-        rawCount: favorites.size,
-        rawIds: Array.from(favorites),
-        validCount: validFavorites.length,
-        validIds: validFavorites,
-      },
-      userAirdropData: {
-        keys: Array.from(userAirdropData.keys()),
-      },
-      airdrops: {
-        count: airdrops.length,
-        ids: airdrops.map((a) => a.id),
-      },
-      totalAirdrops,
-      summary: { dailyTasksPending, generalTasksPending, taskProgress },
-      totalInvested,
-      totalReceived,
-      timeUntilReset,
-      priorityAirdrop: priorityAirdrop.name,
-    });
-  }
-
   // Manejo de usuario no autenticado
   if (!user) {
     return (
@@ -165,6 +136,39 @@ const WatchList: FC = () => {
     return (
       <section className="flex flex-col items-center justify-center w-full">
         <Spinner className="mx-auto" size="lg" />
+      </section>
+    );
+  }
+
+  // Manejo de no airdrops en favoritos
+  if (favorites.size === 0) {
+    return (
+      <section className="flex flex-col items-center justify-center w-full h-full">
+        <Card
+          className="bg-default-100 border border-default-200 w-full max-w-md"
+          radius="none"
+          shadow="none"
+        >
+          <CardBody className="p-0">
+            <div className="text-center text-neutral-100 text-xl font-light flex flex-col items-center justify-center gap-4 py-10">
+              <Image
+                alt="No airdrops started"
+                height={250}
+                src="/images/bad.png"
+                width={250}
+              />
+              <p>{t("favorites.no_airdrops_started")}</p>
+              <Button
+                as={Link}
+                className="font-semibold text-lg"
+                color="primary"
+                to="/airdrops"
+              >
+                {t("favorites.start_airdrops")}
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
       </section>
     );
   }

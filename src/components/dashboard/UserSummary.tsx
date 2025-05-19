@@ -11,8 +11,16 @@ import {
   ModalHeader,
 } from "@heroui/modal";
 import { Progress } from "@heroui/progress";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { addToast } from "@heroui/toast";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { EditIcon } from "../icons";
@@ -30,19 +38,8 @@ import {
   avatar8,
 } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
-import { useFavoriteAirdropSummaries } from "@/hooks/useFavoriteAirdropSummaries";
-import { db } from "@/lib/firebase";
-import { useAirdropStore } from "@/store/airdropStore";
-
-interface UserAirdropData {
-  invested: number;
-  received: number;
-}
-
-interface UserData {
-  avatar?: string;
-  nickname?: string;
-}
+import { useUserSummaryData } from "@/hooks/useUserSummaryData";
+import { auth, db } from "@/lib/firebase";
 
 const avatars = [
   avatar1,
@@ -58,105 +55,119 @@ const avatars = [
 const UserSummary = () => {
   const { t } = useTranslation();
   const { user } = useUserAuth();
-  const { airdrops, favorites } = useAirdropStore();
   const {
-    totalDailyTasks,
-    completedDailyTasks,
-    totalGeneralTasks,
-    completedGeneralTasks,
-  } = useFavoriteAirdropSummaries();
-  const [userAirdropData, setUserAirdropData] = useState<
-    Map<string, UserAirdropData>
-  >(new Map());
-  const [userData, setUserData] = useState<UserData>({});
+    userData,
+    totalAirdrops,
+    totalFavorites,
+    totalInvested,
+    totalReceived,
+    totalProfit,
+    dailyProgress,
+    generalProgress,
+  } = useUserSummaryData(user?.uid);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [newNickname, setNewNickname] = useState("");
 
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    // Fetch airdrop data
-    const favoriteAirdropIds = airdrops
-      .filter((airdrop) => favorites.has(airdrop.id))
-      .map((airdrop) => airdrop.id);
-    const unsubscribeAirdrops = favoriteAirdropIds.map((airdropId) => {
-      const userAirdropRef = doc(
-        db,
-        "user_airdrops",
-        user.uid,
-        "airdrops",
-        airdropId,
-      );
-
-      return onSnapshot(userAirdropRef, (docSnap) => {
-        if (docSnap.exists()) {
-          setUserAirdropData((prev) =>
-            new Map(prev).set(airdropId, docSnap.data() as UserAirdropData),
-          );
-        }
-      });
-    });
-
-    // Fetch user data (avatar, nickname)
-    const userRef = doc(db, "users", user.uid);
-    const unsubscribeUser = onSnapshot(userRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setUserData(docSnap.data() as UserData);
-      }
-    });
-
-    return () => {
-      unsubscribeAirdrops.forEach((unsub) => unsub());
-      unsubscribeUser();
-    };
-  }, [user, airdrops, favorites]);
-
-  const favoriteAirdrops = airdrops.filter((airdrop) =>
-    favorites.has(airdrop.id),
-  );
-  const totalFavorites = favoriteAirdrops.length;
-  const totalInvested = favoriteAirdrops.reduce((sum, airdrop) => {
-    const data = userAirdropData.get(airdrop.id);
-
-    return sum + (data?.invested || 0);
-  }, 0);
-  const totalReceived = favoriteAirdrops.reduce((sum, airdrop) => {
-    const data = userAirdropData.get(airdrop.id);
-
-    return sum + (data?.received || 0);
-  }, 0);
-  const totalProfit = totalReceived - totalInvested;
-
-  const dailyProgress =
-    totalDailyTasks > 0
-      ? Math.round((completedDailyTasks / totalDailyTasks) * 100)
-      : 0;
-  const generalProgress =
-    totalGeneralTasks > 0
-      ? Math.round((completedGeneralTasks / totalGeneralTasks) * 100)
-      : 0;
-
   const handleAvatarChange = async (avatar: string) => {
-    if (!user?.uid) return;
+    if (!user?.uid || !auth.currentUser) {
+      addToast({
+        title: t("user.auth_error"),
+        color: "danger",
+      });
+
+      return;
+    }
     try {
-      await updateDoc(doc(db, "users", user.uid), { avatar });
+      await setDoc(doc(db, "users", user.uid), { avatar }, { merge: true });
       setIsAvatarModalOpen(false);
-    } catch (error) {
+      addToast({
+        title: t("user.avatar_updated"),
+        color: "success",
+      });
+    } catch (error: any) {
       console.error("Error updating avatar:", error);
+      if (error.code === "permission-denied") {
+        addToast({
+          title: t("user.permission_denied"),
+          color: "danger",
+        });
+      } else {
+        addToast({
+          title: t("user.avatar_error"),
+          color: "danger",
+        });
+      }
     }
   };
 
   const handleNicknameSubmit = async () => {
-    if (!user?.uid || !newNickname.trim()) return;
-    try {
-      await updateDoc(doc(db, "users", user.uid), {
-        nickname: newNickname.trim(),
+    if (!user?.uid || !auth.currentUser || !newNickname.trim()) {
+      addToast({
+        title: t("user.auth_error"),
+        color: "danger",
       });
+
+      return;
+    }
+    try {
+      // Verificar si el nickname ya existe
+      const q = query(
+        collection(db, "users"),
+        where("nickname", "==", newNickname.trim()),
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        addToast({
+          title: t("user.nickname_taken"),
+          color: "danger",
+        });
+
+        return;
+      }
+
+      // Depuración: Registrar la operación
+      if (process.env.NODE_ENV === "development") {
+        console.log("UserSummary: Attempting to set nickname:", {
+          uid: user.uid,
+          nickname: newNickname.trim(),
+          firebaseAuth: !!auth.currentUser,
+        });
+      }
+
+      // Asignar el nickname
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          nickname: newNickname.trim(),
+        },
+        { merge: true },
+      );
       setIsNicknameModalOpen(false);
       setNewNickname("");
-    } catch (error) {
+      addToast({
+        title: t("user.nickname_updated"),
+        color: "success",
+      });
+    } catch (error: any) {
       console.error("Error updating nickname:", error);
+      if (error.code === "permission-denied") {
+        addToast({
+          title: t("user.permission_denied"),
+          color: "danger",
+        });
+      } else if (error.code === "failed-precondition") {
+        addToast({
+          title: t("user.nickname_error"),
+          color: "danger",
+        });
+      } else {
+        addToast({
+          title: t("user.nickname_error"),
+          color: "danger",
+        });
+      }
     }
   };
 
@@ -176,7 +187,7 @@ const UserSummary = () => {
             <Button
               isIconOnly
               aria-label={t("user.change_avatar")}
-              className="absolute bottom-0 right-0 z-20 "
+              className="absolute bottom-0 right-0 z-20"
               size="sm"
               variant="light"
               onPress={() => setIsAvatarModalOpen(true)}
@@ -220,17 +231,23 @@ const UserSummary = () => {
             </p>
           </div>
         </div>
-        <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
-          <p className="font-semibold">{t("user.started_airdrops")}:</p>
-          <p className="text-success">{totalFavorites}</p>
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
+            <p className="font-semibold">{t("user.total_airdrops")}:</p>
+            <p className="text-success">{totalAirdrops}</p>
+          </div>
+          <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
+            <p className="font-semibold">{t("user.tracked_airdrops")}:</p>
+            <p className="text-success">{totalFavorites}</p>
+          </div>
         </div>
-        <div className="flex flex-col gap-2 h-full">
-          <div className="border border-default-300 bg-default-50 p-4 flex flex-col">
+        <div className="border border-default-300 bg-default-50 p-4 flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <p className="font-semibold">{t("user.daily_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
                 aria-label={t("user.daily_tasks_progress")}
-                className="mt-2 flex-grow"
+                className="flex-grow"
                 color="success"
                 formatOptions={{ style: "percent" }}
                 size="sm"
@@ -238,14 +255,13 @@ const UserSummary = () => {
               />
               <p className="text-xs text-default-500">{`${dailyProgress}%`}</p>
             </div>
-            <p className="text-xs text-default-500 mt-1">{`${completedDailyTasks} / ${totalDailyTasks}`}</p>
           </div>
-          <div className="border border-default-300 bg-default-50 p-4 flex flex-col">
+          <div className="flex flex-col gap-2">
             <p className="font-semibold">{t("user.general_tasks")}</p>
             <div className="flex items-center gap-2">
               <Progress
                 aria-label={t("user.general_tasks_progress")}
-                className="mt-2 flex-grow"
+                className="flex-grow"
                 color="success"
                 formatOptions={{ style: "percent" }}
                 size="sm"
@@ -253,7 +269,6 @@ const UserSummary = () => {
               />
               <p className="text-xs text-default-500">{`${generalProgress}%`}</p>
             </div>
-            <p className="text-xs text-default-500 mt-1">{`${completedGeneralTasks} / ${totalGeneralTasks}`}</p>
           </div>
         </div>
       </CardBody>

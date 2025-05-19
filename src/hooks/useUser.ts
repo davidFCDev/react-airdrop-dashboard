@@ -1,7 +1,7 @@
+import { addToast } from "@heroui/toast";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 import { authService } from "@/service/auth.service";
 
@@ -21,10 +21,16 @@ export function useUser(action: "login" | "register") {
     try {
       if (action === "login") {
         await authService.login(email, password);
-        toast.success(t("auth.login_success"));
+        addToast({
+          title: t("auth.login_success"),
+          color: "success",
+        });
       } else {
         await authService.register(email, password);
-        toast.success(t("auth.register_success"));
+        addToast({
+          title: t("auth.register_success"),
+          color: "success",
+        });
       }
       navigate("/");
     } catch (error: any) {
@@ -34,7 +40,10 @@ export function useUser(action: "login" | "register") {
       });
 
       setErrorMessage(message);
-      toast.error(message);
+      addToast({
+        title: message,
+        color: "danger",
+      });
     }
   };
 
