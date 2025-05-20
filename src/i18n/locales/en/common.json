@@ -64,6 +64,7 @@
     "register": "Register",
     "airdrops": "Airdrops",
     "watchlist": "Watchlist",
+    "tge": "TGEs",
     "help_and_feedback": "Help & Feedback",
     "create": "Create",
     "posts": "New Post",
@@ -99,6 +100,7 @@
   },
   "auth": {
     "login_success": "Login successful",
+    "please_login": "Please login",
     "register_success": "Registration successful",
     "errors": {
       "generic": "An unexpected error occurred",
@@ -231,6 +233,46 @@
     "no_investments": "No tracked airdrops yet. You either missed them or you're early. Copium?",
     "explore_airdrops": "Explore Airdrops",
     "error": "Something broke. Unlike your portfolio, this can be fixed."
+  },
+  "tge": {
+    "t": "T",
+    "title": "GE's",
+    "subtitle": "Where tokens are born and dreams are made.",
+    "year": "Year",
+    "month": "Month",
+    "error": "Error",
+    "retry": "Retry",
+    "assign_airdrop": "Assign Airdrop",
+    "select_airdrop": "Select an Airdrop",
+    "no_airdrops_available": "No airdrops available",
+    "airdrop_not_found": "Airdrop not found",
+    "assigned_success": "Airdrop assigned successfully",
+    "assign_error": "Error assigning airdrop",
+    "removed_success": "Airdrop removed successfully",
+    "remove_error": "Error removing airdrop",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    }
   },
   "dashboard": {
     "latest_airdrops": "Fresh Drops",

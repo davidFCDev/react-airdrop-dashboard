@@ -1,15 +1,48 @@
-import { collection, limit, onSnapshot, query } from "firebase/firestore";
+/* eslint-disable no-console */
+import {
+  collection,
+  limit,
+  onSnapshot,
+  query,
+  Unsubscribe,
+} from "firebase/firestore";
 import { create } from "zustand";
 
 import { db } from "@/lib/firebase";
 import { airdropService } from "@/service/airdrop.service";
-import { Airdrop, AirdropState, UserAirdropData } from "@/types";
+import { tgeService } from "@/service/tge.service";
+import { Airdrop, UserAirdropData } from "@/types";
 
-export const useAirdropStore = create<AirdropState>((set) => ({
+interface TGEAssignment {
+  airdropId: string;
+  airdropName: string;
+  airdropImage: string;
+}
+
+interface AirdropState {
+  airdrops: Airdrop[];
+  favorites: Set<string>;
+  userAirdropData: Map<string, UserAirdropData>;
+  updatingFavorites: Set<string>;
+  tgeAssignments: Map<string, TGEAssignment[]>;
+  error: string | null;
+  loading: boolean;
+  fetchAirdrops: () => Unsubscribe;
+  fetchFavorites: (uid: string) => Unsubscribe;
+  fetchTGEAssignments: (year: number, month: number) => Unsubscribe;
+  assignTGE: (date: string, airdrop: Airdrop) => Promise<void>;
+  removeTGE: (date: string, airdropId: string) => Promise<void>;
+  deleteAirdrop: (id: string) => Promise<void>;
+  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
+  updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
+}
+
+export const useAirdropStore = create<AirdropState>((set, get) => ({
   airdrops: [],
   favorites: new Set(),
   userAirdropData: new Map(),
   updatingFavorites: new Set(),
+  tgeAssignments: new Map(),
   error: null,
   loading: true,
 
@@ -28,6 +61,8 @@ export const useAirdropStore = create<AirdropState>((set) => ({
           last_edited: doc.data().last_edited
             ? new Date(doc.data().last_edited).toISOString()
             : new Date().toISOString(),
+          image: doc.data().image || "",
+          name: doc.data().name || "",
         })) as Airdrop[];
 
         set((state) => ({
@@ -35,6 +70,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
           loading:
             state.userAirdropData.size === 0 &&
             state.favorites.size === 0 &&
+            state.tgeAssignments.size === 0 &&
             airdropData.length === 0,
         }));
       },
@@ -77,6 +113,7 @@ export const useAirdropStore = create<AirdropState>((set) => ({
           loading:
             state.airdrops.length === 0 &&
             favoriteIds.size === 0 &&
+            state.tgeAssignments.size === 0 &&
             userData.size === 0,
         }));
       },
@@ -89,6 +126,85 @@ export const useAirdropStore = create<AirdropState>((set) => ({
     );
 
     return unsubscribeFavorites;
+  },
+
+  fetchTGEAssignments: (year: number, month: number) => {
+    const startDate = new Date(year, month - 1, 1).toISOString().split("T")[0];
+    const endDate = new Date(year, month, 0).toISOString().split("T")[0];
+    const tgeRef = collection(db, "tge_assignments");
+    const q = query(tgeRef);
+
+    const unsubscribe = onSnapshot(
+      q,
+      { includeMetadataChanges: true },
+      async (snapshot) => {
+        const assignments = new Map<string, TGEAssignment[]>();
+
+        for (const doc of snapshot.docs) {
+          const date = doc.id;
+
+          if (date >= startDate && date <= endDate) {
+            const data = doc.data().airdrops as TGEAssignment[];
+
+            assignments.set(date, data || []);
+          }
+        }
+        set({ tgeAssignments: assignments });
+      },
+      (err) => {
+        set({
+          error: `Error fetching TGE assignments: ${err.message}`,
+        });
+      },
+    );
+
+    return unsubscribe;
+  },
+
+  assignTGE: async (date: string, airdrop: Airdrop) => {
+    try {
+      await tgeService.assignAirdropToDate(date, airdrop);
+      set((state) => {
+        const newAssignments = new Map(state.tgeAssignments);
+        const current = newAssignments.get(date) || [];
+
+        newAssignments.set(date, [
+          ...current,
+          {
+            airdropId: airdrop.id,
+            airdropName: airdrop.name,
+            airdropImage: airdrop.image || "",
+          },
+        ]);
+
+        return { tgeAssignments: newAssignments };
+      });
+    } catch (err) {
+      set({
+        error: `Error assigning TGE: ${err instanceof Error ? err.message : "Unknown"}`,
+      });
+    }
+  },
+
+  removeTGE: async (date: string, airdropId: string) => {
+    try {
+      await tgeService.removeAirdropFromDate(date, airdropId);
+      set((state) => {
+        const newAssignments = new Map(state.tgeAssignments);
+        const current = newAssignments.get(date) || [];
+
+        newAssignments.set(
+          date,
+          current.filter((a) => a.airdropId !== airdropId),
+        );
+
+        return { tgeAssignments: newAssignments };
+      });
+    } catch (err) {
+      set({
+        error: `Error removing TGE: ${err instanceof Error ? err.message : "Unknown"}`,
+      });
+    }
   },
 
   deleteAirdrop: async (id: string) => {

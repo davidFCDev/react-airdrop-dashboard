@@ -309,10 +309,10 @@ const AirdropTable = () => {
       </Dropdown>
       <Button
         color={showFavorites ? "primary" : "default"}
-        variant="solid"
+        variant={showFavorites ? "solid" : "bordered"}
         onPress={toggleFavorites}
       >
-        {showFavorites ? t("airdrop.show_all") : t("airdrop.show_favorites")}
+        {t("airdrop.show_favorites")}
       </Button>
     </div>
   );

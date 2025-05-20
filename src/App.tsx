@@ -14,6 +14,7 @@ import PostDetailsPage from "./pages/postDetails";
 import ProfilePage from "./pages/profile";
 import RegisterPage from "./pages/register";
 import TermsPrivacyPage from "./pages/terms";
+import TgesPage from "./pages/tge";
 import TrackerPage from "./pages/tracker";
 import UnauthorizedPage from "./pages/unauthorized";
 import { useAirdropStore } from "./store/airdropStore";
@@ -107,6 +108,14 @@ function App() {
             </RouteGuard>
           }
           path="/tracker"
+        />
+        <Route
+          element={
+            <RouteGuard>
+              <TgesPage />
+            </RouteGuard>
+          }
+          path="/tge"
         />
         {/* Rutas protegidas solo para admin */}
         <Route

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import AuthForm from "@/components/authForm";
+import AuthForm from "@/components/AuthForm";
 import { useUser } from "@/hooks/useUser";
 import DefaultLayout from "@/layouts/default";
 

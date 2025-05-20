@@ -25,6 +25,30 @@ export const siteConfig = {
       href: "/favorites",
     },
     {
+      label: "Tge",
+      href: "/tge",
+    },
+    {
+      label: "Wallets",
+      href: "/wallets",
+    },
+    {
+      label: "Exchanges",
+      href: "/exchanges",
+    },
+    {
+      label: "News",
+      href: "/news",
+    },
+    {
+      label: "Tools",
+      href: "/tools",
+    },
+    {
+      label: "NFTs",
+      href: "/nfts",
+    },
+    {
       label: "Tracker",
       href: "/tracker",
     },
@@ -61,6 +85,10 @@ export const siteConfig = {
     {
       label: "Watchlist",
       href: "/favorites",
+    },
+    {
+      label: "TGEs",
+      href: "/tges",
     },
     {
       label: "Tracker",

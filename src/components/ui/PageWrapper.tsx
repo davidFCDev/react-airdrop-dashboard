@@ -10,7 +10,8 @@ interface PageWrapperProps {
     | "favorites"
     | "tracker"
     | "help"
-    | "terms_privacy";
+    | "terms_privacy"
+    | "tge";
 }
 
 const PageWrapper: FC<PageWrapperProps> = ({
