@@ -145,25 +145,20 @@ const WatchList: FC = () => {
     return (
       <section className="flex flex-col items-center justify-center w-full h-full">
         <Card
-          className="bg-default-100 border border-default-200 w-full max-w-md"
+          className="bg-default-100 w-full max-w-md"
           radius="none"
           shadow="none"
         >
           <CardBody className="p-0">
-            <div className="text-center text-neutral-100 text-xl font-light flex flex-col items-center justify-center gap-4 py-10">
+            <div className="text-neutral-100 text-lg font-light mt-8 flex flex-col items-center gap-4">
               <Image
                 alt="No airdrops started"
-                height={250}
+                height={200}
                 src="/images/bad.png"
-                width={250}
+                width={200}
               />
               <p>{t("favorites.no_airdrops_started")}</p>
-              <Button
-                as={Link}
-                className="font-semibold text-lg"
-                color="primary"
-                to="/airdrops"
-              >
+              <Button as={Link} color="primary" to="/airdrops" variant="light">
                 {t("favorites.start_airdrops")}
               </Button>
             </div>

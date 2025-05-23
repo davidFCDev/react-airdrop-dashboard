@@ -133,6 +133,30 @@ const TGEs: FC = () => {
     setIsModalOpen(true);
   };
 
+  const handlePreviousMonth = () => {
+    setMonth((prev) => {
+      if (prev === 1) {
+        setYear((y) => y - 1);
+
+        return 12;
+      }
+
+      return prev - 1;
+    });
+  };
+
+  const handleNextMonth = () => {
+    setMonth((prev) => {
+      if (prev === 12) {
+        setYear((y) => y + 1);
+
+        return 1;
+      }
+
+      return prev + 1;
+    });
+  };
+
   // Manejo de usuario no autenticado
   if (!user) {
     return (
@@ -178,14 +202,12 @@ const TGEs: FC = () => {
 
   return (
     <section className="flex flex-col items-center justify-start w-full">
-      <div
-        aria-hidden={isModalOpen ? "true" : undefined}
-        className={`w-full max-w-7xl ${isModalOpen ? "pointer-events-none opacity-50" : ""}`}
-      >
+      <div className="w-full max-w-7xl">
         <div className="w-full">
           <div className="flex flex-col gap-4">
-            <div className="flex gap-4 items-center">
+            <div className="flex justify-center gap-4">
               <Select
+                className=" max-w-[100px]"
                 label={t("tge.year")}
                 selectedKeys={[year.toString()]}
                 variant="bordered"
@@ -198,6 +220,7 @@ const TGEs: FC = () => {
                 ))}
               </Select>
               <Select
+                className=" max-w-[140px]"
                 label={t("tge.month")}
                 selectedKeys={[month.toString()]}
                 variant="bordered"
@@ -216,7 +239,7 @@ const TGEs: FC = () => {
               {DAYS_OF_WEEK.map((day) => (
                 <div
                   key={day}
-                  className="text-center font-semibold text-neutral-300 text-xl"
+                  className="p-2 border border-default-200 bg-default-100 text-center font-semibold text-neutral-300 text-xl"
                 >
                   {t(`tge.days.${day.toLowerCase()}`)}
                 </div>
@@ -232,7 +255,8 @@ const TGEs: FC = () => {
                         ? `${t("tge.assign_airdrop")} for ${day}/${month}/${year}`
                         : undefined
                     }
-                    className={`p-2 border border-default-200 h-32 flex flex-col items-start justify-between bg-default-100
+                    className={`p-4 border border-default-200 h-48 flex flex-col items-start justify-between
+                      ${day ? "bg-default-50" : "bg-default-100"}
                       ${day && isAdmin ? "cursor-pointer hover:bg-default-100" : ""}`}
                     role={day && isAdmin ? "button" : undefined}
                     tabIndex={day && isAdmin ? 0 : undefined}
@@ -246,7 +270,7 @@ const TGEs: FC = () => {
                     {day ? (
                       <>
                         <span className="text-neutral-100">{day}</span>
-                        <div className="flex flex-col gap-1 w-full">
+                        <div className="flex flex-col gap-2 w-full h-full overflow-y-auto pt-2">
                           {assignments.map((assignment) => (
                             <div
                               key={assignment.airdropId}
@@ -254,13 +278,13 @@ const TGEs: FC = () => {
                             >
                               <img
                                 alt={assignment.airdropName}
-                                className="w-6 h-6 object-cover"
+                                className="w-6 h-6 object-cover rounded-lg"
                                 src={
                                   assignment.airdropImage ||
                                   "/images/placeholder.png"
                                 }
                               />
-                              <span className="text-xs text-neutral-300 truncate flex-1">
+                              <span className=" font-semibold text-neutral-300 truncate flex-1">
                                 {assignment.airdropName}
                               </span>
                               {isAdmin && (
@@ -287,42 +311,72 @@ const TGEs: FC = () => {
                 );
               })}
             </div>
+            <div className="flex justify-center gap-4 mt-4">
+              <Button
+                aria-label={t("tge.previous_month")}
+                color="primary"
+                variant="light"
+                onPress={handlePreviousMonth}
+              >
+                {t("tge.previous_month")}
+              </Button>
+              <Button
+                aria-label={t("tge.next_month")}
+                color="primary"
+                variant="light"
+                onPress={handleNextMonth}
+              >
+                {t("tge.next_month")}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Modal para asignar airdrop */}
       <Modal
         backdrop="opaque"
         isDismissable={true}
         isKeyboardDismissDisabled={false}
         isOpen={isModalOpen}
-        motionProps={{ variants: {} }}
         onOpenChange={setIsModalOpen}
       >
         <ModalContent>
           <ModalHeader>{t("tge.assign_airdrop")}</ModalHeader>
           <ModalBody>
-            <select
-              className="w-full p-2 border border-default-200 rounded-md bg-default-50 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary"
-              id="airdrop-select"
-              value={selectedAirdropId}
-              onChange={(e) => setSelectedAirdropId(e.target.value)}
-            >
-              <option disabled value="">
+            <div className="mb-4">
+              <label
+                className="block text-neutral-300 mb-2"
+                htmlFor="airdrop-select"
+              >
                 {t("tge.select_airdrop")}
-              </option>
-              {airdrops.length === 0 ? (
-                <option disabled value="no-airdrops">
-                  {t("tge.no_airdrops_available")}
+              </label>
+              <select
+                className="w-full p-2 border border-default-200 rounded-md bg-default-50 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                id="airdrop-select"
+                value={selectedAirdropId}
+                onChange={(e) => setSelectedAirdropId(e.target.value)}
+              >
+                <option disabled value="">
+                  {t("tge.select_airdrop")}
                 </option>
-              ) : (
-                airdrops.map((airdrop) => (
-                  <option key={airdrop.id} value={airdrop.id}>
-                    {airdrop.name}
+                {airdrops.length === 0 ? (
+                  <option disabled value="no-airdrops">
+                    {t("tge.no_airdrops_available")}
                   </option>
-                ))
-              )}
-            </select>
+                ) : (
+                  airdrops.map((airdrop) => {
+                    console.log("Rendering option:", airdrop.id, airdrop.name);
+
+                    return (
+                      <option key={airdrop.id} value={airdrop.id}>
+                        {airdrop.name}
+                      </option>
+                    );
+                  })
+                )}
+              </select>
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button

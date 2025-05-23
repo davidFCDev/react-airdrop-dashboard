@@ -27,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import LanguageSelector from "../LanguageSelector";
-import { ThemeSwitch } from "../theme-switch";
 
 import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
 import { siteConfig } from "@/config/site";
@@ -339,7 +338,6 @@ export const Navbar = () => {
           <Link isExternal href={siteConfig.links.telegram} title="Telegram">
             <TelegramIcon className="text-default-700" />
           </Link>
-          <ThemeSwitch />
           <LanguageSelector />
         </NavbarItem>
 

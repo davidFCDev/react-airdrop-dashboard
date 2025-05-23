@@ -13,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <BrowserRouter>
         <Provider>
-          <App />
+          <main className="dark">
+            <App />
+          </main>
         </Provider>
       </BrowserRouter>
     </AuthProvider>

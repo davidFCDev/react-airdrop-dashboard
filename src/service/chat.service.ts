@@ -12,6 +12,12 @@ import {
 
 import { db } from "@/lib/firebase";
 
+export interface ReplyMessage {
+  id: string;
+  text: string;
+  userName: string;
+}
+
 export interface ChatMessage {
   id: string;
   text: string;
@@ -21,6 +27,7 @@ export interface ChatMessage {
   role: string | null;
   createdAt: string;
   pinned: boolean;
+  replyTo?: ReplyMessage | null;
 }
 
 export class ChatService {
@@ -29,6 +36,7 @@ export class ChatService {
   async sendMessage(
     text: string,
     user: { uid: string; email: string | null } | null,
+    replyTo: ReplyMessage | null = null,
   ): Promise<void> {
     if (!user) {
       throw new Error("User not authenticated");
@@ -50,6 +58,13 @@ export class ChatService {
         role: userData.role || null,
         createdAt: new Date().toISOString(),
         pinned: false,
+        replyTo: replyTo
+          ? {
+              id: replyTo.id,
+              text: replyTo.text,
+              userName: replyTo.userName,
+            }
+          : null,
       });
     } catch (error) {
       console.error("Error sending message:", error);
@@ -60,7 +75,7 @@ export class ChatService {
   subscribeToMessages(callback: (messages: ChatMessage[]) => void): () => void {
     const q = query(
       collection(db, this.collectionName),
-      orderBy("createdAt", "asc"), // Cambiado a asc para Discord-like
+      orderBy("createdAt", "asc"),
     );
     const unsubscribe = onSnapshot(
       q,

@@ -230,7 +230,7 @@
     "received": "Received",
     "profit": "Profit/Loss",
     "roi": "ROI",
-    "no_investments": "No tracked airdrops yet. You either missed them or you're early. Copium?",
+    "no_investments": "You haven't invested in any airdrops yet.",
     "explore_airdrops": "Explore Airdrops",
     "error": "Something broke. Unlike your portfolio, this can be fixed."
   },
@@ -250,6 +250,8 @@
     "assign_error": "Error assigning airdrop",
     "removed_success": "Airdrop removed successfully",
     "remove_error": "Error removing airdrop",
+    "previous_month": "Previous Month",
+    "next_month": "Next Month",
     "months": {
       "january": "January",
       "february": "February",
@@ -287,8 +289,10 @@
     "send_message": "Type a message",
     "send": "Send",
     "no_messages": "No messages yet",
-    "delete_message": "Delete message",
-    "edit_message": "Edit message",
+    "delete_message": "Delete",
+    "edit_message": "Edit",
+    "reply": "Reply",
+    "replying_to": "Replying to",
     "error_sending": "Failed to send message",
     "error_deleting": "Failed to delete message",
     "error_updating": "Failed to update message",
@@ -298,7 +302,7 @@
     "cancel": "Cancel",
     "pin": "Pin message",
     "unpin": "Unpin message",
-    "view_pinned": "Pinned messages"
+    "view_pinned": "Pinned message"
   },
   "user": {
     "guest": "Guest",

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { Button } from "@heroui/button";
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Card, CardBody } from "@heroui/card";
 import { Image } from "@heroui/image";
 import { Input } from "@heroui/input";
 import {
@@ -173,15 +173,16 @@ const UserSummary = () => {
 
   return (
     <Card
-      className="w-full md:w-72 h-full bg-default-100 p-0 flex flex-col gap-4"
+      className="w-full max-w-full md:max-w-72 min-h-full bg-default-50 p-0 flex flex-col border border-default-300"
       radius="none"
     >
-      <CardHeader className="flex flex-col items-center w-full p-0">
-        <div className="flex flex-col items-center gap-4 border border-default-300 bg-default-50 px-4 py-10 w-full">
-          <div className="border-3 border-primary bg-default-50 rounded-2xl relative">
+      <CardBody className="flex flex-col gap-2 p-0 flex-grow">
+        {/* Bloque 1: Avatar, Nickname, Correo */}
+        <div className="flex flex-col items-center gap-4 px-4 py-8 border-b border-default-200">
+          <div className="relative">
             <Image
               alt={t("user.avatar")}
-              className="w-32 h-32 border-2 border-black"
+              className="w-40 h-40 border-2 border-black"
               src={userData.avatar || avatars[0]}
             />
             <Button
@@ -197,7 +198,9 @@ const UserSummary = () => {
           </div>
           <div className="flex flex-col items-center">
             {userData.nickname ? (
-              <h3 className="text-xl font-bold">{userData.nickname}</h3>
+              <h3 className="text-2xl text-primary font-bold">
+                {userData.nickname}
+              </h3>
             ) : (
               <Button
                 aria-label={t("user.create_nickname")}
@@ -208,14 +211,14 @@ const UserSummary = () => {
                 {t("user.create_nickname")}
               </Button>
             )}
-            <h2 className="text-sm font-light text-default-600">
+            <h2 className="text-sm font-light text-neutral-200">
               {user?.email || t("user.guest")}
             </h2>
           </div>
         </div>
-      </CardHeader>
-      <CardBody className="flex flex-col gap-2 p-0">
-        <div className="flex flex-col gap-2 border border-default-300 bg-default-50 p-4">
+
+        {/* Bloque 2: Invested, Received, Profit/Loss */}
+        <div className="flex flex-col gap-2 p-4 border-b border-default-200">
           <div className="flex justify-between items-center">
             <p className="font-semibold">{t("tracker.invested")}</p>
             <p className="text-danger">-{totalInvested.toFixed(2)}$</p>
@@ -231,17 +234,21 @@ const UserSummary = () => {
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
-            <p className="font-semibold">{t("user.total_airdrops")}:</p>
+
+        {/* Bloque 3: Live Airdrops, Tracked Airdrops */}
+        <div className="flex flex-col gap-2 p-4 border-b border-default-200">
+          <div className="flex justify-between items-center">
+            <p className="font-semibold">{t("user.total_airdrops")}</p>
             <p className="text-success">{totalAirdrops}</p>
           </div>
-          <div className="flex justify-between items-center gap-2 border border-default-300 bg-default-50 p-4">
-            <p className="font-semibold">{t("user.tracked_airdrops")}:</p>
+          <div className="flex justify-between items-center">
+            <p className="font-semibold">{t("user.tracked_airdrops")}</p>
             <p className="text-success">{totalFavorites}</p>
           </div>
         </div>
-        <div className="border border-default-300 bg-default-50 p-4 flex flex-col gap-4">
+
+        {/* Bloque 4: Daily Tasks, General Tasks */}
+        <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
             <p className="font-semibold">{t("user.daily_tasks")}</p>
             <div className="flex items-center gap-2">

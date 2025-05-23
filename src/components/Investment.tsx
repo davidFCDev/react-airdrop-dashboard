@@ -59,9 +59,9 @@ const Investment = () => {
   return (
     <section className="flex flex-col items-center justify-start w-full">
       {!hasInvestments ? (
-        <div className="text-neutral-100 text-xl font-light mt-8 flex flex-col items-center gap-4">
+        <div className="text-neutral-100 text-lg font-light mt-8 flex flex-col items-center gap-4">
           {t("tracker.no_investments")}
-          <Button as={Link} color="primary" to="/airdrops">
+          <Button as={Link} color="primary" to="/airdrops" variant="light">
             {t("tracker.explore_airdrops")}
           </Button>
         </div>
