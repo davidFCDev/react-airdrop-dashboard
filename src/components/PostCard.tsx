@@ -21,7 +21,7 @@ const PostCard = ({ post }: Props) => {
 
   return (
     <Card
-      className="w-full bg-default-50 flex flex-col border border-default-200 hover:bg-default-100 transition-all duration-300"
+      className="w-full bg-default-50 flex flex-col border border-default-200"
       radius="none"
       shadow="sm"
     >
@@ -40,13 +40,13 @@ const PostCard = ({ post }: Props) => {
               </Chip>
             )}
           </div>
-          <p className="text-sm text-default-500">{subtitle}</p>
+          <p className="text-sm text-neutral-400">{subtitle}</p>
         </div>
         <Button
           color="secondary"
           radius="none"
           size="sm"
-          variant="bordered"
+          variant="light"
           onPress={() => navigate(`/posts/${post.id}`)}
         >
           {t("post.read_more")}

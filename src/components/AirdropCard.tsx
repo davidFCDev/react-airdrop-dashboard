@@ -62,7 +62,7 @@ const AirdropCard = ({ airdrop, star }: Props) => {
   return (
     <Card
       isPressable
-      className={`${star ? "h-40 min-w-60" : "h-40 min-w-64"} w-full bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200 flex flex-col relative`}
+      className={`${star ? "h-full min-w-60" : "h-40 min-w-64"} w-full bg-default-50 cursor-pointer hover:bg-default-100 transition-colors border border-default-200 flex flex-col relative`}
       radius="none"
       shadow="none"
       onPress={handleCardClick}

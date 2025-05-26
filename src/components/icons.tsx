@@ -147,6 +147,49 @@ export const SendIcon: React.FC<IconSvgProps> = ({
   );
 };
 
+export const RightArrowIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M6.23 20.23L8 22l10-10L8 2L6.23 3.77L14.46 12z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+export const LeftArrowIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      height={size || height}
+      viewBox="0 0 24 24"
+      width={size || width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M11.67 3.87L9.9 2.1L0 12l9.9 9.9l1.77-1.77L3.54 12z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
 export const StarIcon: React.FC<IconSvgProps> = ({
   size = 24,
   width,

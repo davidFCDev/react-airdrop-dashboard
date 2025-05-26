@@ -277,7 +277,7 @@
     }
   },
   "dashboard": {
-    "latest_airdrops": "Fresh Drops",
+    "latest_airdrops": "Latest Drops",
     "no_airdrops": "No airdrops right now. Manifest harder.",
     "important_news": "Alpha Feed",
     "no_posts": "No posts found",

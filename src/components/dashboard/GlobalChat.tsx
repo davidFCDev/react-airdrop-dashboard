@@ -186,7 +186,7 @@ const GlobalChat = () => {
   return (
     <section className="flex flex-col gap-4 py-4 h-full">
       <Card
-        className="bg-default-50 border border-default-200 h-[29rem] relative"
+        className="bg-default-50 border border-default-200 h-[30rem] relative"
         radius="none"
         shadow="none"
       >
@@ -268,7 +268,7 @@ const GlobalChat = () => {
                       {!isOwnMessage && showNickname(index) && (
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-sm font-semibold ${isAdmin ? "text-danger" : "text-primary"}`}
+                            className={`text-sm font-semibold ${isAdmin ? "text-danger" : "text-success"}`}
                           >
                             {message.userName}
                             {isAdmin && " (admin)"}

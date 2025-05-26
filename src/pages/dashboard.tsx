@@ -39,7 +39,7 @@ const DashboardPage = () => {
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
-    .slice(0, 6); // Mantener 6 airdrops
+    .slice(0, 10); // Mantener 6 airdrops
 
   const latestPosts = posts
     .sort(
@@ -50,10 +50,10 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row min-h-screen p-4 gap-4 bg-default-100 overflow-hidden">
+      <section className="flex flex-col md:flex-row p-4 gap-4 bg-default-100 overflow-hidden h-[calc(100vh-4rem)]">
         <UserSummary />
-        <div className="w-full flex flex-col gap-4 bg-default-100">
-          <div className="flex flex-col md:flex-row h-[34rem] gap-4">
+        <div className="w-full flex flex-col justify-between bg-default-100">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="w-full md:w-1/2">
               <DashboardTitle
                 icon={AnnounceIcon}
@@ -67,13 +67,13 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <>
+          <div>
             <DashboardTitle
               icon={NewIcon}
               text={t("dashboard.latest_airdrops")}
             />
             <LatestAirdrops latestAirdrops={latestAirdrops} />
-          </>
+          </div>
         </div>
       </section>
     </DefaultLayout>

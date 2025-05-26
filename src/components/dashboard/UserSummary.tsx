@@ -173,7 +173,7 @@ const UserSummary = () => {
 
   return (
     <Card
-      className="w-full max-w-full md:max-w-72 min-h-full bg-default-50 p-0 flex flex-col border border-default-300"
+      className="w-full max-w-full md:max-w-64 bg-default-50 p-0 flex flex-col border border-default-200"
       radius="none"
     >
       <CardBody className="flex flex-col gap-2 p-0 flex-grow">
@@ -182,7 +182,7 @@ const UserSummary = () => {
           <div className="relative">
             <Image
               alt={t("user.avatar")}
-              className="w-40 h-40 border-2 border-black"
+              className="w-36 h-3w-36 border-2 border-black"
               src={userData.avatar || avatars[0]}
             />
             <Button
@@ -198,7 +198,7 @@ const UserSummary = () => {
           </div>
           <div className="flex flex-col items-center">
             {userData.nickname ? (
-              <h3 className="text-2xl text-primary font-bold">
+              <h3 className="text-2xl text-secondary-600 font-bold">
                 {userData.nickname}
               </h3>
             ) : (
