@@ -1,6 +1,5 @@
 import { SortDescriptor } from "@heroui/table";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { columns } from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
@@ -8,11 +7,10 @@ import { useAirdropStore } from "@/store/airdropStore";
 import { Airdrop } from "@/types";
 
 export const useAirdropTable = () => {
-  const navigate = useNavigate();
   const { user } = useUserAuth();
-  const { airdrops, favorites, loading, error } = useAirdropStore();
+  const { airdrops, trackedAirdrops, loading, error } = useAirdropStore();
   const [filterValue, setFilterValue] = useState("");
-  const [showFavorites, setShowFavorites] = useState(false);
+  const [showTracked, setShowTracked] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
     new Set(columns.map((c) => c.uid)),
   );
@@ -20,8 +18,8 @@ export const useAirdropTable = () => {
     column: "name",
     direction: "ascending",
   });
+  const [selectedAirdrop, setSelectedAirdrop] = useState<Airdrop | null>(null);
 
-  // Cargar airdrops y favoritos al montar el componente
   useEffect(() => {
     const unsubscribeAirdrops = useAirdropStore.getState().fetchAirdrops();
     let unsubscribeFavorites: (() => void) | undefined;
@@ -54,14 +52,14 @@ export const useAirdropTable = () => {
       );
     }
 
-    if (showFavorites) {
+    if (showTracked) {
       filteredAirdrops = filteredAirdrops.filter((airdrop) =>
-        favorites.has(airdrop.id),
+        trackedAirdrops.has(airdrop.id),
       );
     }
 
     return filteredAirdrops;
-  }, [airdrops, filterValue, showFavorites, favorites]);
+  }, [airdrops, filterValue, showTracked, trackedAirdrops]);
 
   const sortedItems = useMemo(() => {
     return [...filteredItems].sort((a: Airdrop, b: Airdrop) => {
@@ -88,13 +86,13 @@ export const useAirdropTable = () => {
     setFilterValue("");
   }, []);
 
-  const toggleFavorites = useCallback(() => {
-    setShowFavorites((prev) => !prev);
+  const toggleTracked = useCallback(() => {
+    setShowTracked((prev) => !prev);
   }, []);
 
-  const handleRowClick = (airdrop: Airdrop) => {
-    navigate(`/airdrops/${airdrop.id}`, { state: { airdrop } });
-  };
+  const onRowSelect = useCallback((airdrop: Airdrop) => {
+    setSelectedAirdrop(airdrop);
+  }, []);
 
   return {
     sortedItems,
@@ -106,9 +104,11 @@ export const useAirdropTable = () => {
     onClear,
     visibleColumns,
     setVisibleColumns,
-    toggleFavorites,
-    showFavorites,
-    handleRowClick,
+    toggleTracked,
+    showTracked,
+    selectedAirdrop,
+    setSelectedAirdrop,
+    onRowSelect,
     loading,
     error,
   };

@@ -21,7 +21,7 @@ interface TGEAssignment {
 
 interface AirdropState {
   airdrops: Airdrop[];
-  favorites: Set<string>;
+  trackedAirdrops: Set<string>;
   userAirdropData: Map<string, UserAirdropData>;
   updatingFavorites: Set<string>;
   tgeAssignments: Map<string, TGEAssignment[]>;
@@ -33,13 +33,13 @@ interface AirdropState {
   assignTGE: (date: string, airdrop: Airdrop) => Promise<void>;
   removeTGE: (date: string, airdropId: string) => Promise<void>;
   deleteAirdrop: (id: string) => Promise<void>;
-  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
+  toggleTracking: (airdropId: string, favorite: boolean) => Promise<void>;
   updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
 }
 
 export const useAirdropStore = create<AirdropState>((set, get) => ({
   airdrops: [],
-  favorites: new Set(),
+  trackedAirdrops: new Set(),
   userAirdropData: new Map(),
   updatingFavorites: new Set(),
   tgeAssignments: new Map(),
@@ -63,13 +63,14 @@ export const useAirdropStore = create<AirdropState>((set, get) => ({
             : new Date().toISOString(),
           image: doc.data().image || "",
           name: doc.data().name || "",
+          confirmation: doc.data().confirmation || "Not Confirmed",
         })) as Airdrop[];
 
         set((state) => ({
           airdrops: airdropData,
           loading:
             state.userAirdropData.size === 0 &&
-            state.favorites.size === 0 &&
+            state.trackedAirdrops.size === 0 &&
             state.tgeAssignments.size === 0 &&
             airdropData.length === 0,
         }));
@@ -108,7 +109,7 @@ export const useAirdropStore = create<AirdropState>((set, get) => ({
           }
         });
         set((state) => ({
-          favorites: favoriteIds,
+          trackedAirdrops: favoriteIds,
           userAirdropData: userData,
           loading:
             state.airdrops.length === 0 &&
@@ -220,7 +221,7 @@ export const useAirdropStore = create<AirdropState>((set, get) => ({
     }
   },
 
-  toggleFavorite: async (airdropId: string, favorite: boolean) => {
+  toggleTracking: async (airdropId: string, favorite: boolean) => {
     try {
       set((state) => ({
         updatingFavorites: new Set(state.updatingFavorites).add(airdropId),
@@ -234,7 +235,7 @@ export const useAirdropStore = create<AirdropState>((set, get) => ({
       await airdropService.toggleFavorite(airdropId, favorite);
 
       set((state) => {
-        const newFavorites = new Set(state.favorites);
+        const newFavorites = new Set(state.trackedAirdrops);
 
         if (favorite) {
           newFavorites.add(airdropId);
@@ -242,7 +243,7 @@ export const useAirdropStore = create<AirdropState>((set, get) => ({
           newFavorites.delete(airdropId);
         }
 
-        return { favorites: newFavorites };
+        return { trackedAirdrops: newFavorites };
       });
     } catch (err) {
       set({

@@ -6,7 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropForm } from "@/hooks/useAirdropForm";
-import { Airdrop, cost, stages, status, tiers, types } from "@/types/index";
+import {
+  Airdrop,
+  confirmation,
+  cost,
+  stages,
+  status,
+  tiers,
+  types,
+} from "@/types";
 
 interface Props {
   onSubmit: () => void;
@@ -86,6 +94,18 @@ const AirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
             onChange={handleChange}
           >
             {status.map((option) => (
+              <SelectItem key={option} textValue={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </Select>
+          <Select
+            label="Confirmación"
+            name="confirmation"
+            selectedKeys={[formData.confirmation]}
+            onChange={handleChange}
+          >
+            {confirmation.map((option) => (
               <SelectItem key={option} textValue={option}>
                 {option}
               </SelectItem>

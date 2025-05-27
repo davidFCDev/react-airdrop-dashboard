@@ -34,10 +34,11 @@ export const stages = [
   "Private",
   "Public",
 ] as const;
-export const status = [
+export const status = ["Active", "Waiting", "Finished"] as const;
+export const confirmation = [
   "Confirmed",
   "Not Confirmed",
-  "Posible",
+  "Possible",
   "Ended",
 ] as const;
 export const cost = ["FREE", "Low Cost", "Gas Fees", "Liquidity"] as const;
@@ -46,6 +47,7 @@ export type AirdropType = (typeof types)[number];
 export type Tier = (typeof tiers)[number];
 export type Stage = (typeof stages)[number];
 export type Status = (typeof status)[number];
+export type Confirmation = (typeof confirmation)[number];
 export type Cost = (typeof cost)[number];
 
 export type ImportantLink = {
@@ -73,6 +75,7 @@ export interface Airdrop {
   twitter: string;
   telegram: string;
   status: Status;
+  confirmation: Confirmation;
   important_links: { key: string; value: string }[];
   user: {
     daily_tasks: { en: string; es: string }[];
@@ -101,6 +104,7 @@ export interface FavoriteAirdrop {
   twitter: string;
   telegram: string;
   status: string;
+  confirmation: string;
   important_links: { key: string; value: string }[];
   user: {
     daily_tasks: { en: string; es: string }[];
@@ -153,7 +157,7 @@ export interface AirdropNotesProps {
 
 export interface AirdropState {
   airdrops: Airdrop[];
-  favorites: Set<string>;
+  trackedAirdrops: Set<string>;
   userAirdropData: Map<string, UserAirdropData>;
   updatingFavorites: Set<string>;
   error: string | null;
@@ -161,6 +165,6 @@ export interface AirdropState {
   fetchAirdrops: () => () => void;
   fetchFavorites: (uid: string) => () => void;
   deleteAirdrop: (id: string) => Promise<void>;
-  toggleFavorite: (airdropId: string, favorite: boolean) => Promise<void>;
+  toggleTracking: (airdropId: string, favorite: boolean) => Promise<void>;
   updateAirdrop: (id: string, airdrop: Partial<Airdrop>) => Promise<void>;
 }

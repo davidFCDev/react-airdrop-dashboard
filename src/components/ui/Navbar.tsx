@@ -1,4 +1,3 @@
-import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Link } from "@heroui/link";
@@ -15,29 +14,23 @@ import { ScrollShadow } from "@heroui/scroll-shadow";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import LanguageSelector from "../LanguageSelector";
 
-import { Logo, TelegramIcon, TwitterIcon } from "@/components/icons";
+import {
+  Logo,
+  NotificationIcon,
+  TelegramIcon,
+  TwitterIcon,
+} from "@/components/icons";
 import { siteConfig } from "@/config/site";
-import { avatar1 } from "@/constants";
 import { useUserAuth } from "@/context/AuthContext";
 import { auth, db } from "@/lib/firebase";
 import { Post } from "@/types";
-
-interface UserData {
-  avatar?: string;
-}
 
 const labelToTranslationKey: Record<string, string> = {
   Login: "login",
@@ -84,7 +77,6 @@ export const Navbar = () => {
   const [isActionsCardOpen, setIsActionsCardOpen] = useState(false);
   const [isNotificationsCardOpen, setIsNotificationsCardOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [userAvatar, setUserAvatar] = useState<string | undefined>(avatar1);
 
   const actionsRef = useOutsideClick(() => {
     setIsActionsCardOpen(false);
@@ -119,20 +111,9 @@ export const Navbar = () => {
       if (!currentUser) {
         setNotifications([]);
         setError(null);
-        setUserAvatar(avatar1);
 
         return;
       }
-
-      // Fetch user avatar
-      const userRef = doc(db, "users", currentUser.uid);
-      const unsubscribeUser = onSnapshot(userRef, (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data() as UserData;
-
-          setUserAvatar(data.avatar || avatar1);
-        }
-      });
 
       // Fetch notifications
       const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
@@ -162,7 +143,6 @@ export const Navbar = () => {
 
       return () => {
         unsubscribeSnapshot();
-        unsubscribeUser();
       };
     });
 
@@ -344,19 +324,13 @@ export const Navbar = () => {
         {user && (
           <NavbarItem className="hidden md:flex pl-6 border-l border-default-200 h-full justify-center items-center">
             <div className="relative">
-              <Avatar
-                isBordered
-                aria-label={t("navbar.user_avatar")}
-                className="cursor-pointer"
-                color="primary"
-                name={user?.email?.charAt(0).toUpperCase() || "?"}
-                radius="md"
-                size="sm"
-                src={userAvatar}
+              <NotificationIcon
+                aria-label={t("navbar.user_actions")}
+                className="w-6 h-6 cursor-pointer hover:text-primary transition-colors"
                 onClick={handleAvatarClick}
               />
               {unreadNotifications > 0 && (
-                <span className="absolute -bottom-2 -right-2 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                <span className="absolute -bottom-1 -right-1 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                   {unreadNotifications}
                 </span>
               )}
@@ -416,7 +390,7 @@ export const Navbar = () => {
       {isActionsCardOpen && (
         <Card
           ref={actionsRef}
-          className="absolute sm:top-16 sm:right-1 top-1/2  sm:-translate-x-0 sm:-translate-y-0 -translate-x-1/2 -translate-y-1/2 w-80 bg-default-50 border border-default-200 shadow-md z-50"
+          className="absolute sm:top-16 sm:right-1 top-1/2 sm:-translate-x-0 sm:-translate-y-0 -translate-x-1/2 -translate-y-1/2 w-80 bg-default-50 border border-default-200 shadow-md z-50"
           radius="none"
         >
           <CardBody className="p-0">

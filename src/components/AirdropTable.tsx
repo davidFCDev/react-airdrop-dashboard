@@ -1,6 +1,13 @@
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+} from "@heroui/drawer";
+import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -16,14 +23,20 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+import AirdropDailyTasks from "./airdropDetails/AirdropDailyTasks";
+import AirdropGeneralTasks from "./airdropDetails/AirdropGeneralTasks";
+import AirdropLinks from "./airdropDetails/AirdropLinks";
 
 import {
   ChevronDownIcon,
   DeleteIcon,
   DiscordIcon,
   EditIcon,
+  RightArrowIcon,
   SearchIcon,
   StarFilledIcon,
   StarIcon,
@@ -33,6 +46,7 @@ import {
 } from "@/components/icons";
 import {
   columns,
+  confirmationColorMap,
   costColorMap,
   stageColorMap,
   statusColorMap,
@@ -41,6 +55,7 @@ import {
 } from "@/constants/airdrop.table";
 import { useUserAuth } from "@/context/AuthContext";
 import { useAirdropTable } from "@/hooks/useAirdropTable";
+import { useUserAirdrop } from "@/hooks/useUserAirdrop";
 import { useAirdropStore } from "@/store/airdropStore";
 import { Airdrop } from "@/types";
 
@@ -58,12 +73,20 @@ const AirdropTable = () => {
     onClear,
     visibleColumns,
     setVisibleColumns,
-    toggleFavorites,
-    showFavorites,
+    toggleTracked,
+    showTracked,
+    selectedAirdrop,
+    setSelectedAirdrop,
+    onRowSelect,
   } = useAirdropTable();
-  const { favorites, updatingFavorites, toggleFavorite } = useAirdropStore();
+  const {
+    trackedAirdrops,
+    updatingFavorites,
+    toggleTracking,
+    userAirdropData,
+  } = useAirdropStore();
+  const { toggleTask, isUpdating } = useUserAirdrop(selectedAirdrop?.id || "");
 
-  // Filtrar la columna "actions" si no es admin
   const filteredHeaderColumns =
     role === "admin"
       ? headerColumns
@@ -71,15 +94,116 @@ const AirdropTable = () => {
 
   const renderCell = (
     airdrop: Airdrop,
-    columnKey: keyof Airdrop | "links" | "tags" | "favorite" | "actions",
-  ) => {
-    const cellValue =
-      columnKey === "links" ||
-      columnKey === "tags" ||
-      columnKey === "favorite" ||
-      columnKey === "actions"
-        ? undefined
-        : airdrop[columnKey];
+    columnKey: keyof Airdrop | "links" | "tags" | "tracking" | "actions",
+  ): React.ReactNode => {
+    if (["links", "tags", "tracking", "actions"].includes(columnKey)) {
+      switch (columnKey) {
+        case "links":
+          return (
+            <div className="flex gap-2">
+              {airdrop.url && (
+                <Link
+                  isExternal
+                  color="foreground"
+                  href={airdrop.url}
+                  title="Website"
+                >
+                  <WebsiteIcon className="w-4 h-4" />
+                </Link>
+              )}
+              {airdrop.discord && (
+                <Link
+                  isExternal
+                  color="foreground"
+                  href={airdrop.discord}
+                  title="Discord"
+                >
+                  <DiscordIcon className="w-4 h-4" />
+                </Link>
+              )}
+              {airdrop.twitter && (
+                <Link
+                  isExternal
+                  color="foreground"
+                  href={airdrop.twitter}
+                  title="Twitter"
+                >
+                  <TwitterIcon className="w-4 h-4" />
+                </Link>
+              )}
+              {airdrop.telegram && (
+                <Link
+                  isExternal
+                  color="foreground"
+                  href={airdrop.telegram}
+                  title="Telegram"
+                >
+                  <TelegramIcon className="w-4 h-4" />
+                </Link>
+              )}
+            </div>
+          );
+        case "tags":
+          return (
+            <div className="flex gap-1 flex-wrap">
+              {airdrop.tags.map((tag, index) => (
+                <Chip key={index} color="default" size="sm" variant="flat">
+                  {tag}
+                </Chip>
+              ))}
+            </div>
+          );
+        case "tracking":
+          const isTracked = trackedAirdrops.has(airdrop.id);
+
+          return (
+            <Button
+              isIconOnly
+              aria-label={
+                isTracked
+                  ? t("airdrop.remove_tracking")
+                  : t("airdrop.add_tracking")
+              }
+              isDisabled={updatingFavorites.has(airdrop.id)}
+              variant="light"
+              onPress={() => toggleTracking(airdrop.id, !isTracked)}
+            >
+              {isTracked ? (
+                <StarFilledIcon className="w-5 h-5" />
+              ) : (
+                <StarIcon className="w-5 h-5" />
+              )}
+            </Button>
+          );
+        case "actions":
+          return (
+            <div className="flex gap-2">
+              <Button
+                isIconOnly
+                aria-label="Edit airdrop"
+                variant="light"
+                onPress={() =>
+                  navigate(`/edit/${airdrop.id}`, { state: { airdrop } })
+                }
+              >
+                <EditIcon className="w-5 h-5" />
+              </Button>
+              <Button
+                isIconOnly
+                aria-label="Delete airdrop"
+                variant="light"
+                onPress={() =>
+                  useAirdropStore.getState().deleteAirdrop(airdrop.id)
+                }
+              >
+                <DeleteIcon className="w-5 h-5" />
+              </Button>
+            </div>
+          );
+      }
+    }
+
+    const cellValue = airdrop[columnKey as keyof Airdrop];
 
     switch (columnKey) {
       case "name":
@@ -104,6 +228,17 @@ const AirdropTable = () => {
             {airdrop.status}
           </Chip>
         );
+      case "confirmation":
+        return (
+          <Chip
+            className="capitalize"
+            color={confirmationColorMap[airdrop.confirmation]}
+            size="sm"
+            variant="flat"
+          >
+            {airdrop.confirmation}
+          </Chip>
+        );
       case "tier":
         return (
           <Chip
@@ -112,11 +247,11 @@ const AirdropTable = () => {
             size="sm"
             variant="flat"
           >
-            {airdrop.tier}
+            {`Tier ${airdrop.tier}`}
           </Chip>
         );
       case "funding":
-        return `$ ${airdrop.funding}`;
+        return cellValue ? `$ ${cellValue}` : "Unknown";
       case "type":
         return (
           <Chip
@@ -156,115 +291,11 @@ const AirdropTable = () => {
             {airdrop.chain}
           </Chip>
         );
-      case "tags":
-        return (
-          <div className="flex gap-1 flex-wrap">
-            {airdrop.tags.map((tag, index) => (
-              <Chip key={index} color="default" size="sm" variant="flat">
-                {tag}
-              </Chip>
-            ))}
-          </div>
-        );
-      case "links":
-        return (
-          <div className="flex gap-2">
-            {airdrop.url && (
-              <Link
-                isExternal
-                color="foreground"
-                href={airdrop.url}
-                title="Website"
-              >
-                <WebsiteIcon className="w-4 h-4" />
-              </Link>
-            )}
-            {airdrop.discord && (
-              <Link
-                isExternal
-                color="foreground"
-                href={airdrop.discord}
-                title="Discord"
-              >
-                <DiscordIcon className="w-4 h-4" />
-              </Link>
-            )}
-            {airdrop.twitter && (
-              <Link
-                isExternal
-                color="foreground"
-                href={airdrop.twitter}
-                title="Twitter"
-              >
-                <TwitterIcon className="w-4 h-4" />
-              </Link>
-            )}
-            {airdrop.telegram && (
-              <Link
-                isExternal
-                color="foreground"
-                href={airdrop.telegram}
-                title="Telegram"
-              >
-                <TelegramIcon className="w-4 h-4" />
-              </Link>
-            )}
-          </div>
-        );
-      case "favorite":
-        const isFavorite = favorites.has(airdrop.id);
-
-        return (
-          <Button
-            isIconOnly
-            aria-label={
-              isFavorite
-                ? t("airdrop.remove_favorite")
-                : t("airdrop.add_favorite")
-            }
-            isDisabled={updatingFavorites.has(airdrop.id)}
-            variant="light"
-            onPress={() => {
-              toggleFavorite(airdrop.id, !isFavorite);
-            }}
-          >
-            {isFavorite ? (
-              <StarFilledIcon className="w-5 h-5" />
-            ) : (
-              <StarIcon className="w-5 h-5" />
-            )}
-          </Button>
-        );
-      case "actions":
-        return (
-          <div className="flex gap-2">
-            <Button
-              isIconOnly
-              aria-label="Edit airdrop"
-              variant="light"
-              onPress={() =>
-                navigate(`/edit/${airdrop.id}`, { state: { airdrop } })
-              }
-            >
-              <EditIcon className="w-5 h-5" />
-            </Button>
-            <Button
-              isIconOnly
-              aria-label="Delete airdrop"
-              variant="light"
-              onPress={() =>
-                useAirdropStore.getState().deleteAirdrop(airdrop.id)
-              }
-            >
-              <DeleteIcon className="w-5 h-5" />
-            </Button>
-          </div>
-        );
       case "created_at":
       case "last_edited":
-        return new Date(airdrop[columnKey]).toLocaleDateString();
+        return new Date(cellValue as string).toLocaleDateString();
       default:
-        return cellValue as string | number;
+        return String(cellValue);
     }
   };
 
@@ -308,75 +339,210 @@ const AirdropTable = () => {
         </DropdownMenu>
       </Dropdown>
       <Button
-        color={showFavorites ? "primary" : "default"}
-        variant={showFavorites ? "solid" : "bordered"}
-        onPress={toggleFavorites}
+        color={showTracked ? "primary" : "default"}
+        variant={showTracked ? "solid" : "bordered"}
+        onPress={toggleTracked}
       >
-        {t("airdrop.show_favorites")}
+        {t("airdrop.show_tracked")}
       </Button>
     </div>
   );
 
+  const completedTasks = useMemo(() => {
+    if (!selectedAirdrop) return new Set<string>();
+
+    const tasks = new Set<string>();
+    const userData = userAirdropData.get(selectedAirdrop.id);
+
+    userData?.daily_tasks?.forEach((task, index) => {
+      if (task.completed) tasks.add(`daily_${index}`);
+    });
+    userData?.general_tasks?.forEach((task, index) => {
+      if (task.completed) tasks.add(`general_${index}`);
+    });
+
+    return tasks;
+  }, [selectedAirdrop, userAirdropData]);
+
+  const handleTaskToggle = (task: string) => {
+    if (!selectedAirdrop) return;
+
+    const [type, index] = task.split("_");
+
+    toggleTask(type as "daily" | "general", parseInt(index));
+  };
+
+  const getTaskText = (task: { en: string; es: string }) =>
+    i18n.language === "es" ? task.es : task.en;
+
   return (
-    <Table
-      key={`${i18n.language}-${favorites.size}`}
-      isCompact
-      removeWrapper
-      aria-label="Airdrops Table"
-      checkboxesProps={{
-        classNames: {
-          wrapper: "after:bg-foreground after:text-background text-background",
-        },
-      }}
-      classNames={{
-        wrapper: "max-h-[600px] overflow-auto",
-        th: "border-b border-default-200 bg-default-100",
-        tbody: "bg-default-50",
-        table: "bg-default-50 border border-default-200",
-        td: "border-b border-default-200",
-        tr: "hover:bg-default-100 cursor-pointer transition-colors",
-      }}
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={filteredHeaderColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align="start"
-            allowsSorting={column.sortable}
-          >
-            {t(`airdrop.${column.uid}`)}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={t("airdrop.no_airdrops")} items={sortedItems}>
-        {(item) => (
-          <TableRow
-            key={item.id}
-            onClick={() =>
-              navigate(`/airdrops/${item.id}`, { state: { airdrop: item } })
-            }
-          >
-            {(columnKey) => (
-              <TableCell>
-                {renderCell(
-                  item,
-                  columnKey as
-                    | keyof Airdrop
-                    | "links"
-                    | "tags"
-                    | "favorite"
-                    | "actions",
-                )}
-              </TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      <Table
+        key={`${i18n.language}-${trackedAirdrops.size}`}
+        isCompact
+        removeWrapper
+        aria-label={t("airdrop.table_label")}
+        checkboxesProps={{
+          classNames: {
+            wrapper:
+              "after:bg-foreground after:text-background text-background",
+          },
+        }}
+        classNames={{
+          wrapper: "max-h-[600px] overflow-auto",
+          th: "border-b border-default-200 bg-default-100",
+          tbody: "bg-default-50",
+          table: "bg-default-50 border border-default-200",
+          td: "border-b border-default-200",
+          tr: "hover:bg-default-100 cursor-pointer transition-colors",
+        }}
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSortChange={setSortDescriptor}
+      >
+        <TableHeader columns={filteredHeaderColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align="start"
+              allowsSorting={column.sortable}
+            >
+              {t(`airdrop.${column.uid}`)}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={t("airdrop.no_airdrops")} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item.id} onClick={() => onRowSelect(item)}>
+              {(columnKey) => (
+                <TableCell>
+                  {renderCell(
+                    item,
+                    columnKey as
+                      | keyof Airdrop
+                      | "links"
+                      | "tags"
+                      | "tracking"
+                      | "actions",
+                  )}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      {selectedAirdrop && (
+        <Drawer
+          aria-label={t("airdrop.summary_drawer", {
+            name: selectedAirdrop.name,
+          })}
+          className="bg-default-50 border-l border-default-200"
+          isOpen={!!selectedAirdrop}
+          placement="right"
+          radius="none"
+          size="lg"
+          onOpenChange={(isOpen) => !isOpen && setSelectedAirdrop(null)}
+        >
+          <DrawerContent>
+            <DrawerHeader className="border-b border-default-200">
+              <h2 className="text-2xl font-bold">{selectedAirdrop.name}</h2>
+            </DrawerHeader>
+            <DrawerBody className="flex flex-col gap-4 p-6">
+              <img
+                alt={selectedAirdrop.name}
+                className="w-full h-40 object-cover rounded-md"
+                src={selectedAirdrop.backdrop}
+              />
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2 flex-wrap">
+                  {renderCell(selectedAirdrop, "status")}
+                  {renderCell(selectedAirdrop, "confirmation")}
+                  {renderCell(selectedAirdrop, "tier")}
+                  {renderCell(selectedAirdrop, "cost")}
+                  {renderCell(selectedAirdrop, "chain")}
+                </div>
+                <div className="flex gap-2">
+                  {selectedAirdrop.url && (
+                    <Link
+                      isExternal
+                      color="foreground"
+                      href={selectedAirdrop.url}
+                      title="Website"
+                    >
+                      <WebsiteIcon className="w-4 h-4" />
+                    </Link>
+                  )}
+                  {selectedAirdrop.discord && (
+                    <Link
+                      isExternal
+                      color="foreground"
+                      href={selectedAirdrop.discord}
+                      title="Discord"
+                    >
+                      <DiscordIcon className="w-4 h-4" />
+                    </Link>
+                  )}
+                  {selectedAirdrop.twitter && (
+                    <Link
+                      isExternal
+                      color="foreground"
+                      href={selectedAirdrop.twitter}
+                      title="Twitter"
+                    >
+                      <TwitterIcon className="w-4 h-4" />
+                    </Link>
+                  )}
+                  {selectedAirdrop.telegram && (
+                    <Link
+                      isExternal
+                      color="foreground"
+                      href={selectedAirdrop.telegram}
+                      title="Telegram"
+                    >
+                      <TelegramIcon className="w-4 h-4" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+              <AirdropDailyTasks
+                isDrawer
+                airdrop={selectedAirdrop}
+                completedTasks={completedTasks}
+                getTaskText={getTaskText}
+                handleTaskToggle={handleTaskToggle}
+                isUpdating={isUpdating}
+              />
+              <AirdropGeneralTasks
+                isDrawer
+                airdrop={selectedAirdrop}
+                completedTasks={completedTasks}
+                getTaskText={getTaskText}
+                handleTaskToggle={handleTaskToggle}
+                isUpdating={isUpdating}
+              />
+              <AirdropLinks isDrawer airdrop={selectedAirdrop} />
+            </DrawerBody>
+            <DrawerFooter className="border-t border-default-200 flex items-center justify-start">
+              <Button
+                aria-label={t("airdrop.check_more")}
+                className="underline text-base"
+                variant="light"
+                onPress={() =>
+                  navigate(`/airdrops/${selectedAirdrop.id}`, {
+                    state: { airdrop: selectedAirdrop },
+                  })
+                }
+              >
+                <RightArrowIcon className="w-4 h-4 mr-2 text-primary" />
+                {t("airdrop.check_more")}
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
+    </>
   );
 };
 

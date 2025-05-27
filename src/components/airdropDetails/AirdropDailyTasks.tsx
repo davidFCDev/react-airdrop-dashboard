@@ -6,36 +6,50 @@ import { Airdrop } from "@/types";
 interface AirdropDailyTasksProps {
   airdrop: Airdrop;
   completedTasks: Set<string>;
-  handleTaskToggle: (task: string) => void;
-  getTaskText: (task: { en: string; es: string }) => string;
+  handleTaskToggle?: (task: string) => void;
+  getTaskText?: (task: { en: string; es: string }) => string;
   isUpdating: boolean;
+  isDrawer?: boolean;
 }
 
 const AirdropDailyTasks = ({
   airdrop,
   completedTasks,
   handleTaskToggle,
-  getTaskText,
+  getTaskText = (task) => task.en,
   isUpdating,
+  isDrawer = false,
 }: AirdropDailyTasksProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col bg-default-50 border border-default-200 p-6 w-full">
+    <div
+      className={`flex flex-col ${isDrawer ? "" : "bg-default-50 border border-default-200 p-6"} w-full`}
+    >
       {airdrop.user.daily_tasks.length > 0 && (
         <>
-          <h3 className="text-xl font-semibold mb-2">
+          <h3
+            className={`font-semibold ${isDrawer ? "text-base mb-2" : "text-xl mb-2"}`}
+          >
             {t("airdrop.daily_tasks")}
           </h3>
           <ul className="list-none pl-0">
             {airdrop.user.daily_tasks.map((task, index) => (
               <li key={index} className="flex items-center gap-2">
                 <Checkbox
-                  isDisabled={isUpdating}
+                  aria-label={`${getTaskText(task)} status`}
+                  isDisabled={isUpdating || !handleTaskToggle}
                   isSelected={completedTasks.has(`daily_${index}`)}
-                  onChange={() => handleTaskToggle(`daily_${index}`)}
+                  size={isDrawer ? "sm" : "md"}
+                  onChange={
+                    handleTaskToggle
+                      ? () => handleTaskToggle(`daily_${index}`)
+                      : undefined
+                  }
                 />
-                <span>{getTaskText(task)}</span>
+                <span className={isDrawer ? "text-sm" : ""}>
+                  {getTaskText(task)}
+                </span>
               </li>
             ))}
           </ul>

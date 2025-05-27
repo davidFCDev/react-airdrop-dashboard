@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 
 const Footer = () => {
   return (
-    <footer className="w-full flex items-center justify-center py-3 bg-default-100 border-t border-default-200">
+    <footer className="w-full flex items-center justify-center py-3 bg-default-50 border-t border-default-200">
       <Link
         isExternal
         className="flex items-center gap-1 text-current"

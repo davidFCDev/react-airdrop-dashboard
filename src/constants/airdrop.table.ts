@@ -1,12 +1,29 @@
-import { Airdrop, AirdropType, Cost, Stage, Status, Tier } from "@/types";
+import {
+  Airdrop,
+  AirdropType,
+  Confirmation,
+  Cost,
+  Stage,
+  Status,
+  Tier,
+} from "@/types";
 
 export const statusColorMap: Record<Status, "success" | "warning" | "danger"> =
   {
-    Confirmed: "success",
-    "Not Confirmed": "warning",
-    Posible: "warning",
-    Ended: "danger",
+    Active: "success",
+    Waiting: "warning",
+    Finished: "danger",
   };
+
+export const confirmationColorMap: Record<
+  Confirmation,
+  "success" | "warning" | "danger"
+> = {
+  Confirmed: "success",
+  "Not Confirmed": "warning",
+  Possible: "warning",
+  Ended: "danger",
+};
 
 export const tierColorMap: Record<
   Tier,
@@ -53,16 +70,16 @@ export const stageColorMap: Record<
   Public: "primary",
 };
 
-// Definición de columnas
 interface Column {
   name: string;
-  uid: keyof Airdrop | "links" | "tags" | "favorite" | "actions";
+  uid: keyof Airdrop | "links" | "tags" | "tracking" | "actions";
   sortable?: boolean;
 }
 
 export const columns: Column[] = [
   { name: "Project Name", uid: "name", sortable: true },
   { name: "Status", uid: "status", sortable: true },
+  { name: "Confirmation", uid: "confirmation", sortable: true },
   { name: "Tier", uid: "tier", sortable: true },
   { name: "Funding", uid: "funding", sortable: true },
   { name: "Type", uid: "type", sortable: true },
@@ -73,6 +90,6 @@ export const columns: Column[] = [
   { name: "Links", uid: "links" },
   { name: "Created", uid: "created_at", sortable: true },
   { name: "Last Edited", uid: "last_edited", sortable: true },
-  { name: "Favorite", uid: "favorite", sortable: false },
+  { name: "Tracking", uid: "tracking", sortable: false },
   { name: "Actions", uid: "actions", sortable: false },
 ];

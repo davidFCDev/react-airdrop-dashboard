@@ -29,6 +29,7 @@ export const useAirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
           type: initialAirdrop.type,
           description: initialAirdrop.description,
           status: initialAirdrop.status,
+          confirmation: initialAirdrop.confirmation,
           tier: initialAirdrop.tier,
           funding: initialAirdrop.funding,
           cost: initialAirdrop.cost,
@@ -50,7 +51,8 @@ export const useAirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
           name: "",
           type: "Play-to-Earn",
           description: { en: "", es: "" },
-          status: "Confirmed",
+          status: "Active",
+          confirmation: "Not Confirmed",
           tier: "S",
           funding: "",
           cost: "FREE",
@@ -240,17 +242,13 @@ export const useAirdropForm = ({ onSubmit, initialAirdrop }: Props) => {
         if (image.file) {
           updatedFormData.image = await uploadFileToS3(image.file, "image");
         }
-
         if (initialAirdrop) {
-          // Modo edición
           await useAirdropStore
             .getState()
             .updateAirdrop(initialAirdrop.id, updatedFormData);
         } else {
-          // Modo creación
           await airdropService.createAirdrop(updatedFormData);
         }
-
         onSubmit();
       } catch {
         setError("Error al guardar el airdrop");

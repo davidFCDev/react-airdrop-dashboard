@@ -7,9 +7,11 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex flex-col h-screen">
+    <div className="relative flex flex-col">
       <Navbar />
-      <main className="flex-grow bg-default-100">{children}</main>
+      <main className="flex-grow bg-default-100 min-h-[calc(100vh-4rem)]">
+        {children}
+      </main>
       <Footer />
     </div>
   );

@@ -50,7 +50,7 @@ const DashboardPage = () => {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col md:flex-row p-4 gap-4 bg-default-100 overflow-hidden h-[calc(100vh-4rem)]">
+      <section className="flex flex-col md:flex-row p-4 gap-4 bg-default-100 overflow-hidden ">
         <UserSummary />
         <div className="w-full flex flex-col justify-between bg-default-100">
           <div className="flex flex-col md:flex-row gap-4">
